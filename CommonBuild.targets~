@@ -1,0 +1,23 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(CommonBuildDirectory)/Default.Targets" />
+  <Import Project="$(CommonBuildDirectory)/Master.Targets" />
+  <Import Project="$(CommonBuildDirectory)/Subversion.Targets" />
+  <Import Project="$(CommonBuildDirectory)/Package.Targets" />
+
+  <Import Project="$(CommonBuildDirectory)/Gsmc.MSBuild.Tasks" />
+  <Import Project="$(CommonBuildDirectory)/MSBuild.Community.Tasks.Targets" />
+  <Import Project="$(CommonBuildDirectory)/Microsoft.Sdc.Common.Tasks" />
+
+  <Target Name="Tell">
+    <Message Importance="high" Text="$(MSBuildProjectFile) targets:" />
+    <Tell MSBuildFile="$(MSBuildProjectFile)" />
+    <Message Importance="high" Text="default targets:" />
+    <Tell MSBuildFile="$(CommonBuildDirectory)/Default.Targets" />
+    <Message Importance="high" Text="master targets:" />
+    <Tell MSBuildFle="$(CommonBuildDirectory)/Master.Targets" />
+    <Message Importance="high" Text="subversion targets:" />
+    <Tell MSBuildFile="$(CommonBuildDirectory)/Subversion.Targets" />
+    <Message Importance="high" Text="package targets:" />
+    <Tell MSBuildFile="$(CommonBuildDirectory)/Package.Targets" />
+  </Target>
+</Project>

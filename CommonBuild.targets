@@ -1,0 +1,9 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(CommonBuildDirectory)/Default.Targets" />
+  <Import Project="$(CommonBuildDirectory)/Master.Targets" />
+  <Import Project="$(CommonBuildDirectory)/Subversion.Targets" />
+  <Import Project="$(CommonBuildDirectory)/Package.Targets" />
+
+  <Import Project="$(CommonBuildDirectory)/MSBuild.Community.Tasks.Targets" />
+  <Import Project="$(CommonBuildDirectory)/Microsoft.Sdc.Common.Tasks" />
+</Project>

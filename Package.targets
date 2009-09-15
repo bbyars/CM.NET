@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <PackageTargets>$(PackageTargets);CreateArchive</PackageTargets>
+  </PropertyGroup>
+
+  <Target Name="CreateArchive">
+    <PropertyGroup>
+      <ZipFileName Condition="$(BUILD_NUMBER) == ''">$(BuildDirectory)\$(ProjectName).zip</ZipFileName>
+      <ZipFileName Condition="$(BUILD_NUMBER) != ''">$(BuildDirectory)\$(ProjectName)-$(BUILD_NUMBER).zip</ZipFileName>
+    </PropertyGroup>
+
+    <CreateItem Include="$(PackageDirectory)\**\*.*">
+      <Output TaskParameter="Include" ItemName="PackageComponents" />
+    </CreateItem>
+    
+    <Zip Files="@(PackageComponents)" ZipFileName="$(ZipFileName)" WorkingDirectory="$(PackageDirectory)" />
+  </Target>
+</Project>

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <BuildDirectory Condition="$(BuildDirectory) == ''">$(MSBuildProjectDirectory)\build</BuildDirectory>
+    <PackageDirectory Condition="$(PackageDirectory) == ''">$(BuildDirectory)\package</PackageDirectory>
+    <Configuration Condition="$(Configuration) == ''">Release</Configuration>
+    <Environment Condition="$(Environment) == ''">Dev</Environment>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <MSBuildCommunityTasksPath Condition="$(MSBuildCommunityTasksPath) == ''">$(CommonBuildDirectory)</MSBuildCommunityTasksPath>
+
+    <!-- TasksPath is used internally in Sdc Tasks -->
+    <TasksPath Condition="$(TasksPath) == ''">$(CommonBuildDirectory)\</TasksPath>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <PreBuildTargets>$(PreBuildTargets);InitializeProperties</PreBuildTargets>
+    <CleanTargets>$(CleanTargets);CleanBuildDirectory</CleanTargets>
+    <PostCleanTargets>$(PostCleanTargets);MakeBuildDirectories</PostCleanTargets>
+  </PropertyGroup>
+
+  <Target Name="InitializeProperties">
+    <!-- The only reason this has to be dynamic is because TeamCity patches our build script -->
+    <StringReplace Input="$(MSBuildProjectName)" OldValue=".proj.teamcity.patch" NewValue="" Condition="$(ProjectName)==''">
+      <Output TaskParameter="Output" PropertyName="ProjectName" />
+    </StringReplace>
+    <CreateProperty Value="Gsmc.$(ProjectName).sln" Condition="$(Solution)==''">
+      <Output TaskParameter="Value" PropertyName="Solution" />
+    </CreateProperty>
+    <CreateProperty Value="Gsmc.$(ProjectName).UnitTests" Condition="$(UnitTestProject)=='' And Exists('$(MSBuildProjectDirectory)\Gsmc.$(ProjectName).UnitTests')">
+      <Output TaskParameter="Value" PropertyName="UnitTestProject" />
+    </CreateProperty>
+    <CreateProperty Value="Gsmc.$(ProjectName).FunctionalTests" Condition="$(FunctionalTestProject)=='' And Exists('$(MSBuildProjectDirectory)\Gsmc.$(ProjectName).FunctionalTests')">
+      <Output TaskParameter="Value" PropertyName="FunctionalTestProject" />
+    </CreateProperty>
+  </Target>
+
+  <Target Name="CleanBuildDirectory">
+    <RemoveDir Directories="$(BuildDirectory)" />
+  </Target>
+
+  <Target Name="MakeBuildDirectories">
+    <MakeDir Directories="$(BuildDirectory)" Condition="!Exists('$(BuildDirectory)')" />
+    <MakeDir Directories="$(PackageDirectory)" Condition="!Exists('$(PackageDirectory)')" />
+  </Target>
+</Project>

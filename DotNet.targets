@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <CleanTargets>$(CleanTargets);CleanVisualStudioDirectories</CleanTargets>
+    <PreCompileTargets>$(PreCompileTargets);SetAssemblyInfo</PreCompileTargets>
+    <CompileTargets>$(CompileTargets);CompileSolution</CompileTargets>
+    <PostCompileTargets>$(PostCompileTargets);ResetAssemblyInfo</PostCompileTargets>
+    <UnitTestTargets>$(UnitTestTargets);RunUnitTests</UnitTestTargets>
+    <FunctionalTestTargets>$(UnitTestTargets);RunFunctionalTests</FunctionalTestTargets>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <AssemblyAttributes>
+      <AssemblyVersion Value="$(BUILD_NUMBER)" />
+      <AssemblyFileVersion Value="$(BUILD_NUMBER)" />
+    </AssemblyAttributes>
+  </PropertyGroup>
+
+  <Target Name="CleanVisualStudioDirectories">
+    <CreateItem Include="**\bin\$(Configuration)\**\*">
+      <Output TaskParameter="Include" ItemName="VisualStudioOutput" />
+    </CreateItem>
+    <CreateItem Include="**\obj\$(Configuration)\**\*">
+      <Output TaskParameter="Include" ItemName="VisualStudioOutput" />
+    </CreateItem>
+    <Delete Files="@(VisualStudioOutput)" />
+  </Target>
+
+  <Target Name="CompileSolution" DependsOnTargets="CleanVisualStudioDirectories">
+    <MSBuild Projects="$(Solution)" Targets="Rebuild" Properties="Configuration=$(Configuration)">
+      <Output TaskParameter="TargetOutputs" ItemName="Artifacts" />
+    </MSBuild>
+  </Target>
+
+  <Target Name="SetAssemblyInfo">
+    <ItemGroup>
+      <AssemblyInfoFiles Include="**/AssemblyInfo.cs" />
+    </ItemGroup>
+
+    <Copy SourceFiles="@(AssemblyInfoFiles)"
+      DestinationFiles="%(FullPath).orig"
+      Condition="@(AssemblyInfoFiles) != '' And $(BUILD_NUMER) != ''" />
+    <SetAssemblyAttributes Files="@(AssemblyInfoFiles)"
+      Attributes="$(AssemblyAttributes)"
+      Condition="@(AssemblyInfoFiles) != '' And $(BUILD_NUMBER) != ''" />
+  </Target>
+
+  <Target Name="ResetAssemblyInfo" DependsOnTargets="SetAssemblyInfo">
+    <Copy SourceFiles="%(FullPath).orig"
+      DestinationFiles="@(AssemblyInfoFiles)"
+      Condition="@(AssemblyInfoFiles) != '' and Exists('%(FullPath).orig')" />
+    <Delete Files="%(FullPath).orig" Condition="@(AssemblyInfoFiles) != '' and Exists('%(FullPath).orig')" />
+  </Target>
+
+  <Target Name="RunUnitTests" DependsOnTargets="CompileSolution">
+    <NUnit Assemblies="$(MSBuildProjectDirectory)\$(UnitTestProject)\bin\$(Configuration)\$(UnitTestProject).dll"
+      ToolPath="References\nunit"
+      Condition="$(UnitTestProject) != ''" />
+  </Target>
+
+  <Target Name="RunFunctionalTests" DependsOnTargets="CompileSolution">
+    <NUnit Assemblies="$(MSBuildProjectDirectory)\$(FunctionalTestProject)\bin\$(Configuration)\$(FunctionalTestProject).dll"
+      ToolPath="References\nunit"
+      Condition="$(FunctionalTestProject) != ''" />
+  </Target>
+</Project>

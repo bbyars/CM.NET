@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <PreCompileTargets>$(PreCompileTargets);Clean</PreCompileTargets>
+    <PreUnitTestTargets>$(PreUnitTestTargets);Compile</PreUnitTestTargets>
+    <PrePackageTargets>$(PrePackageTargets);UnitTest</PrePackageTargets>
+    <PreDeployTargets>$(PreDeployTargets);Package</PreDeployTargets>
+    <PreFunctionalTestTargets>$(PreFunctionalTestTargets);Deploy</PreFunctionalTestTargets>
+  </PropertyGroup>
+
+  <!-- This is the main common-build workflow. -->
+  <!-- It is designed so that, rather than redefining it, you hook into it with properties, as shown above -->
+  <Target Name="Build" DependsOnTargets="
+      $(PreBuildTargets);
+      Clean;
+      Compile;
+      UnitTest;
+      Package;
+      Deploy;
+      FunctionalTest;
+      $(PostBuildTargets)">
+    <OnError ExecuteTargets="$(PostBuildTargets)" />
+  </Target>
+
+  <Target Name="Clean" DependsOnTargets="$(PreCleanTargets)">
+    <CallTarget Targets="$(CleanTargets);$(PostCleanTargets)" />
+    <OnError ExecuteTargets="$(PostCleanTargets)" />
+  </Target>
+
+  <Target Name="Compile" DependsOnTargets="$(PreCompileTargets)">
+    <CallTarget Targets="$(CompileTargets);$(PostCompileTargets)" />
+    <OnError ExecuteTargets="$(PostCompileTargets)" />
+  </Target>
+
+  <Target Name="UnitTest" DependsOnTargets="$(PreUnitTestTargets)">
+    <CallTarget Targets="$(UnitTestTargets);$(PostUnitTestTargets)" />
+    <OnError ExecuteTargets="$(PostUnitTestTargets)" />
+  </Target>
+
+  <Target Name="Package" DependsOnTargets="$(PrePackageTargets)">
+    <CallTarget Targets="$(PackageTargets);$(PostPackageTargets)" />
+    <OnError ExecuteTargets="$(PostPackageTargets)" />
+  </Target>
+
+  <Target Name="Deploy" DependsOnTargets="$(PreDeployTargets)">
+    <CallTarget Targets="$(DeployTargets);$(PostPackageTargets)" />
+    <OnError ExecuteTargets="$(PostPackageTargets)" />
+  </Target>
+
+  <Target Name="FunctionalTest" DependsOnTargets="$(PreFunctionalTestTargets)">
+    <CallTarget Targets="$(FunctionalTestTargets);$(PostFunctionalTestTargets)" />
+    <OnError ExecuteTargets="$(PostFunctionalTestTargets)" />
+  </Target>
+
+  <Target Name="Trace">
+    <Message Text="PreBuildTargets: $(PreBuildTargets)" />
+    <Message Text="PreCleanTargets: $(PreCleanTargets)" />
+    <Message Text="CleanTargets: $(CleanTargets)" />
+    <Message Text="PostBuildTargets: $(PostBuildTargets)" />
+    <Message Text="PreCompileTargets: $(PreCompileTargets)" />
+    <Message Text="CompileTargets: $(CompileTargets)" />
+    <Message Text="PostCompileTargets: $(PostCompleTargets)" />
+    <Message Text="PreUnitTestTargets: $(PreUnitTestTargets)" />
+    <Message Text="UnitTestTargets: $(UnitTestTargets)" />
+    <Message Text="PostUnitTestTargets: $(PostUnitTestTargets)" />
+    <Message Text="PrePackageTargets: $(PrePackageTargets)" />
+    <Message Text="PackageTargets: $(PackageTargets)" />
+    <Message Text="PostPackageTargets: $(PostPackageTargets)" />
+    <Message Text="PreDeployTargets: $(PreDeployTargets)" />
+    <Message Text="DeployTargets: $(DeployTargets)" />
+    <Message Text="PostDeployTargets: $(PostDeployTargets)" />
+    <Message Text="PreFunctionalTestTargets: $(PreFunctionalTestTargets)" />
+    <Message Text="FunctionalTestTargets: $(FunctionalTestTargets)" />
+    <Message Text="PostFunctionalTestTargets: $(PostFunctionalTestTargets)" />
+    <Message Text="PostBuildTargets: $(PostBuildTargets)" />
+  </Target>
+</Project>
