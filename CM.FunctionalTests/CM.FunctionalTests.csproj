@@ -39,7 +39,6 @@
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
-    <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
@@ -48,6 +47,14 @@
     <Compile Include="Using.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\Dependencies\7-zip\7z.sfx">
+      <Link>scripts\Dependencies\7-zip\7z.sfx</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="..\Dependencies\7-zip\7zS.sfx">
+      <Link>scripts\Dependencies\7-zip\7zS.sfx</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="..\Dependencies\msbuild-community-tasks\MSBuild.Community.Tasks.chm">
       <Link>scripts\Dependencies\msbuild-community-tasks\MSBuild.Community.Tasks.chm</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -70,6 +77,14 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="..\Dependencies\7-zip\7z.dll">
+      <Link>scripts\Dependencies\7-zip\7z.dll</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\Dependencies\7-zip\7z.exe">
+      <Link>scripts\Dependencies\7-zip\7z.exe</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="..\Dependencies\msbuild-community-tasks\ICSharpCode.SharpZipLib.dll">
       <Link>scripts\Dependencies\msbuild-community-tasks\ICSharpCode.SharpZipLib.dll</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -94,6 +109,12 @@
       <Link>scripts\Dependencies\msbuild-community-tasks\NUnitReport.xsl</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CM.Deploy.UI\CM.Deploy.UI.csproj">
+      <Project>{CDF8201C-74CD-4DA3-8BD5-B8EDCCA5D124}</Project>
+      <Name>CM.Deploy.UI</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -8,7 +8,7 @@ namespace CM.FunctionalTests.scripts
     public class PackageTest
     {
         [Test]
-        public void ShouldArchiveAllFilesInPackageDirectory()
+        public void ShouldCreateSelfExtractingExecutable()
         {
             Using.Directory("package-test", () =>
             {
@@ -17,28 +17,20 @@ namespace CM.FunctionalTests.scripts
                       <PropertyGroup>
                         <ProjectName>PackageTest</ProjectName>
                         <Version>1.2.3.4</Version>
-                        <MSBuildCommunityTasksPath>$(MSBuildProjectDirectory)\..\scripts\Dependencies\msbuild-community-tasks</MSBuildCommunityTasksPath>
+                        <DeployExeDirectory>..</DeployExeDirectory>
+                        <SevenZipDirectory>..\scripts\Dependencies\7-zip</SevenZipDirectory>
                       </PropertyGroup>
 
-                      <PropertyGroup>
-                        <PackageTargets>$(PackageTargets);CopyFiles</PackageTargets>
-                      </PropertyGroup>
-
-                      <Import Project='$(MSBuildCommunityTasksPath)\MSBuild.Community.Tasks.Targets' />
                       <Import Project='..\scripts\Master.targets' />
                       <Import Project='..\scripts\Package.targets' />
-
-                      <Target Name='CopyFiles'>
-                        <Copy SourceFiles='test.proj' DestinationFolder='$(PackageDirectory)' />
-                      </Target>
                     </Project>");
 
-                var output = RunMsBuild("test.proj");
-                Assert.That(File.Exists(@"package\PackageTest-1.2.3.4.zip"), output);
+                var output = RunMSBuild("test.proj");
+                Assert.That(File.Exists(@"sfx\PackageTest-1.2.3.4.exe"), output);
             });
         }
 
-        private static string RunMsBuild(string msbuildFilename)
+        private static string RunMSBuild(string msbuildFilename)
         {
             var startInfo = new ProcessStartInfo
             {
