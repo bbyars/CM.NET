@@ -1,6 +1,9 @@
+using System;
 using System.Diagnostics;
 using System.IO;
+using System.Threading;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 
 namespace CM.FunctionalTests.scripts
 {
@@ -8,7 +11,7 @@ namespace CM.FunctionalTests.scripts
     public class PackageTest
     {
         [Test]
-        public void ShouldCreateSelfExtractingExecutable()
+        public void ShouldCreateSelfExtractingExecutableThatRunsTheDeployer()
         {
             Using.Directory("package-test", () =>
             {
@@ -30,6 +33,18 @@ namespace CM.FunctionalTests.scripts
 
                 var output = RunMSBuild("test.proj");
                 Assert.That(File.Exists(@"sfx\PackageTest-1.2.3.4.exe"), output);
+
+                var sfxProcess = Process.Start(@"sfx\PackageTest-1.2.3.4.exe");
+                try
+                {
+                    var deployerProcess = WaitForProcess("CM.Deploy.UI");
+                    Assert.That(deployerProcess, Is.Not.Null, "no deployer process is running");
+                    deployerProcess.Kill();
+                }
+                finally
+                {
+                    sfxProcess.Kill();
+                }
             });
         }
 
@@ -46,6 +61,18 @@ namespace CM.FunctionalTests.scripts
             var process = Process.Start(startInfo);
             process.WaitForExit(5000);
             return process.StandardOutput.ReadToEnd();
+        }
+
+        private static Process WaitForProcess(string processName)
+        {
+            var maxWait = DateTime.Now.AddSeconds(3);
+            var processes = Process.GetProcessesByName(processName);
+            while (processes.Length == 0 && DateTime.Now < maxWait)
+            {
+                Thread.Sleep(200);
+                processes = Process.GetProcessesByName(processName);
+            }
+            return processes.Length == 0 ? null : processes[0];
         }
     }
 }
