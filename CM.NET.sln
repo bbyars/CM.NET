@@ -1,8 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gsmc.MSBuild.Tasks.Tests", "Gsmc.MSBuild.Tasks.Tests\Gsmc.MSBuild.Tasks.Tests.csproj", "{956D0745-29B3-4CCC-9447-EE552FD971CA}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "scripts", "scripts", "{9F5AF7E5-7B4B-4544-80C7-48E3F6D8322D}"
 	ProjectSection(SolutionItems) = preProject
 		scripts\CommonBuild.targets = scripts\CommonBuild.targets
@@ -43,10 +41,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{956D0745-29B3-4CCC-9447-EE552FD971CA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{956D0745-29B3-4CCC-9447-EE552FD971CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{956D0745-29B3-4CCC-9447-EE552FD971CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{956D0745-29B3-4CCC-9447-EE552FD971CA}.Release|Any CPU.Build.0 = Release|Any CPU
 		{CDF8201C-74CD-4DA3-8BD5-B8EDCCA5D124}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{CDF8201C-74CD-4DA3-8BD5-B8EDCCA5D124}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CDF8201C-74CD-4DA3-8BD5-B8EDCCA5D124}.Release|Any CPU.ActiveCfg = Release|Any CPU

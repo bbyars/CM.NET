@@ -5,6 +5,7 @@
     <PackageDirectory Condition="$(PackageDirectory) == ''">$(BuildDirectory)\package</PackageDirectory>
     <Configuration Condition="$(Configuration) == ''">Release</Configuration>
     <Environment Condition="$(Environment) == ''">Dev</Environment>
+    <Version Condition="$(Version) = ''">1.0.0.0</Version>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -17,7 +18,7 @@
   <PropertyGroup>
     <PreBuildTargets>$(PreBuildTargets);InitializeProperties</PreBuildTargets>
     <CleanTargets>$(CleanTargets);CleanBuildDirectory</CleanTargets>
-    <PostCleanTargets>$(PostCleanTargets);MakeBuildDirectories</PostCleanTargets>
+    <PostCleanTargets>$(PostCleanTargets);MakeBuildDirectory</PostCleanTargets>
   </PropertyGroup>
 
   <Target Name="InitializeProperties">
@@ -40,8 +41,7 @@
     <RemoveDir Directories="$(BuildDirectory)" />
   </Target>
 
-  <Target Name="MakeBuildDirectories">
+  <Target Name="MakeBuildDirectory">
     <MakeDir Directories="$(BuildDirectory)" Condition="!Exists('$(BuildDirectory)')" />
-    <MakeDir Directories="$(PackageDirectory)" Condition="!Exists('$(PackageDirectory)')" />
   </Target>
 </Project>

@@ -39,9 +39,61 @@
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="scripts\PackageTest.cs" />
+    <Compile Include="Using.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\Dependencies\msbuild-community-tasks\MSBuild.Community.Tasks.chm">
+      <Link>scripts\Dependencies\msbuild-community-tasks\MSBuild.Community.Tasks.chm</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="..\Dependencies\msbuild-community-tasks\MSBuild.Community.Tasks.Targets">
+      <Link>scripts\Dependencies\msbuild-community-tasks\MSBuild.Community.Tasks.Targets</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="..\Dependencies\msbuild-community-tasks\MSBuild.Community.Tasks.xsd">
+      <Link>scripts\Dependencies\msbuild-community-tasks\MSBuild.Community.Tasks.xsd</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="..\scripts\Master.targets">
+      <Link>scripts\Master.targets</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="..\scripts\Package.targets">
+      <Link>scripts\Package.targets</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="..\Dependencies\msbuild-community-tasks\ICSharpCode.SharpZipLib.dll">
+      <Link>scripts\Dependencies\msbuild-community-tasks\ICSharpCode.SharpZipLib.dll</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\Dependencies\msbuild-community-tasks\ICSharpCode.SharpZipLib.xml">
+      <Link>scripts\Dependencies\msbuild-community-tasks\ICSharpCode.SharpZipLib.xml</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\Dependencies\msbuild-community-tasks\Microsoft.VisualStudio.SourceSafe.Interop.dll">
+      <Link>scripts\Dependencies\msbuild-community-tasks\Microsoft.VisualStudio.SourceSafe.Interop.dll</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\Dependencies\msbuild-community-tasks\MSBuild.Community.Tasks.dll">
+      <Link>scripts\Dependencies\msbuild-community-tasks\MSBuild.Community.Tasks.dll</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\Dependencies\msbuild-community-tasks\MSBuild.Community.Tasks.xml">
+      <Link>scripts\Dependencies\msbuild-community-tasks\MSBuild.Community.Tasks.xml</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\Dependencies\msbuild-community-tasks\NUnitReport.xsl">
+      <Link>scripts\Dependencies\msbuild-community-tasks\NUnitReport.xsl</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -1,19 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <!-- Properties expected to be provided -->
   <PropertyGroup>
+    <ProjectName Condition="$(ProjectName) == ''">unknown</ProjectName>
+    <Version Condition="$(Version) == ''">1.0.0.0</Version>
+    <PackageDirectory Condition="$(PackageDirectory) == ''">package</PackageDirectory>
+
+    <MSBuildCommunityTasksPath Condition="$(MSBuildCommunityTasksPash) == ''">Dependencies\msbuild-community-tasks</MSBuildCommunityTasksPath>
+  </PropertyGroup>
+  
+  <PropertyGroup>
+    <CleanTargets>$(CleanTargets);CleanPackageDirectory</CleanTargets>
+    <PostCleanTargets>$(PostCleanTargets);CreatePackageDirectory</PostCleanTargets>
     <PackageTargets>$(PackageTargets);CreateArchive</PackageTargets>
   </PropertyGroup>
 
+  <Import Project='$(MSBuildCommunityTasksPath)\MSBuild.Community.Tasks.Targets' />
+
+  <Target Name="CLeanPackageDirectory">
+    <RemoveDir Directories="$(PackageDirectory)" />
+  </Target>
+  
+  <Target Name="CreatePackageDirectory">
+    <MakeDir Directories="$(PackageDirectory)" Condition="!Exists('$(PackageDirectory)')" />
+  </Target>
+  
   <Target Name="CreateArchive">
     <PropertyGroup>
-      <ZipFileName Condition="$(BUILD_NUMBER) == ''">$(BuildDirectory)\$(ProjectName).zip</ZipFileName>
-      <ZipFileName Condition="$(BUILD_NUMBER) != ''">$(BuildDirectory)\$(ProjectName)-$(BUILD_NUMBER).zip</ZipFileName>
+      <ZipFileName>$(PackageDirectory)\$(ProjectName)-$(Version).zip</ZipFileName>
     </PropertyGroup>
 
     <CreateItem Include="$(PackageDirectory)\**\*.*">
-      <Output TaskParameter="Include" ItemName="PackageComponents" />
+      <Output TaskParameter="Include" ItemName="PackageContents" />
     </CreateItem>
     
-    <Zip Files="@(PackageComponents)" ZipFileName="$(ZipFileName)" WorkingDirectory="$(PackageDirectory)" />
+    <Zip Files="@(PackageContents)" ZipFileName="$(ZipFileName)" WorkingDirectory="$(PackageDirectory)" />
   </Target>
 </Project>
