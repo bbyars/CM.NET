@@ -1,0 +1,10 @@
+﻿<Window x:Class="CM.Deploy.UI.DeployForm"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Title="Deploy" Height="434" Width="497">
+    <Grid>
+        <Label Height="28" HorizontalAlignment="Left" Margin="12,12,0,0" Name="label1" VerticalAlignment="Top" Width="120">Choose an environment file:</Label>
+        <TextBox Height="23" Margin="147,12,208,0" Name="environmentTextBox" VerticalAlignment="Top" />
+        <Button Height="23" HorizontalAlignment="Left" Margin="20,56,0,0" Name="deployButton" VerticalAlignment="Top" Width="75">Deploy</Button>
+    </Grid>
+</Window>

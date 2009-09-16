@@ -1,0 +1,60 @@
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Solution>Gsmc.MSBuild.Tasks.sln</Solution>
+    <ProjectName>common-build</ProjectName>
+    <FunctionalTestProject>Gsmc.MSBuild.Tasks.Tests</FunctionalTestProject>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <CommonBuildDirectory>scripts</CommonBuildDirectory>
+    <MSBuildCommunityTasksPath>$(MSBuildProjectDirectory)\References\msbuild-community-tasks</MSBuildCommunityTasksPath>
+    <SdcTasksDirectory>$(MSBuildProjectDirectory)\References\sdc-tasks</SdcTasksDirectory>
+
+    <!-- TasksPath is used internally in Sdc Tasks -->
+    <TasksPath>$(SdcTasksDirectory)</TasksPath>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <CleanTargets>$(CleanTargets);CleanBootstrapFiles</CleanTargets>
+    <PreCompileTargets>$(PreCompileTargets);Bootstrap</PreCompileTargets>
+    <PrePackageTargets>$(PrePackageTargets);CopyCommonBuildFiles</PrePackageTargets>
+  </PropertyGroup>
+
+  <Import Project="$(MSBuildCommunityTasksPath)\MSBuild.Community.Tasks.Targets" />
+  <Import Project="$(CommonBuildDirectory)\Default.targets" />
+  <Import Project="$(CommonBuildDirectory)\Master.targets" />
+  <Import Project="$(CommonBuildDirectory)\Subversion.Targets" />
+  <Import Project="$(CommonBuildDirectory)\Package.Targets" />
+  <Import Project="$(CommonBuildDirectory)\DotNet.Targets" />
+
+  <UsingTask TaskName="StringReplace" AssemblyFile="$(SdcTasksDirectory)\Microsoft.Sdc.Tasks.dll" />
+  <UsingTask TaskName="SetAssemblyAttributes" AssemblyFile="$(CommonBuildDirectory)\Gsmc.MSBuild.Tasks.dll" />
+
+  <Target Name="CleanBootstrapFiles">
+    <Delete Files="$(CommonBuildDirectory)\Gsmc.MSBuild.Tasks.dll;$(CommonBuildDirectory)\Gsmc.MSBuild.Tasks" />
+  </Target>
+
+  <Target Name="Bootstrap">
+    <!-- 
+    We have to build before we can use common-build's Compile, because otherwise we won't
+    have access to the SetAssemblyInfo tasks.  This forces us to build twice, the first time without versioning.
+    -->
+    <CallTarget Targets="CompileSolution" />
+    <Copy SourceFiles="Gsmc.MSBuild.Tasks\bin\$(Configuration)\Gsmc.MSBuild.Tasks.dll;Gsmc.MSBuild.Tasks\bin\$(Configuration)\Gsmc.MSBuild.Tasks"
+      DestinationFolder="$(CommonBuildDirectory)" />
+  </Target>
+
+  <Target Name="CopyCommonBuildFiles">
+    <ItemGroup>
+      <PackageFiles Include="$(CommonBuildDirectory)\*.*" />
+      <PackageFiles Include="$(MSBuildCommunityTasksPath)\*.targets" />
+      <PackageFiles Include="$(MSBuildCommunityTasksPath)\*.dll" />
+      <PackageFiles Include="$(SdcTasksDirectory)\Microsoft.Sdc.Tasks.dll" />
+      <PackageFiles Include="$(SdcTasksDirectory)\Microsoft.Sdc.Common.Tasks" />
+      <PackageFiles Include="References\robocopy\robocopy.exe" />
+    </ItemGroup>
+
+    <Copy SourceFiles="@(PackageFiles)" DestinationFolder="$(PackageDirectory)" />
+  </Target>
+
+</Project>

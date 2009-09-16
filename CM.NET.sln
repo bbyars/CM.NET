@@ -1,0 +1,77 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gsmc.MSBuild.Tasks.Tests", "Gsmc.MSBuild.Tasks.Tests\Gsmc.MSBuild.Tasks.Tests.csproj", "{956D0745-29B3-4CCC-9447-EE552FD971CA}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "scripts", "scripts", "{9F5AF7E5-7B4B-4544-80C7-48E3F6D8322D}"
+	ProjectSection(SolutionItems) = preProject
+		scripts\CommonBuild.targets = scripts\CommonBuild.targets
+		scripts\create-project.bat = scripts\create-project.bat
+		scripts\Default.targets = scripts\Default.targets
+		scripts\DotNet.targets = scripts\DotNet.targets
+		scripts\Master.targets = scripts\Master.targets
+		scripts\Package.targets = scripts\Package.targets
+		scripts\Subversion.targets = scripts\Subversion.targets
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{1A0E42CF-9EF1-474F-86AC-FA096F307C57}"
+	ProjectSection(SolutionItems) = preProject
+		build.bat = build.bat
+		CM.NET.proj = CM.NET.proj
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "templates", "templates", "{D04606EE-5075-4EDE-8118-76E15999FA86}"
+	ProjectSection(SolutionItems) = preProject
+		scripts\templates\build.bat = scripts\templates\build.bat
+		scripts\templates\env.properties = scripts\templates\env.properties
+		scripts\templates\template.proj = scripts\templates\template.proj
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CM.Deploy.UI", "CM.Deploy.UI\CM.Deploy.UI.csproj", "{CDF8201C-74CD-4DA3-8BD5-B8EDCCA5D124}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CM.MSBuild.Tasks", "CM.MSBuild.Tasks\CM.MSBuild.Tasks.csproj", "{31311AFC-AD50-469B-A937-703A12016D3E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CM.Nant.Tasks", "CM.Nant.Tasks\CM.Nant.Tasks.csproj", "{C479787F-390C-4AEC-92E7-9DB7BEA46EDE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CM.UnitTests", "CM.UnitTests\CM.UnitTests.csproj", "{D8769348-94DA-4A90-A9B2-BF70B3DF9641}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CM.FunctionalTests", "CM.FunctionalTests\CM.FunctionalTests.csproj", "{FBD7F396-91B6-4E7C-BF67-A4E10D5C4783}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{956D0745-29B3-4CCC-9447-EE552FD971CA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{956D0745-29B3-4CCC-9447-EE552FD971CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{956D0745-29B3-4CCC-9447-EE552FD971CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{956D0745-29B3-4CCC-9447-EE552FD971CA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CDF8201C-74CD-4DA3-8BD5-B8EDCCA5D124}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CDF8201C-74CD-4DA3-8BD5-B8EDCCA5D124}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CDF8201C-74CD-4DA3-8BD5-B8EDCCA5D124}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CDF8201C-74CD-4DA3-8BD5-B8EDCCA5D124}.Release|Any CPU.Build.0 = Release|Any CPU
+		{31311AFC-AD50-469B-A937-703A12016D3E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{31311AFC-AD50-469B-A937-703A12016D3E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{31311AFC-AD50-469B-A937-703A12016D3E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{31311AFC-AD50-469B-A937-703A12016D3E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C479787F-390C-4AEC-92E7-9DB7BEA46EDE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C479787F-390C-4AEC-92E7-9DB7BEA46EDE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C479787F-390C-4AEC-92E7-9DB7BEA46EDE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C479787F-390C-4AEC-92E7-9DB7BEA46EDE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D8769348-94DA-4A90-A9B2-BF70B3DF9641}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D8769348-94DA-4A90-A9B2-BF70B3DF9641}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D8769348-94DA-4A90-A9B2-BF70B3DF9641}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D8769348-94DA-4A90-A9B2-BF70B3DF9641}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FBD7F396-91B6-4E7C-BF67-A4E10D5C4783}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FBD7F396-91B6-4E7C-BF67-A4E10D5C4783}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FBD7F396-91B6-4E7C-BF67-A4E10D5C4783}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FBD7F396-91B6-4E7C-BF67-A4E10D5C4783}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{D04606EE-5075-4EDE-8118-76E15999FA86} = {9F5AF7E5-7B4B-4544-80C7-48E3F6D8322D}
+	EndGlobalSection
+EndGlobal
