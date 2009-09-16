@@ -1,2 +1,13 @@
 *.swp
 *~
+bin/
+obj/
+build/
+*.user
+*.suo
+*.sln.cache
+_ReSharper*
+*.resharper
+*.resharper.user
+TestResult.xml
+*.Cache
