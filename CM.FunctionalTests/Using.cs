@@ -18,7 +18,7 @@ namespace CM.FunctionalTests
             finally
             {
                 Environment.CurrentDirectory = originalDirectory;
-                //System.IO.Directory.Delete(directoryName, true);
+                System.IO.Directory.Delete(directoryName, true);
             }
         }
     }

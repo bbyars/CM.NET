@@ -5,11 +5,13 @@
     <ProjectName Condition="$(ProjectName) == ''">unknown</ProjectName>
     <Version Condition="$(Version) == ''">1.0.0.0</Version>
     <SevenZipDirectory Condition="$(SevenZipDirectory) == ''">Dependencies\7-zip</SevenZipDirectory>
-    <DeployExeDirectory Condition="$(DeployExeDirectory) == ''">.</DeployExeDirectory>
-    <DeployExe Condition="$(DeployExe) == ''">CM.Deploy.UI.exe</DeployExe>
     <PackageDirectory Condition="$(PackageDirectory) == ''">package</PackageDirectory>
     <SfxDirectory Condition="$(SfxDirectory) == ''">sfx</SfxDirectory>
   </PropertyGroup>
+
+  <ItemGroup>
+    <DeployExe Condition="@(DeployExe) == ''" Include="CM.Deploy.UI.exe" />
+  </ItemGroup>
   
   <PropertyGroup>
     <CleanTargets>$(CleanTargets);CleanPackageDirectory</CleanTargets>
@@ -26,14 +28,14 @@
   </Target>
   
   <Target Name="CreateArchive">
-    <Copy SourceFiles="$(DeployExeDirectory)\$(DeployExe)" DestinationFolder="$(PackageDirectory)" />
+    <Copy SourceFiles="@(DeployExe)" DestinationFolder="$(PackageDirectory)" />
     <Copy SourceFiles="$(SevenZipDirectory)\7zS.sfx" DestinationFolder="$(SfxDirectory)" />
     
     <PropertyGroup>
       <SevenZipConfig>
         %3B!@Install@!UTF-8!
         Title="Deploy $(ProjectName)"
-        RunProgram="$(PackageDirectory)\$(DeployExe)"
+        RunProgram="$(PackageDirectory)\@(DeployExe->'%(Filename)').exe"
         %3B!@InstallEnd@!
       </SevenZipConfig>
     </PropertyGroup>

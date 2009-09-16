@@ -17,9 +17,12 @@ namespace CM.FunctionalTests.scripts
                       <PropertyGroup>
                         <ProjectName>PackageTest</ProjectName>
                         <Version>1.2.3.4</Version>
-                        <DeployExeDirectory>..</DeployExeDirectory>
                         <SevenZipDirectory>..\scripts\Dependencies\7-zip</SevenZipDirectory>
                       </PropertyGroup>
+
+                      <ItemGroup>
+                        <DeployExe Include='..\CM.Deploy.UI.exe' />
+                      </ItemGroup>
 
                       <Import Project='..\scripts\Master.targets' />
                       <Import Project='..\scripts\Package.targets' />
