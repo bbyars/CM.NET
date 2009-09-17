@@ -21,5 +21,16 @@ namespace CM.FunctionalTests.Deploy.UI
                 Assert.That(fileSystem.ListAllFilesIn("."), Is.EqualTo(new[] {"dev.config", "prod.config", "qa.config"}));
             });
         }
+
+        [Test]
+        public void ShouldReadAllText()
+        {
+            Using.Directory("fileSystemTest", () =>
+            {
+                File.WriteAllText("test.txt", "This is a test");
+                var fileSystem = new FileSystem();
+                Assert.That(fileSystem.ReadAllText("test.txt"), Is.EqualTo("This is a test"));
+            });
+        }
     }
 }

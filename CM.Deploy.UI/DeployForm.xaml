@@ -8,7 +8,7 @@
                 <StackPanel Margin="0">
                     <StackPanel Orientation="Horizontal" Margin="0">
                         <RadioButton Name="uxEnvironmentsRadio" Click="ClickRadio" GroupName="ConfigLoad" IsChecked="True" Margin="10,10,10,0" HorizontalAlignment="Left" VerticalAlignment="Top">Use packaged config for environment:</RadioButton>
-                        <ComboBox Name="uxEnvironments" Margin="0,10,10,0" HorizontalAlignment="Right" VerticalAlignment="Top" Width="235"/>
+                        <ComboBox Name="uxEnvironments" SelectionChanged="EnvironmentSelected" Margin="0,10,10,0" HorizontalAlignment="Right" VerticalAlignment="Top" Width="235"/>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal" Margin="0">
                         <RadioButton Name="uxFileRadio" Click="ClickRadio" GroupName="ConfigLoad" Margin="10,10,10,0" HorizontalAlignment="Left" VerticalAlignment="Top">Load from external file:</RadioButton>

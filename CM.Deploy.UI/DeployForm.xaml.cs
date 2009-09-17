@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Windows;
 using Microsoft.Win32;
 
@@ -79,6 +78,11 @@ namespace CM.Deploy.UI
             var dialog = new OpenFileDialog {Filter = "Config Files|*.properties", Title = "Open config file"};
             if (dialog.ShowDialog().GetValueOrDefault())
                 ExternalFile = dialog.FileName;
+        }
+
+        private void EnvironmentSelected(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        {
+            presenter.LoadEnvironment(SelectedEnvironment);
         }
     }
 }

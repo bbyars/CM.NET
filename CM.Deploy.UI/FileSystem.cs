@@ -1,4 +1,3 @@
-using System;
 using System.IO;
 using System.Linq;
 
@@ -13,7 +12,7 @@ namespace CM.Deploy.UI
 
         public virtual string ReadAllText(string filename)
         {
-            throw new NotImplementedException();
+            return File.ReadAllText(filename);
         }
     }
 }
