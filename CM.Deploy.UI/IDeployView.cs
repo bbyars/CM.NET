@@ -5,7 +5,7 @@ namespace CM.Deploy.UI
     public interface IDeployView
     {
         string SelectedEnvironment { get; }
-        string[] Environments { get; set; }
+        void ShowEnvironments(string[] environments);
         string ExternalFile { get; }
 
         bool UsePackagedEnvironment { get; }

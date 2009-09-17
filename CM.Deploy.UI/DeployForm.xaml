@@ -27,7 +27,7 @@
                     </ListView.View>
                 </ListView>
             </GroupBox>
-            <Button Name="uxDeploy" Margin="0,5,5,0" HorizontalAlignment="Right" VerticalAlignment="Top">Deploy</Button>
+            <Button Name="uxDeploy" Click="Deploy" Margin="0,5,5,0" HorizontalAlignment="Right" VerticalAlignment="Top">Deploy</Button>
         </StackPanel>
     </Grid>
 </Window>

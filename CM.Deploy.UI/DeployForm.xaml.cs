@@ -20,22 +20,11 @@ namespace CM.Deploy.UI
             get { return uxEnvironments.SelectedValue.ToString(); }
         }
 
-        public string[] Environments
+        public void ShowEnvironments(string[] environments)
         {
-            get
-            {
-                var items = new List<string>();
-                foreach (var item in uxEnvironments.Items)
-                    items.Add(item.ToString());
-
-                return items.ToArray();
-            }
-            set
-            {
-                uxEnvironments.Items.Clear();
-                foreach (var environment in value)
-                    uxEnvironments.Items.Add(environment);
-            }
+            uxEnvironments.Items.Clear();
+            foreach (var environment in environments)
+                uxEnvironments.Items.Add(environment);
         }
 
         public string ExternalFile
@@ -83,6 +72,11 @@ namespace CM.Deploy.UI
         private void EnvironmentSelected(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
             presenter.LoadEnvironment(SelectedEnvironment);
+        }
+
+        private void Deploy(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }

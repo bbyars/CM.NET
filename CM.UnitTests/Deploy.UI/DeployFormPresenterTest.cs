@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using CM.Deploy.UI;
 using Moq;
@@ -20,7 +19,7 @@ namespace CM.UnitTests.Deploy.UI
 
             presenter.Initialize();
 
-            mockView.VerifySet(v => v.Environments = new[] {"prod", "qa", "dev"});
+            mockView.Verify(v => v.ShowEnvironments(new[] {"prod", "qa", "dev"}));
         }
 
         [Test]
