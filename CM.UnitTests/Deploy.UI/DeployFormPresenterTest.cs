@@ -13,7 +13,7 @@ namespace CM.UnitTests.Deploy.UI
         {
             var mockView = new Mock<IDeployView>();
             var stubFileSystem = new Mock<FileSystem>();
-            stubFileSystem.Setup(fs => fs.ListAllFilesIn("Environments"))
+            stubFileSystem.Setup(fs => fs.ListAllFilesIn("Environments", "*.properties"))
                 .Returns(new[] {"prod.properties", "qa.properties", "dev.properties"});
             var presenter = new DeployFormPresenter(mockView.Object, stubFileSystem.Object);
 
@@ -55,7 +55,7 @@ namespace CM.UnitTests.Deploy.UI
         {
             var mockView = new Mock<IDeployView>();
             var stubFileSystem = new Mock<FileSystem>();
-            stubFileSystem.Setup(fs => fs.ListAllFilesIn("Environments")).Returns(new[] {"prod.properties"});
+            stubFileSystem.Setup(fs => fs.ListAllFilesIn("Environments", "*.properties")).Returns(new[] {"prod.properties"});
             stubFileSystem.Setup(fs => fs.ReadAllText(@"Environments\prod.properties"))
                 .Returns(@"<?xml version='1.0' encoding='utf-8'?>
                     <Project xmlns='http://schemas.microsoft.com/developer/msbuild/2003'>

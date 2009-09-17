@@ -5,9 +5,9 @@ namespace CM.Deploy.UI
 {
     public class FileSystem
     {
-        public virtual string[] ListAllFilesIn(string directory)
+        public virtual string[] ListAllFilesIn(string directory, string searchPattern)
         {
-            return Directory.GetFiles(directory).Select(file => Path.GetFileName(file)).ToArray();
+            return Directory.GetFiles(directory, searchPattern).Select(file => Path.GetFileName(file)).ToArray();
         }
 
         public virtual string ReadAllText(string filename)

@@ -18,7 +18,21 @@ namespace CM.FunctionalTests.Deploy.UI
                 File.WriteAllText("qa.config", "");
 
                 var fileSystem = new FileSystem();
-                Assert.That(fileSystem.ListAllFilesIn("."), Is.EqualTo(new[] {"dev.config", "prod.config", "qa.config"}));
+                Assert.That(fileSystem.ListAllFilesIn(".", "*.config"), Is.EqualTo(new[] {"dev.config", "prod.config", "qa.config"}));
+            });
+        }
+
+        [Test]
+        public void ShouldFilterFilesBasedOnSearchPattern()
+        {
+            Using.Directory("fileSystemTest", () =>
+            {
+                File.WriteAllText("dev.config", "");
+                File.WriteAllText("prod.properties", "");
+                File.WriteAllText("qa.config", "");
+
+                var fileSystem = new FileSystem();
+                Assert.That(fileSystem.ListAllFilesIn(".", "*.config"), Is.EqualTo(new[] { "dev.config", "qa.config" }));
             });
         }
 

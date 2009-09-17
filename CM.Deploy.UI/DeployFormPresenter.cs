@@ -20,8 +20,9 @@ namespace CM.Deploy.UI
 
         public virtual void Initialize()
         {
-            view.ShowEnvironments(fileSystem.ListAllFilesIn("Environments")
-                .Select(file => Path.GetFileNameWithoutExtension(file)).ToArray());
+            var environments = fileSystem.ListAllFilesIn("Environments", "*.properties")
+                .Select(file => Path.GetFileNameWithoutExtension(file)).ToArray();
+            view.ShowEnvironments(environments);
             ToggleConfigSelection();
         }
 
