@@ -45,7 +45,7 @@
     <Compile Include="Deploy.UI\FileSystemTest.cs" />
     <Compile Include="Deploy.UI\ProcessRunnerTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="scripts\PackageTest.cs" />
+    <Compile Include="scripts\SfxTest.cs" />
     <Compile Include="Using.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -73,8 +73,8 @@
       <Link>scripts\Master.targets</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="..\scripts\Package.targets">
-      <Link>scripts\Package.targets</Link>
+    <None Include="..\scripts\Sfx.targets">
+      <Link>scripts\Sfx.targets</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>

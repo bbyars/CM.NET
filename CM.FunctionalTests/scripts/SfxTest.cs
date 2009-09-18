@@ -8,17 +8,17 @@ using NUnit.Framework.SyntaxHelpers;
 namespace CM.FunctionalTests.scripts
 {
     [TestFixture]
-    public class PackageTest
+    public class SfxTest
     {
         [Test]
         public void ShouldCreateSelfExtractingExecutableThatRunsTheDeployer()
         {
-            Using.Directory("package-test", () =>
+            Using.Directory("sfx-test", () =>
             {
                 File.WriteAllText("test.proj", @"
                     <Project DefaultTargets='Build' xmlns='http://schemas.microsoft.com/developer/msbuild/2003'>
                       <PropertyGroup>
-                        <ProjectName>PackageTest</ProjectName>
+                        <ProjectName>SfxTest</ProjectName>
                         <Version>1.2.3.4</Version>
                         <SevenZipDirectory>..\scripts\Dependencies\7-zip</SevenZipDirectory>
                       </PropertyGroup>
@@ -28,13 +28,13 @@ namespace CM.FunctionalTests.scripts
                       </ItemGroup>
 
                       <Import Project='..\scripts\Master.targets' />
-                      <Import Project='..\scripts\Package.targets' />
+                      <Import Project='..\scripts\Sfx.targets' />
                     </Project>");
 
                 var output = RunMSBuild("test.proj");
-                Assert.That(File.Exists(@"sfx\PackageTest-1.2.3.4.exe"), output);
+                Assert.That(File.Exists(@"sfx\SfxTest-1.2.3.4.exe"), output);
 
-                var sfxProcess = Process.Start(@"sfx\PackageTest-1.2.3.4.exe");
+                var sfxProcess = Process.Start(@"sfx\SfxTest-1.2.3.4.exe");
                 try
                 {
                     var deployerProcess = WaitForProcess("deployer");

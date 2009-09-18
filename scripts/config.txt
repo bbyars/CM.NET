@@ -1,5 +1,0 @@
-;!@Install@!UTF-8!
-Title="Deploy"
-RunProgram="Deploy.UI.exe"
-;!@InstallEnd@!
-
