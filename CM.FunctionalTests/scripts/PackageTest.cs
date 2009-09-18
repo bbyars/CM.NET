@@ -24,7 +24,7 @@ namespace CM.FunctionalTests.scripts
                       </PropertyGroup>
 
                       <ItemGroup>
-                        <DeployExe Include='..\CM.Deploy.UI.exe' />
+                        <DeployExe Include='..\deployer.exe' />
                       </ItemGroup>
 
                       <Import Project='..\scripts\Master.targets' />
@@ -37,7 +37,7 @@ namespace CM.FunctionalTests.scripts
                 var sfxProcess = Process.Start(@"sfx\PackageTest-1.2.3.4.exe");
                 try
                 {
-                    var deployerProcess = WaitForProcess("CM.Deploy.UI");
+                    var deployerProcess = WaitForProcess("deployer");
                     Assert.That(deployerProcess, Is.Not.Null, "no deployer process is running");
                     deployerProcess.Kill();
                 }

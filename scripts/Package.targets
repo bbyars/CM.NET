@@ -10,7 +10,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <DeployExe Condition="@(DeployExe) == ''" Include="CM.Deploy.UI.exe" />
+    <DeployExe Condition="@(DeployExe) == ''" Include="deployer.exe" />
   </ItemGroup>
   
   <PropertyGroup>

@@ -86,7 +86,7 @@ namespace CM.UnitTests.Deploy.UI
 
             presenter.Deploy();
 
-            mockProcessRunner.Verify(pr => pr.Run(@"build.proj /t:Deploy /p:'ConfigPath=Environments\prod.properties'", TimeSpan.MaxValue));
+            mockProcessRunner.Verify(pr => pr.Run(@"build.proj /t:Deploy /p:""ConfigPath=Environments\prod.properties""", TimeSpan.MaxValue));
         }
 
         [Test]
@@ -102,7 +102,7 @@ namespace CM.UnitTests.Deploy.UI
 
             presenter.Deploy();
 
-            mockProcessRunner.Verify(pr => pr.Run("build.proj /t:Deploy /p:'ConfigPath=prod.properties'", TimeSpan.MaxValue));
+            mockProcessRunner.Verify(pr => pr.Run("build.proj /t:Deploy /p:\"ConfigPath=prod.properties\"", TimeSpan.MaxValue));
         }
 
         [Test]
