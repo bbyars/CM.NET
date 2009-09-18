@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using CM.Deploy.UI;
 using Moq;
@@ -15,7 +16,7 @@ namespace CM.UnitTests.Deploy.UI
             var stubFileSystem = new Mock<FileSystem>();
             stubFileSystem.Setup(fs => fs.ListAllFilesIn("Environments", "*.properties"))
                 .Returns(new[] {"prod.properties", "qa.properties", "dev.properties"});
-            var presenter = new DeployFormPresenter(mockView.Object, stubFileSystem.Object);
+            var presenter = new DeployFormPresenter(mockView.Object, stubFileSystem.Object, new ProcessRunner(""));
 
             presenter.Initialize();
 
@@ -28,7 +29,7 @@ namespace CM.UnitTests.Deploy.UI
             var mockView = new Mock<IDeployView>();
             mockView.SetupGet(v => v.UsePackagedEnvironment).Returns(true);
             var stubFileSystem = new Mock<FileSystem>();
-            var presenter = new DeployFormPresenter(mockView.Object, stubFileSystem.Object);
+            var presenter = new DeployFormPresenter(mockView.Object, stubFileSystem.Object, new ProcessRunner(""));
 
             presenter.ToggleConfigSelection();
 
@@ -42,7 +43,7 @@ namespace CM.UnitTests.Deploy.UI
             var mockView = new Mock<IDeployView>();
             mockView.SetupGet(v => v.UsePackagedEnvironment).Returns(false);
             var stubFileSystem = new Mock<FileSystem>();
-            var presenter = new DeployFormPresenter(mockView.Object, stubFileSystem.Object);
+            var presenter = new DeployFormPresenter(mockView.Object, stubFileSystem.Object, new ProcessRunner(""));
 
             presenter.ToggleConfigSelection();
 
@@ -64,12 +65,58 @@ namespace CM.UnitTests.Deploy.UI
                             <key2>value2</key2>
                         </PropertyGroup>
                     </Project>");
-            var presenter = new DeployFormPresenter(mockView.Object, stubFileSystem.Object);
+            var presenter = new DeployFormPresenter(mockView.Object, stubFileSystem.Object, new ProcessRunner(""));
 
             presenter.LoadEnvironment("prod");
 
             var expected = new Dictionary<string, string> {{"key1", "value1"}, {"key2", "value2"}};
             mockView.Verify(v => v.ShowProperties(It.Is<IDictionary<string, string>>(actual => ValueEquals(expected, actual))));
+        }
+
+        [Test]
+        public void ShouldRunDeployProcessWithEnvironmentFile()
+        {
+            var stubView = new Mock<IDeployView>();
+            stubView.SetupGet(v => v.UsePackagedEnvironment).Returns(true);
+            stubView.SetupGet(v => v.SelectedEnvironment).Returns("prod");
+            var stubFileSystem = new Mock<FileSystem>();
+            stubFileSystem.Setup(fs => fs.ListAllFilesIn(".", "*.proj")).Returns(new[] {"build.proj"});
+            var mockProcessRunner = new Mock<ProcessRunner>("");
+            var presenter = new DeployFormPresenter(stubView.Object, stubFileSystem.Object, mockProcessRunner.Object);
+
+            presenter.Deploy();
+
+            mockProcessRunner.Verify(pr => pr.Run(@"build.proj /t:Deploy /p:'ConfigPath=Environments\prod.properties'", TimeSpan.MaxValue));
+        }
+
+        [Test]
+        public void ShouldRunDeployWithExternalConfigFile()
+        {
+            var stubView = new Mock<IDeployView>();
+            stubView.SetupGet(v => v.UsePackagedEnvironment).Returns(false);
+            stubView.SetupGet(v => v.ExternalFile).Returns("prod.properties");
+            var stubFileSystem = new Mock<FileSystem>();
+            stubFileSystem.Setup(fs => fs.ListAllFilesIn(".", "*.proj")).Returns(new[] { "build.proj" });
+            var mockProcessRunner = new Mock<ProcessRunner>("");
+            var presenter = new DeployFormPresenter(stubView.Object, stubFileSystem.Object, mockProcessRunner.Object);
+
+            presenter.Deploy();
+
+            mockProcessRunner.Verify(pr => pr.Run("build.proj /t:Deploy /p:'ConfigPath=prod.properties'", TimeSpan.MaxValue));
+        }
+
+        [Test]
+        public void ShouldTellTheViewToOpenLogViewOnDeploy()
+        {
+            var mockView = new Mock<IDeployView>();
+            var stubFileSystem = new Mock<FileSystem>();
+            stubFileSystem.Setup(fs => fs.ListAllFilesIn(It.IsAny<string>(), It.IsAny<string>())).Returns(new[] {"prod.properties"});
+            var stubProcessRunner = new Mock<ProcessRunner>("");
+            var presenter = new DeployFormPresenter(mockView.Object, stubFileSystem.Object, stubProcessRunner.Object);
+
+            presenter.Deploy();
+
+            mockView.Verify(v => v.ShowLogView(stubProcessRunner.Object));
         }
 
         private static bool ValueEquals(IDictionary<string, string> expected, IDictionary<string, string> actual)

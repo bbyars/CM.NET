@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Windows;
+using System.Windows.Controls;
 using Microsoft.Win32;
 
 namespace CM.Deploy.UI
@@ -11,7 +12,7 @@ namespace CM.Deploy.UI
         public DeployForm()
         {
             InitializeComponent();
-            presenter = new DeployFormPresenter(this, new FileSystem());
+            presenter = new DeployFormPresenter(this, new FileSystem(), new ProcessRunner(@"C:\Windows\Microsoft.NET\Framework\v3.5\msbuild.exe"));
             presenter.Initialize();
         }
 
@@ -57,6 +58,12 @@ namespace CM.Deploy.UI
                 uxProperties.Items.Add(property);
         }
 
+        public void ShowLogView(ProcessRunner processRunner)
+        {
+            var logForm = new DeployLog(processRunner);
+            logForm.Show();
+        }
+
         private void ClickRadio(object sender, RoutedEventArgs e)
         {
             presenter.ToggleConfigSelection();
@@ -69,14 +76,14 @@ namespace CM.Deploy.UI
                 ExternalFile = dialog.FileName;
         }
 
-        private void EnvironmentSelected(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        private void EnvironmentSelected(object sender, SelectionChangedEventArgs e)
         {
             presenter.LoadEnvironment(SelectedEnvironment);
         }
 
         private void Deploy(object sender, RoutedEventArgs e)
         {
-
+            presenter.Deploy();
         }
     }
 }

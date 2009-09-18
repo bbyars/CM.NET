@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -9,13 +10,15 @@ namespace CM.Deploy.UI
     {
         private readonly IDeployView view;
         private readonly FileSystem fileSystem;
+        private readonly ProcessRunner processRunner;
 
         private const string MSBuildNamespace = "http://schemas.microsoft.com/developer/msbuild/2003";
 
-        public DeployFormPresenter(IDeployView view, FileSystem fileSystem)
+        public DeployFormPresenter(IDeployView view, FileSystem fileSystem, ProcessRunner processRunner)
         {
             this.view = view;
             this.fileSystem = fileSystem;
+            this.processRunner = processRunner;
         }
 
         public virtual void Initialize()
@@ -46,7 +49,26 @@ namespace CM.Deploy.UI
             view.ShowProperties(properties);
         }
 
-        public static XName ScopedName(string localName)
+        public void Deploy()
+        {
+            var msbuildFile = fileSystem.ListAllFilesIn(".", "*.proj")[0];
+            var args = string.Format("{0} /t:Deploy /p:'ConfigPath={1}'", msbuildFile, ConfigFilePath);
+            view.ShowLogView(processRunner);
+            processRunner.Run(args, TimeSpan.MaxValue);
+        }
+
+        private string ConfigFilePath
+        {
+            get
+            {
+                if (view.UsePackagedEnvironment)
+                    return string.Format(@"Environments\{0}.properties", view.SelectedEnvironment);
+                else
+                    return view.ExternalFile;
+            }
+        }
+
+        private static XName ScopedName(string localName)
         {
             return XNamespace.Get(MSBuildNamespace) + localName;
         }

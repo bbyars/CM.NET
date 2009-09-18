@@ -1,0 +1,14 @@
+﻿<Window x:Class="CM.Deploy.UI.DeployLog"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Title="DeployLog" Height="400" Width="600">
+    <Grid>
+        <StackPanel>
+            <TextBox Name="uxLog" Margin="0,0,0,0" Width="580" Height="320" IsReadOnly="True" />
+            <StackPanel Orientation="Horizontal">
+                <Button Name="uxClose" Click="Close" Margin="490,10,0,10">Close</Button>
+                <Button Name="uxSave" Click="Save" Margin="10,10,0,10">Save</Button>
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+</Window>

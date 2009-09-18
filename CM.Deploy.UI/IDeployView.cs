@@ -13,5 +13,7 @@ namespace CM.Deploy.UI
         bool ExternalFileEnabled { get; set; }
 
         void ShowProperties(IDictionary<string, string> properties);
+
+        void ShowLogView(ProcessRunner processRunner);
     }
 }
