@@ -13,7 +13,7 @@
     <PreCompileTargets>$(PreCompileTargets);GetVersionParts</PreCompileTargets>
   </PropertyGroup>
 
-  <Import Project="$(CMDirectory)\Master.targets" />
+  <Import Project="$(CMDirectory)\MasterWorkflow.targets" />
   <Import Project="$(CMDirectory)\DotNet.targets" />
 
   <UsingTask TaskName="Microsoft.Sdc.Tasks.VersionNumber.Parse" AssemblyFile="$(SdcTasksDirectory)\Microsoft.Sdc.Tasks.dll" />

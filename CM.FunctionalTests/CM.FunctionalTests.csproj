@@ -69,8 +69,8 @@
       <Link>scripts\Dependencies\msbuild-community-tasks\MSBuild.Community.Tasks.xsd</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="..\scripts\Master.targets">
-      <Link>scripts\Master.targets</Link>
+    <None Include="..\scripts\MasterWorkflow.targets">
+      <Link>scripts\MasterWorkflow.targets</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="..\scripts\Sfx.targets">

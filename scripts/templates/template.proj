@@ -11,13 +11,13 @@
     <CommonBuildDirectory>$(MSBuildProjectDirectory)\References\common-build</CommonBuildDirectory>
   </PropertyGroup>
 
-  <!-- Hook into the common-build workflow, see $(CommonBuildDirectory)\Master.Targets -->
+  <!-- Hook into the common-build workflow, see $(CommonBuildDirectory)\MasterWorkflow.Targets -->
   <PropertyGroup>
     <PackageTargets>$(PrePackageTargets);CopyToPackageDirectory</PackageTargets>
     <PreFunctionalTestTargets>$(PreFunctionalTestTargets);CreateDB</PreFunctionalTestTargets>
   </PropertyGroup>
 
-  <!-- Add any common-build scripts that also hook into the workflow in Master.Targets -->
+  <!-- Add any common-build scripts that also hook into the workflow in MasterWorkflow.Targets -->
   <Import Project="$(CommonBuildDirectory)\Default.Targets" />
 
   <!-- Add environment-specific properties in the appropriate .Propeties file -->

@@ -28,7 +28,7 @@ namespace CM.FunctionalTests.scripts
                         <DeployExe Include='..\deployer.exe' />
                       </ItemGroup>
 
-                      <Import Project='..\scripts\Master.targets' />
+                      <Import Project='..\scripts\MasterWorkflow.targets' />
                       <Import Project='..\scripts\Sfx.targets' />
                     </Project>");
 
