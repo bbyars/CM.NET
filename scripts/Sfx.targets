@@ -4,6 +4,7 @@
   <PropertyGroup>
     <ProjectName Condition="$(ProjectName) == ''"></ProjectName>
     <Version Condition="$(Version) == ''">0.0.0.0</Version>
+    <PackageName Condition="$(PackageName) == ''">$(ProjectName)-$(Version)</PackageName>
     <SevenZipDirectory Condition="$(SevenZipDirectory) == ''">$(MSBuildProjectDirectory)\Dependencies\7-zip</SevenZipDirectory>
     <PackageDirectory Condition="$(PackageDirectory) == ''">package</PackageDirectory>
     <SfxDirectory Condition="$(SfxDirectory) == ''">$(MSBuildProjectDirectory)\sfx</SfxDirectory>
@@ -42,7 +43,7 @@ RunProgram="$(PackageDirectory)\@(DeployExe->'%(Filename)').exe"
     
     <Exec Command="$(SevenZipDirectory)\7z.exe a $(SfxDirectory)\package.7z $(PackageDirectory)" />
     <WriteLinesToFile File="$(SfxDirectory)\config.txt" Lines="$(SevenZipConfig)" />
-    <Exec Command="copy /b 7zS.sfx + config.txt + package.7z $(ProjectName)-$(Version).exe" 
+    <Exec Command="copy /b 7zS.sfx + config.txt + package.7z $(PackageName).exe" 
       WorkingDirectory="$(SfxDirectory)" />
   </Target>
 </Project>
