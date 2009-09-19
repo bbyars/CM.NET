@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <!-- Properties expected to be provided, unless these defaults are OK -->
+  <PropertyGroup>
+    <BuildDirectory Condition="$(BuildDirectory) == ''">$(MSBuildProjectDirectory)\build</BuildDirectory>
+    <PackageDirectory Condition="$(PackageDirectory) == ''">$(BuildDirectory)\package</PackageDirectory>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <CleanTargets>$(CleanTargets);CleanPackageDirectory</CleanTargets>
+    <PostCleanTargets>$(PostCleanTargets);CreatePackageDirectory</PostCleanTargets>
+    <PackageTargets>$(PackageTargets);CopyFilesToPackageDirectory</PackageTargets>
+    <TraceDataTargets>$(TraceDataTargets);TracePackageData</TraceDataTargets>
+  </PropertyGroup>
+
+  <Target Name="CleanPackageDirectory">
+    <RemoveDir Directories="$(PackageDirectory)" Condition="Exists('$(PackageDirectory)')" />
+  </Target>
+
+  <Target Name="CreatePackageDirectory">
+    <MakeDir Directories="$(PackageDirectory)" Condition="!Exists('$(PackageDirectory)')" />
+  </Target>
+
+  <Target Name="CopyFilesToPackageDirectory">
+    <Error Text="No files were added to the PackageFiles item" Condition="@(PackageFiles) == ''" />
+    <Copy SourceFiles="@(PackageFiles)"
+      DestinationFiles="@(PackageFiles->'$(PackageDirectory)\%(RecursiveDir)%(Filename)%(Extension)')" />
+  </Target>
+
+  <Target Name="TracePackageData">
+    <Message Text="Package.targets" />
+    <Message Text="  BuildDirectory: $(BuildDirectory)" />
+    <Message Text="  PackageDirectory: $(PackageDirectory)" />
+    <Message Text="  PackageFiles: @(PackageFiles)" Condition="@(PackageFiles) != ''" />
+    <Message Text="  No PackageFiles have been added yet; try tracing after running the Package target" Condition="@(PackageFiles) == ''" />
+  </Target>
+</Project>

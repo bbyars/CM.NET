@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="Package.targets" />
+  
   <!-- Properties expected to be provided, unless these defaults are OK -->
   <PropertyGroup>
     <PackageName Condition="$(PackageName) == ''"></PackageName>
-    <SevenZipDirectory Condition="$(SevenZipDirectory) == ''">$(MSBuildProjectDirectory)\Dependencies\7-zip</SevenZipDirectory>
-    <PackageDirectory Condition="$(PackageDirectory) == ''">$(MSBuildProjectDirectory)\package</PackageDirectory>
-    <SfxDirectory Condition="$(SfxDirectory) == ''">$(MSBuildProjectDirectory)\sfx</SfxDirectory>
+    <SevenZipDirectory Condition="$(SevenZipDirectory) == ''">$(MSBuildProjectDirectory)\Dependencies\CM.NET</SevenZipDirectory>
+    <SfxDirectory Condition="$(SfxDirectory) == ''">$(BuildDirectory)\sfx</SfxDirectory>
   </PropertyGroup>
 
   <ItemGroup>
@@ -13,23 +14,14 @@
   </ItemGroup>
   
   <PropertyGroup>
-    <CleanTargets>$(CleanTargets);CleanPackageDirectory</CleanTargets>
-    <PostCleanTargets>$(PostCleanTargets);CreatePackageDirectory</PostCleanTargets>
     <PackageTargets>$(PackageTargets);CreateSfx</PackageTargets>
     <TraceDataTargets>$(TraceDataTargets);TraceSfxData</TraceDataTargets>
   </PropertyGroup>
 
-  <Target Name="CleanPackageDirectory">
-    <RemoveDir Directories="$(PackageDirectory)" Condition="Exists('$(PackageDirectory)')" />
-  </Target>
-  
-  <Target Name="CreatePackageDirectory">
-    <MakeDir Directories="$(PackageDirectory)" Condition="!Exists('$(PackageDirectory)')" />
-  </Target>
-  
   <Target Name="CreateSfx">
     <Error Text="No PackageName property was defined" Condition="$(PackageName) == ''" />
-    <Copy SourceFiles="@(DeployExe)" DestinationFolder="$(PackageDirectory)" />
+    <Copy SourceFiles="@(DeployExe)"
+      DestinationFiles="@(DeployExe->'$(PackageDirectory)\%(RecursiveDir)%(Filename)%(Extension)')" />
     <Copy SourceFiles="$(SevenZipDirectory)\7zS.sfx" DestinationFolder="$(SfxDirectory)" />
     
     <PropertyGroup>
@@ -52,7 +44,7 @@ RunProgram="@(DeployExe->'%(Filename)').exe"
     <Message Text="Sfx.targets" />
     <Message Text="  PackageName: $(PackageName)" />
     <Message Text="  SevenZipDirectory: $(SevenZipDirectory)" />
-    <Message Text="  PackageDirectory: $(PackageDirectory)" />
     <Message Text="  SfxDirectory: $(SfxDirectory)" />
+    <Message Text="  DeployExe: @(DeployExe)" />
   </Target>
 </Project>

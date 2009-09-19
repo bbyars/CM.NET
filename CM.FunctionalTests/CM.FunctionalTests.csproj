@@ -73,6 +73,10 @@
       <Link>scripts\MasterWorkflow.targets</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="..\scripts\Package.targets">
+      <Link>scripts\Package.targets</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="..\scripts\Sfx.targets">
       <Link>scripts\Sfx.targets</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

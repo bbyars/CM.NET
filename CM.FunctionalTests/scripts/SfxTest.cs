@@ -25,6 +25,7 @@ namespace CM.FunctionalTests.scripts
 
                       <ItemGroup>
                         <DeployExe Include='$(MSBuildProjectDirectory)\..\deployer.exe' />
+                        <PackageFiles Include='$(MSBuildProjectFullPath)' />
                       </ItemGroup>
 
                       <Import Project='$(MSBuildProjectDirectory)\..\scripts\MasterWorkflow.targets' />
@@ -32,9 +33,9 @@ namespace CM.FunctionalTests.scripts
                     </Project>");
 
                 var output = RunMSBuild("test.proj");
-                Assert.That(File.Exists(@"sfx\SfxTest.exe"), output);
+                Assert.That(File.Exists(@"build\sfx\SfxTest.exe"), output);
 
-                var sfxProcess = new ProcessRunner(@"sfx\SfxTest.exe");
+                var sfxProcess = new ProcessRunner(@"build\sfx\SfxTest.exe");
                 sfxProcess.Start("");
                 try
                 {

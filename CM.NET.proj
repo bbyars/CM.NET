@@ -2,7 +2,6 @@
   <PropertyGroup>
     <UnitTestProject>CM.UnitTests</UnitTestProject>
     <FunctionalTestProject>CM.FunctionalTests</FunctionalTestProject>
-    <PackageDirectory>$(MSBuildProjectDirectory)\build\package</PackageDirectory>
     
     <CMDirectory>$(MSBuildProjectDirectory)\scripts</CMDirectory>
     <MSBuildCommunityTasksPath>$(MSBuildProjectDirectory)\Dependencies\msbuild-community-tasks</MSBuildCommunityTasksPath>
@@ -10,14 +9,14 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <PackageTargets>CopyFilesForPackaging</PackageTargets>
+    <PrePackageTargets>CreatePackageFiles</PrePackageTargets>
   </PropertyGroup>
 
   <Import Project="$(CMDirectory)\TeamCity.targets" />
   <Import Project="$(CMDirectory)\Default.targets" />
-  <UsingTask AssemblyFile="$(MSBuildCommunityTasksPath)\MSBuild.Community.Tasks.dll" TaskName="MSBuild.Community.Tasks.Zip" />
+  <Import Project="$(CMDirectory)\Zip.targets" />
 
-  <Target Name="CopyFilesForPackaging">
+  <Target Name="CreatePackageFiles">
     <ItemGroup>
       <PackageFiles Include="$(CMDirectory)\**\*" />
       <PackageFiles Include="$(MSBuildCommunityTasksPath)\*.targets" />
@@ -32,15 +31,5 @@
     <CreateItem Include="$(MSBuildProjectDirectory)\CM.MSBuild.Tasks\bin\$(Configuration)\CM.MSBuild.Tasks.dll">
       <Output TaskParameter="Include" ItemName="PackageFiles" />
     </CreateItem>
-
-    <Copy SourceFiles="@(PackageFiles)"
-      DestinationFiles="@(PackageFiles->'$(PackageDirectory)\%(RecursiveDir)%(Filename)%(Extension)')" />
-
-    <CreateItem Include="$(PackageDirectory)\**\*">
-      <Output TaskParameter="Include" ItemName="ArchiveFiles" />
-    </CreateItem>
-    <Zip Files="@(ArchiveFiles)"
-      WorkingDirectory="$(PackageDirectory)"
-      ZipFileName="$(BuildDirectory)\$(PackageName).zip" />
   </Target>
 </Project>
