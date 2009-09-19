@@ -29,6 +29,7 @@
   </Target>
   
   <Target Name="CreateSfx">
+    <Error Text="No ProjectName property was defined" Condition="$(ProjectName) == ''" />
     <Copy SourceFiles="@(DeployExe)" DestinationFolder="$(PackageDirectory)" />
     <Copy SourceFiles="$(SevenZipDirectory)\7zS.sfx" DestinationFolder="$(SfxDirectory)" />
     

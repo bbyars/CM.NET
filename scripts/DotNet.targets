@@ -5,7 +5,6 @@
     <Solution Condition="$(Solution) == ''"></Solution>
     <UnitTestProject Condition="$(UnitTestProject) == ''"></UnitTestProject>
     <FunctionalTestProject Condition="$(FunctionalTestProject) == ''"></FunctionalTestProject>
-    
     <Configuration Condition="$(Configuration) == ''">Release</Configuration>
     <Version Condition="$(Version) == ''">0.0.0.0</Version>
     <NUnitDirectory Condition="$(NUnitDirectory) == ''">$(MSBuildProjectDirectory)\Dependencies\nunit</NUnitDirectory>
@@ -39,6 +38,7 @@
   </Target>
 
   <Target Name="CompileSolution" DependsOnTargets="CleanVisualStudioDirectories">
+    <Error Text="No Solution property was defined" Condition="$(Solution) == ''" />
     <MSBuild Projects="$(Solution)" Targets="Rebuild" Properties="Configuration=$(Configuration)" />
   </Target>
 
