@@ -20,15 +20,15 @@ namespace CM.FunctionalTests.scripts
                     <Project DefaultTargets='Build' xmlns='http://schemas.microsoft.com/developer/msbuild/2003'>
                       <PropertyGroup>
                         <PackageName>SfxTest</PackageName>
-                        <SevenZipDirectory>..\scripts\Dependencies\7-zip</SevenZipDirectory>
+                        <SevenZipDirectory>$(MSBuildProjectDirectory)\..\scripts\Dependencies\7-zip</SevenZipDirectory>
                       </PropertyGroup>
 
                       <ItemGroup>
-                        <DeployExe Include='..\deployer.exe' />
+                        <DeployExe Include='$(MSBuildProjectDirectory)\..\deployer.exe' />
                       </ItemGroup>
 
-                      <Import Project='..\scripts\MasterWorkflow.targets' />
-                      <Import Project='..\scripts\Sfx.targets' />
+                      <Import Project='$(MSBuildProjectDirectory)\..\scripts\MasterWorkflow.targets' />
+                      <Import Project='$(MSBuildProjectDirectory)\..\scripts\Sfx.targets' />
                     </Project>");
 
                 var output = RunMSBuild("test.proj");
@@ -72,17 +72,6 @@ namespace CM.FunctionalTests.scripts
                 processes = Process.GetProcessesByName(processName);
             }
             return processes.Length == 0 ? null : processes[0];
-        }
-
-        private static void WaitForProcessExit(string processName)
-        {
-            var maxWait = DateTime.Now.AddSeconds(3);
-            var processes = Process.GetProcessesByName(processName);
-            while (processes.Length > 1 && DateTime.Now < maxWait)
-            {
-                Thread.Sleep(200);
-                processes = Process.GetProcessesByName(processName);
-            }
         }
     }
 }

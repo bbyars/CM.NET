@@ -4,7 +4,7 @@
   <PropertyGroup>
     <PackageName Condition="$(PackageName) == ''"></PackageName>
     <SevenZipDirectory Condition="$(SevenZipDirectory) == ''">$(MSBuildProjectDirectory)\Dependencies\7-zip</SevenZipDirectory>
-    <PackageDirectory Condition="$(PackageDirectory) == ''">package</PackageDirectory>
+    <PackageDirectory Condition="$(PackageDirectory) == ''">$(MSBuildProjectDirectory)\package</PackageDirectory>
     <SfxDirectory Condition="$(SfxDirectory) == ''">$(MSBuildProjectDirectory)\sfx</SfxDirectory>
   </PropertyGroup>
 
@@ -36,12 +36,13 @@
       <SevenZipConfig>
 %3B!@Install@!UTF-8!
 Title="Deploy"
-RunProgram="$(PackageDirectory)\@(DeployExe->'%(Filename)').exe"
+RunProgram="@(DeployExe->'%(Filename)').exe"
 %3B!@InstallEnd@!
       </SevenZipConfig>
     </PropertyGroup>
-    
-    <Exec Command="$(SevenZipDirectory)\7z.exe a $(SfxDirectory)\package.7z $(PackageDirectory)" />
+
+    <Exec Command="$(SevenZipDirectory)\7z.exe a $(SfxDirectory)\package.7z ."
+      WorkingDirectory="$(PackageDirectory)" />
     <WriteLinesToFile File="$(SfxDirectory)\config.txt" Lines="$(SevenZipConfig)" />
     <Exec Command="copy /b 7zS.sfx + config.txt + package.7z $(PackageName).exe" 
       WorkingDirectory="$(SfxDirectory)" />
