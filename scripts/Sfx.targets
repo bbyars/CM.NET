@@ -2,47 +2,47 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <!-- Properties expected to be provided, unless these defaults are OK -->
   <PropertyGroup>
-    <ProjectName Condition="$(ProjectName) == ''">unknown</ProjectName>
-    <Version Condition="$(Version) == ''">1.0.0.0</Version>
-    <SevenZipDirectory Condition="$(SevenZipDirectory) == ''">Dependencies\7-zip</SevenZipDirectory>
+    <ProjectName Condition="$(ProjectName) == ''"></ProjectName>
+    <Version Condition="$(Version) == ''">0.0.0.0</Version>
+    <SevenZipDirectory Condition="$(SevenZipDirectory) == ''">$(MSBuildProjectDirectory)\Dependencies\7-zip</SevenZipDirectory>
     <PackageDirectory Condition="$(PackageDirectory) == ''">package</PackageDirectory>
-    <SfxDirectory Condition="$(SfxDirectory) == ''">sfx</SfxDirectory>
+    <SfxDirectory Condition="$(SfxDirectory) == ''">$(MSBuildProjectDirectory)\sfx</SfxDirectory>
   </PropertyGroup>
 
   <ItemGroup>
-    <DeployExe Condition="@(DeployExe) == ''" Include="deployer.exe" />
+    <DeployExe Condition="@(DeployExe) == ''" Include="$(MSBuildProjectDirectory)\Dependencies\CM.NET\deployer.exe" />
   </ItemGroup>
   
   <PropertyGroup>
     <CleanTargets>$(CleanTargets);CleanPackageDirectory</CleanTargets>
     <PostCleanTargets>$(PostCleanTargets);CreatePackageDirectory</PostCleanTargets>
-    <PackageTargets>$(PackageTargets);CreateArchive</PackageTargets>
+    <PackageTargets>$(PackageTargets);CreateSfx</PackageTargets>
   </PropertyGroup>
 
   <Target Name="CleanPackageDirectory">
-    <RemoveDir Directories="$(PackageDirectory)" />
+    <RemoveDir Directories="$(PackageDirectory)" Condition="Exists('$(PackageDirectory)')" />
   </Target>
   
   <Target Name="CreatePackageDirectory">
     <MakeDir Directories="$(PackageDirectory)" Condition="!Exists('$(PackageDirectory)')" />
   </Target>
   
-  <Target Name="CreateArchive">
+  <Target Name="CreateSfx">
     <Copy SourceFiles="@(DeployExe)" DestinationFolder="$(PackageDirectory)" />
     <Copy SourceFiles="$(SevenZipDirectory)\7zS.sfx" DestinationFolder="$(SfxDirectory)" />
     
     <PropertyGroup>
       <SevenZipConfig>
-        %3B!@Install@!UTF-8!
-        Title="Deploy $(ProjectName)"
-        RunProgram="$(PackageDirectory)\@(DeployExe->'%(Filename)').exe"
-        %3B!@InstallEnd@!
+%3B!@Install@!UTF-8!
+Title="Deploy $(ProjectName)"
+RunProgram="$(PackageDirectory)\@(DeployExe->'%(Filename)').exe"
+%3B!@InstallEnd@!
       </SevenZipConfig>
     </PropertyGroup>
     
     <Exec Command="$(SevenZipDirectory)\7z.exe a $(SfxDirectory)\package.7z $(PackageDirectory)" />
     <WriteLinesToFile File="$(SfxDirectory)\config.txt" Lines="$(SevenZipConfig)" />
     <Exec Command="copy /b 7zS.sfx + config.txt + package.7z $(ProjectName)-$(Version).exe" 
-          WorkingDirectory="$(SfxDirectory)" />
+      WorkingDirectory="$(SfxDirectory)" />
   </Target>
 </Project>

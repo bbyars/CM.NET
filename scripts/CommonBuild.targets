@@ -1,9 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(CommonBuildDirectory)/Default.Targets" />
-  <Import Project="$(CommonBuildDirectory)/Master.Targets" />
-  <Import Project="$(CommonBuildDirectory)/Subversion.Targets" />
-  <Import Project="$(CommonBuildDirectory)/Sfx.Targets" />
+  <PropertyGroup>
+    <CMDirectory Condition="$(CMDirectory) == ''">$(MSBuildProjectDirectory)\Dependencies\CM.NET</CMDirectory>
+    <MSBuildCommunityTasksPath Condition="$(MSBuildCommunityTasksPath) == ''">$(CMDirectory)</MSBuildCommunityTasksPath>
+    <SdcTasksDirectory Condition="$(SdcTasksDirectory) == ''">$(CMDirectory)</SdcTasksDirectory>
 
-  <Import Project="$(CommonBuildDirectory)/MSBuild.Community.Tasks.Targets" />
-  <Import Project="$(CommonBuildDirectory)/Microsoft.Sdc.Common.Tasks" />
+    <!-- TasksPath is used internally in Sdc Tasks -->
+    <TasksPath Condition="$(TasksPath) == ''">$(SdcTasksDirectory)</TasksPath>
+  </PropertyGroup>
+  
+  <Import Project="$(CMDirectory)\Default.targets" />
+  <Import Project="$(CMDirectory)\Master.targets" />
+  <Import Project="$(CMDirectory)\DotNet.targets" />
+
+  <Import Project="$(MSBuildCommunityTasksPath)\MSBuild.Community.Tasks.targets" />
+  <Import Project="$(SdcTasksDirectory)\Microsoft.Sdc.Common.Tasks" />
 </Project>

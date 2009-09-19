@@ -8,7 +8,7 @@
     <PreFunctionalTestTargets>$(PreFunctionalTestTargets);Deploy</PreFunctionalTestTargets>
   </PropertyGroup>
 
-  <!-- This is the main common-build workflow. -->
+  <!-- This is the main workflow. -->
   <!-- It is designed so that, rather than redefining it, you hook into it with properties, as shown above -->
   <Target Name="Build" DependsOnTargets="
       $(PreBuildTargets);

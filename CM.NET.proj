@@ -1,60 +1,52 @@
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-    <Solution>Gsmc.MSBuild.Tasks.sln</Solution>
-    <ProjectName>common-build</ProjectName>
-    <FunctionalTestProject>Gsmc.MSBuild.Tasks.Tests</FunctionalTestProject>
-  </PropertyGroup>
-
-  <PropertyGroup>
-    <CommonBuildDirectory>scripts</CommonBuildDirectory>
-    <MSBuildCommunityTasksPath>$(MSBuildProjectDirectory)\References\msbuild-community-tasks</MSBuildCommunityTasksPath>
-    <SdcTasksDirectory>$(MSBuildProjectDirectory)\References\sdc-tasks</SdcTasksDirectory>
+    <ProjectName>CM.NET</ProjectName>
+    <Solution>$(ProjectName).sln</Solution>
+    <UnitTestProject>CM.UnitTests</UnitTestProject>
+    <FunctionalTestProject>CM.FunctionalTests</FunctionalTestProject>
+    <PackageDirectory>$(MSBuildDirectory)\build\package</PackageDirectory>
+    
+    <CMDirectory>$(MSBuildProjectDirectory)\scripts</CMDirectory>
+    <MSBuildCommunityTasksPath>$(MSBuildProjectDirectory)\Dependencies\msbuild-community-tasks</MSBuildCommunityTasksPath>
+    <SdcTasksDirectory>$(MSBuildProjectDirectory)\Dependencies\sdc-tasks</SdcTasksDirectory>
 
     <!-- TasksPath is used internally in Sdc Tasks -->
     <TasksPath>$(SdcTasksDirectory)</TasksPath>
   </PropertyGroup>
 
+  <ItemGroup>
+    <DeployExe Include="$(MSBuildProjectDirectory)\CM.Deploy.UI\bin\$(Configuration)\deployer.exe" />
+  </ItemGroup>
+  
   <PropertyGroup>
-    <CleanTargets>$(CleanTargets);CleanBootstrapFiles</CleanTargets>
-    <PreCompileTargets>$(PreCompileTargets);Bootstrap</PreCompileTargets>
-    <PrePackageTargets>$(PrePackageTargets);CopyCommonBuildFiles</PrePackageTargets>
+    <PackageTargets>CopyFilesForPackaging</PackageTargets>
   </PropertyGroup>
 
-  <Import Project="$(MSBuildCommunityTasksPath)\MSBuild.Community.Tasks.Targets" />
-  <Import Project="$(CommonBuildDirectory)\Default.targets" />
-  <Import Project="$(CommonBuildDirectory)\Master.targets" />
-  <Import Project="$(CommonBuildDirectory)\Subversion.Targets" />
-  <Import Project="$(CommonBuildDirectory)\Package.Targets" />
-  <Import Project="$(CommonBuildDirectory)\DotNet.Targets" />
+  <Import Project="$(CMDirectory)\CommonBuild.targets" />
 
-  <UsingTask TaskName="StringReplace" AssemblyFile="$(SdcTasksDirectory)\Microsoft.Sdc.Tasks.dll" />
-  <UsingTask TaskName="SetAssemblyAttributes" AssemblyFile="$(CommonBuildDirectory)\Gsmc.MSBuild.Tasks.dll" />
-
-  <Target Name="CleanBootstrapFiles">
-    <Delete Files="$(CommonBuildDirectory)\Gsmc.MSBuild.Tasks.dll;$(CommonBuildDirectory)\Gsmc.MSBuild.Tasks" />
-  </Target>
-
-  <Target Name="Bootstrap">
-    <!-- 
-    We have to build before we can use common-build's Compile, because otherwise we won't
-    have access to the SetAssemblyInfo tasks.  This forces us to build twice, the first time without versioning.
-    -->
-    <CallTarget Targets="CompileSolution" />
-    <Copy SourceFiles="Gsmc.MSBuild.Tasks\bin\$(Configuration)\Gsmc.MSBuild.Tasks.dll;Gsmc.MSBuild.Tasks\bin\$(Configuration)\Gsmc.MSBuild.Tasks"
-      DestinationFolder="$(CommonBuildDirectory)" />
-  </Target>
-
-  <Target Name="CopyCommonBuildFiles">
+  <Target Name="CopyFilesForPackaging">
     <ItemGroup>
-      <PackageFiles Include="$(CommonBuildDirectory)\*.*" />
+      <PackageFiles Include="$(CMDirectory)\**\*" />
       <PackageFiles Include="$(MSBuildCommunityTasksPath)\*.targets" />
       <PackageFiles Include="$(MSBuildCommunityTasksPath)\*.dll" />
-      <PackageFiles Include="$(SdcTasksDirectory)\Microsoft.Sdc.Tasks.dll" />
-      <PackageFiles Include="$(SdcTasksDirectory)\Microsoft.Sdc.Common.Tasks" />
-      <PackageFiles Include="References\robocopy\robocopy.exe" />
+      <PackageFiles Include="$(SdcTasksDirectory)\*.dll" />
+      <PackageFiles Include="$(SdcTasksDirectory)\*.Tasks" />
     </ItemGroup>
 
-    <Copy SourceFiles="@(PackageFiles)" DestinationFolder="$(PackageDirectory)" />
-  </Target>
+    <CreateItem Include="$(MSBuildProjectDirectory)\CM.Deploy.UI\bin\$(Configuration)\deployer.exe">
+      <Output TaskParameter="Include" ItemName="PackageFiles" />
+    </CreateItem>
+    <CreateItem Include="$(MSBuildProjectDirectory)\CM.MSBuild.Tasks\bin\$(Configuration)\CM.MSBuild.Tasks.dll">
+      <Output TaskParameter="Include" ItemName="PackageFiles" />
+    </CreateItem>
 
+    <Copy SourceFiles="@(PackageFiles)" DestinationFolder="$(PackageDirectory)" />
+
+    <CreateItem Include="$(PackageDirectory)\**\*">
+      <Output TaskParameter="Include" ItemName="ArchiveFiles" />
+    </CreateItem>
+    <Zip Files="@(ArchiveFiles)"
+      WorkingDirectory="$(PackageDirectory)"
+      ZipFileName="$(BuildDirectory)\CM.NET-$(Version).zip" />
+  </Target>
 </Project>
