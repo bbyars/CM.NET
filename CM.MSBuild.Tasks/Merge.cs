@@ -9,18 +9,21 @@ namespace CM.MSBuild.Tasks
 
         public static Merge From(string sourceDirectory)
         {
-            return new Merge(sourceDirectory);
+            return new Merge(new DirectoryInfo(sourceDirectory));
         }
 
-        public Merge(string sourceDirectory)
+        public Merge(DirectoryInfo sourceDirectory)
         {
-            this.sourceDirectory = new DirectoryInfo(sourceDirectory);
+            this.sourceDirectory = sourceDirectory;
         }
 
         public virtual void Into(string destinationDirectory)
         {
             AddOrUpdateFiles(destinationDirectory);
             DeleteRemovedFiles(destinationDirectory);
+            AddNewSubdirectories(destinationDirectory);
+            DeleteRemovedDirectories(destinationDirectory);
+            MergeSubdirectories(destinationDirectory);
         }
 
         private void AddOrUpdateFiles(string destinationDirectory)
@@ -37,9 +40,36 @@ namespace CM.MSBuild.Tasks
             filesToRemove.ForEach(filename => File.Delete(Path.Combine(destinationDirectory, filename)));
         }
 
+        private void AddNewSubdirectories(string destinationDirectory)
+        {
+            var sourceDirectories = GetDirectories(sourceDirectory);
+            var destinationDirectories = GetDirectories(new DirectoryInfo(destinationDirectory));
+            var directoriesToAdd = sourceDirectories.Where(dir => !destinationDirectories.Contains(dir)).ToList();
+            directoriesToAdd.ForEach(dir => Directory.CreateDirectory(Path.Combine(destinationDirectory, dir)));
+        }
+
+        private void DeleteRemovedDirectories(string destinationDirectory)
+        {
+            var sourceDirectories = GetDirectories(sourceDirectory);
+            var destinationDirectories = GetDirectories(new DirectoryInfo(destinationDirectory));
+            var directoriesToRemove = destinationDirectories.Where(dir => !sourceDirectories.Contains(dir)).ToList();
+            directoriesToRemove.ForEach(dir => Directory.Delete(Path.Combine(destinationDirectory, dir)));
+        }
+
+        private void MergeSubdirectories(string destinationDirectory)
+        {
+            foreach (var subdirectory in sourceDirectory.GetDirectories())    
+                new Merge(subdirectory).Into(Path.Combine(destinationDirectory, subdirectory.Name));
+        }
+
         private static string[] GetFilenames(string directory)
         {
             return Directory.GetFiles(directory).Select(path => Path.GetFileName(path)).ToArray();
+        }
+
+        private static string[] GetDirectories(DirectoryInfo directory)
+        {
+            return directory.GetDirectories().Select(dir => dir.Name).ToArray();
         }
     }
 }

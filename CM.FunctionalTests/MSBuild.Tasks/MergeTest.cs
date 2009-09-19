@@ -26,7 +26,7 @@ namespace CM.FunctionalTests.MSBuild.Tasks
         public void MergingEmptyDirectoriesDoesNothing()
         {
             Merge.From("new").Into("old");
-            Assert.That(Directory.GetFiles("old").Length, Is.EqualTo(0));
+            Assert.That(Directory.GetFiles("old"), Is.EqualTo(new string[0]));
         }
 
         [Test]
@@ -35,8 +35,7 @@ namespace CM.FunctionalTests.MSBuild.Tasks
             File.WriteAllText(@"new\test.txt", "");
             Merge.From("new").Into("old");
 
-            Assert.That(Directory.GetFiles("old").Length, Is.EqualTo(1));
-            Assert.That(File.Exists(@"old\test.txt"));
+            Assert.That(Directory.GetFiles("old"), Is.EqualTo(new[] {@"old\test.txt"}));
         }
 
         [Test]
@@ -55,7 +54,69 @@ namespace CM.FunctionalTests.MSBuild.Tasks
             File.WriteAllText(@"old\test.txt", "");
             Merge.From("new").Into("old");
 
-            Assert.That(Directory.GetFiles("old").Length, Is.EqualTo(0));
+            Assert.That(Directory.GetFiles("old"), Is.EqualTo(new string[0]));
+        }
+
+        [Test]
+        public void ShouldAddNewSubdirectory()
+        {
+            Directory.CreateDirectory(@"new\subdir");
+            Merge.From("new").Into("old");
+
+            Assert.That(Directory.GetDirectories("old"), Is.EqualTo(new[] {@"old\subdir"}));
+        }
+
+        [Test]
+        public void ShouldDeleteRemovedSubdirectory()
+        {
+            Directory.CreateDirectory(@"old\subdir");
+            Merge.From("new").Into("old");
+
+            Assert.That(Directory.GetDirectories("old"), Is.EqualTo(new string[0]));
+        }
+
+        [Test]
+        public void ShouldAddMissingFileInExistingSubdirectory()
+        {
+            Directory.CreateDirectory(@"old\subdir");
+            Directory.CreateDirectory(@"new\subdir");
+            File.WriteAllText(@"new\subdir\test.txt", "");
+            Merge.From("new").Into("old");
+
+            Assert.That(Directory.GetFiles(@"old\subdir"), Is.EqualTo(new[] {@"old\subdir\test.txt"}));
+        }
+
+        [Test]
+        public void ShouldAddMissingSubdirectoryWithContents()
+        {
+            Directory.CreateDirectory(@"new\subdir");
+            File.WriteAllText(@"new\subdir\test.txt", "");
+            Merge.From("new").Into("old");
+
+            Assert.That(Directory.GetFiles(@"old\subdir"), Is.EqualTo(new[] { @"old\subdir\test.txt" }));
+        }
+
+        [Test]
+        public void ShouldUpdateExistingFileInSubdirectory()
+        {
+            Directory.CreateDirectory(@"old\subdir");
+            Directory.CreateDirectory(@"new\subdir");
+            File.WriteAllText(@"old\subdir\test.txt", "old");
+            File.WriteAllText(@"new\subdir\test.txt", "new");
+            Merge.From("new").Into("old");
+
+            Assert.That(File.ReadAllText(@"old\subdir\test.txt"), Is.EqualTo("new"));
+        }
+
+        [Test]
+        public void ShouldDeleteRemovedFileInSubdirectory()
+        {
+            Directory.CreateDirectory(@"old\subdir");
+            Directory.CreateDirectory(@"new\subdir");
+            File.WriteAllText(@"old\subdir\test.txt", "");
+            Merge.From("new").Into("old");
+
+            Assert.That(Directory.GetFiles(@"old\subdir"), Is.EqualTo(new string[0]));
         }
     }
 }
