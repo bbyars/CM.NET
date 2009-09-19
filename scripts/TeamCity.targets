@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <PreCleanTargets>$(PreCleanTargets);InitializeDefaultProperties</PreCleanTargets>
+<!--    <PreCleanTargets>$(PreCleanTargets);InitializeDefaultProperties</PreCleanTargets>-->
     <TraceDataTargets>$(TraceDataTargets);TraceTeamCityData</TraceDataTargets>
   </PropertyGroup>
 

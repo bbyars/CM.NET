@@ -2,12 +2,12 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <!-- Properties expected to be provided, unless these defaults are OK -->
   <PropertyGroup>
-    <Solution Condition="$(Solution) == ''"></Solution>
-    <UnitTestProject Condition="$(UnitTestProject) == ''"></UnitTestProject>
-    <FunctionalTestProject Condition="$(FunctionalTestProject) == ''"></FunctionalTestProject>
+    <Solution Condition="$(Solution) == '' And Exists('$(MSBuildProjectName).sln')">$(MSBuildProjectName).sln</Solution>
+    <UnitTestProject Condition="$(UnitTestProject) == '' And Exists('$(MSBuildProjectName).UnitTests')">$(MSBuildProjectName).UnitTests</UnitTestProject>
+    <FunctionalTestProject Condition="$(FunctionalTestProject) == '' And Exists('$(MSBuildProjectName).FunctionalTests')">$(MSBuildProjectName).FunctionalTests</FunctionalTestProject>
     <Configuration Condition="$(Configuration) == ''">Release</Configuration>
     <Version Condition="$(Version) == ''">0.0.0.0</Version>
-    <NUnitDirectory Condition="$(NUnitDirectory) == ''">$(MSBuildProjectDirectory)\Dependencies\nunit</NUnitDirectory>
+    <NUnitDirectory Condition="$(NUnitDirectory) == '' And Exists('$(MSBuildProjectDirectory)\Dependencies\nunit')">$(MSBuildProjectDirectory)\Dependencies\nunit</NUnitDirectory>
     <MSBuildCommunityTasksPath Condition="$(MSBuildCommunityTasksPath) == ''">$(MSBuildProjectDirectory)\Dependencies\CM.NET</MSBuildCommunityTasksPath>
   </PropertyGroup>
   
@@ -62,12 +62,16 @@
   </Target>
 
   <Target Name="RunUnitTests" DependsOnTargets="CompileSolution">
+    <Error Message="Missing or invalid value specified for the NUnitDirectory property"
+      Condition="$(UnitTestProject) != '' And !Exists('$(NUnitDirectory)')" />
     <NUnit Assemblies="$(MSBuildProjectDirectory)\$(UnitTestProject)\bin\$(Configuration)\$(UnitTestProject).dll"
       ToolPath="$(NUnitDirectory)"
       Condition="$(UnitTestProject) != ''" />
   </Target>
 
   <Target Name="RunFunctionalTests" DependsOnTargets="CompileSolution">
+    <Error Message="Missing or invalid value specified for the NUnitDirectory property"
+      Condition="$(FunctionalTestProject) != '' And !Exists('$(NUnitDirectory)')" />
     <NUnit Assemblies="$(MSBuildProjectDirectory)\$(FunctionalTestProject)\bin\$(Configuration)\$(FunctionalTestProject).dll"
       ToolPath="$(NUnitDirectory)"
       Condition="$(FunctionalTestProject) != ''" />

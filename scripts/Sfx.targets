@@ -4,7 +4,7 @@
   
   <!-- Properties expected to be provided, unless these defaults are OK -->
   <PropertyGroup>
-    <PackageName Condition="$(PackageName) == ''"></PackageName>
+    <PackageName Condition="$(PackageName) == ''">$(MSBuildProjectName)-$(Version)</PackageName>
     <SevenZipDirectory Condition="$(SevenZipDirectory) == ''">$(MSBuildProjectDirectory)\Dependencies\CM.NET</SevenZipDirectory>
     <SfxDirectory Condition="$(SfxDirectory) == ''">$(BuildDirectory)\sfx</SfxDirectory>
   </PropertyGroup>
@@ -19,7 +19,6 @@
   </PropertyGroup>
 
   <Target Name="CreateSfx">
-    <Error Text="No PackageName property was defined" Condition="$(PackageName) == ''" />
     <Copy SourceFiles="@(DeployExe)"
       DestinationFiles="@(DeployExe->'$(PackageDirectory)\%(RecursiveDir)%(Filename)%(Extension)')" />
     <Copy SourceFiles="$(SevenZipDirectory)\7zS.sfx" DestinationFolder="$(SfxDirectory)" />

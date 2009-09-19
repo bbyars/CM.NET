@@ -2,7 +2,7 @@
   <Import Project="Package.targets" />
   
   <PropertyGroup>
-    <PackageName Condition="$(PackageName) == ''"></PackageName>
+    <PackageName Condition="$(PackageName) == ''">$(MSBuildProjectName)-$(Version)</PackageName>
     <MSBuildCommunityTasksPath Condition="$(MSBuildCommunityTasksPath) == ''">$(MSBuildProjectDirectory)\Dependencies\CM.NET</MSBuildCommunityTasksPath>
   </PropertyGroup>
 
@@ -14,7 +14,6 @@
   <UsingTask AssemblyFile="$(MSBuildCommunityTasksPath)\MSBuild.Community.Tasks.dll" TaskName="MSBuild.Community.Tasks.Zip" />
 
   <Target Name="CreateArchive">
-    <Error Text="No PackageName property was defined" Condition="$(PackageName) == ''" />
     <Zip Files="@(ArchiveFiles)"
       WorkingDirectory="$(PackageDirectory)"
       ZipFileName="$(BuildDirectory)\$(PackageName).zip" />
