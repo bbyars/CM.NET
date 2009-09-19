@@ -47,6 +47,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CopyToPhysicalDirectory.cs" />
+    <Compile Include="Merge.cs" />
     <Compile Include="NetworkDirectory.cs" />
     <Compile Include="CMTask.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

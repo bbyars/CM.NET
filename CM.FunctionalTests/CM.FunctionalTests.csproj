@@ -44,6 +44,7 @@
   <ItemGroup>
     <Compile Include="Deploy.UI\FileSystemTest.cs" />
     <Compile Include="Deploy.UI\ProcessRunnerTest.cs" />
+    <Compile Include="MSBuild.Tasks\MergeTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="scripts\SfxTest.cs" />
     <Compile Include="Using.cs" />
@@ -120,6 +121,10 @@
     <ProjectReference Include="..\CM.Deploy.UI\CM.Deploy.UI.csproj">
       <Project>{CDF8201C-74CD-4DA3-8BD5-B8EDCCA5D124}</Project>
       <Name>CM.Deploy.UI</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CM.MSBuild.Tasks\CM.MSBuild.Tasks.csproj">
+      <Project>{31311AFC-AD50-469B-A937-703A12016D3E}</Project>
+      <Name>CM.MSBuild.Tasks</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
