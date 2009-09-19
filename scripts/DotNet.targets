@@ -22,6 +22,7 @@
   </PropertyGroup>
 
   <UsingTask AssemblyFile="$(MSBuildCommunityTasksPath)\MSBuild.Community.Tasks.dll" TaskName="MSBuild.Community.Tasks.FileUpdate" />
+  <UsingTask AssemblyFile="$(MSBuildCommunityTasksPath)\MSBuild.Community.Tasks.dll" TaskName="MSBuild.Community.Tasks.NUnit" />
   
   <ItemGroup>
     <AssemblyInfoFiles Include="**\AssemblyInfo.cs" />

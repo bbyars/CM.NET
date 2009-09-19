@@ -12,7 +12,4 @@
   <Import Project="$(CMDirectory)\Default.targets" />
   <Import Project="$(CMDirectory)\Master.targets" />
   <Import Project="$(CMDirectory)\DotNet.targets" />
-
-  <Import Project="$(MSBuildCommunityTasksPath)\MSBuild.Community.Tasks.targets" />
-  <Import Project="$(SdcTasksDirectory)\Microsoft.Sdc.Common.Tasks" />
 </Project>

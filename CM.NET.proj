@@ -23,6 +23,7 @@
   </PropertyGroup>
 
   <Import Project="$(CMDirectory)\CommonBuild.targets" />
+  <UsingTask AssemblyFile="$(MSBuildCommunityTasksPath)\MSBuild.Community.Tasks.dll" TaskName="MSBuild.Community.Tasks.Zip" />
 
   <Target Name="CopyFilesForPackaging">
     <ItemGroup>
