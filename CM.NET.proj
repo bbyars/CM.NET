@@ -1,7 +1,5 @@
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-    <ProjectName>CM.NET</ProjectName>
-    <Solution>$(ProjectName).sln</Solution>
     <UnitTestProject>CM.UnitTests</UnitTestProject>
     <FunctionalTestProject>CM.FunctionalTests</FunctionalTestProject>
     <PackageDirectory>$(MSBuildDirectory)\build\package</PackageDirectory>
@@ -9,15 +7,8 @@
     <CMDirectory>$(MSBuildProjectDirectory)\scripts</CMDirectory>
     <MSBuildCommunityTasksPath>$(MSBuildProjectDirectory)\Dependencies\msbuild-community-tasks</MSBuildCommunityTasksPath>
     <SdcTasksDirectory>$(MSBuildProjectDirectory)\Dependencies\sdc-tasks</SdcTasksDirectory>
-
-    <!-- TasksPath is used internally in Sdc Tasks -->
-    <TasksPath>$(SdcTasksDirectory)</TasksPath>
   </PropertyGroup>
 
-  <ItemGroup>
-    <DeployExe Include="$(MSBuildProjectDirectory)\CM.Deploy.UI\bin\$(Configuration)\deployer.exe" />
-  </ItemGroup>
-  
   <PropertyGroup>
     <PackageTargets>CopyFilesForPackaging</PackageTargets>
   </PropertyGroup>
@@ -49,6 +40,6 @@
     </CreateItem>
     <Zip Files="@(ArchiveFiles)"
       WorkingDirectory="$(PackageDirectory)"
-      ZipFileName="$(BuildDirectory)\CM.NET-$(Version).zip" />
+      ZipFileName="$(BuildDirectory)\$(PackageName).zip" />
   </Target>
 </Project>

@@ -19,8 +19,7 @@ namespace CM.FunctionalTests.scripts
                 File.WriteAllText("test.proj", @"
                     <Project DefaultTargets='Build' xmlns='http://schemas.microsoft.com/developer/msbuild/2003'>
                       <PropertyGroup>
-                        <ProjectName>SfxTest</ProjectName>
-                        <Version>1.2.3.4</Version>
+                        <PackageName>SfxTest</PackageName>
                         <SevenZipDirectory>..\scripts\Dependencies\7-zip</SevenZipDirectory>
                       </PropertyGroup>
 
@@ -33,9 +32,9 @@ namespace CM.FunctionalTests.scripts
                     </Project>");
 
                 var output = RunMSBuild("test.proj");
-                Assert.That(File.Exists(@"sfx\SfxTest-1.2.3.4.exe"), output);
+                Assert.That(File.Exists(@"sfx\SfxTest.exe"), output);
 
-                var sfxProcess = new ProcessRunner(@"sfx\SfxTest-1.2.3.4.exe");
+                var sfxProcess = new ProcessRunner(@"sfx\SfxTest.exe");
                 sfxProcess.Start("");
                 try
                 {

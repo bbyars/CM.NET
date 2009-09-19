@@ -13,7 +13,7 @@
 
   <Target Name="InitializeDefaultProperties">
     <!-- The only reason this has to be dynamic is because TeamCity patches our build script -->
-    <StringReplace Input="$(MSBuildProjectName)" OldValue=".proj.teamcity.patch" NewValue="" Condition="$(ProjectName)==''">
+    <StringReplace Input="$(MSBuildProjectName)" OldValue=".proj.teamcity.patch" NewValue="">
       <Output TaskParameter="Output" PropertyName="ProjectName" />
     </StringReplace>
     <CreateProperty Value="$(ProjectName).sln" Condition="$(Solution)==''">
@@ -24,6 +24,9 @@
     </CreateProperty>
     <CreateProperty Value="$(ProjectName).FunctionalTests" Condition="$(FunctionalTestProject)=='' And Exists('$(MSBuildProjectDirectory)\$(ProjectName).FunctionalTests')">
       <Output TaskParameter="Value" PropertyName="FunctionalTestProject" />
+    </CreateProperty>
+    <CreateProperty Value="$(ProjectName)-$(Version)" Condition="$(PackageName) == ''">
+      <Output TaskParameter="Value" PropertyName="PackageName" />
     </CreateProperty>
   </Target>
 </Project>

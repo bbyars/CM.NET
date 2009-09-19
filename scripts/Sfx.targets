@@ -2,9 +2,7 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <!-- Properties expected to be provided, unless these defaults are OK -->
   <PropertyGroup>
-    <ProjectName Condition="$(ProjectName) == ''"></ProjectName>
-    <Version Condition="$(Version) == ''">0.0.0.0</Version>
-    <PackageName Condition="$(PackageName) == ''">$(ProjectName)-$(Version)</PackageName>
+    <PackageName Condition="$(PackageName) == ''"></PackageName>
     <SevenZipDirectory Condition="$(SevenZipDirectory) == ''">$(MSBuildProjectDirectory)\Dependencies\7-zip</SevenZipDirectory>
     <PackageDirectory Condition="$(PackageDirectory) == ''">package</PackageDirectory>
     <SfxDirectory Condition="$(SfxDirectory) == ''">$(MSBuildProjectDirectory)\sfx</SfxDirectory>
@@ -29,14 +27,14 @@
   </Target>
   
   <Target Name="CreateSfx">
-    <Error Text="No ProjectName property was defined" Condition="$(ProjectName) == ''" />
+    <Error Text="No PackageName property was defined" Condition="$(PackageName) == ''" />
     <Copy SourceFiles="@(DeployExe)" DestinationFolder="$(PackageDirectory)" />
     <Copy SourceFiles="$(SevenZipDirectory)\7zS.sfx" DestinationFolder="$(SfxDirectory)" />
     
     <PropertyGroup>
       <SevenZipConfig>
 %3B!@Install@!UTF-8!
-Title="Deploy $(ProjectName)"
+Title="Deploy"
 RunProgram="$(PackageDirectory)\@(DeployExe->'%(Filename)').exe"
 %3B!@InstallEnd@!
       </SevenZipConfig>
