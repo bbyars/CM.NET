@@ -1,15 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <PropertyGroup>
-    <PreCompileTargets>$(PreCompileTargets);Clean</PreCompileTargets>
-    <PreUnitTestTargets>$(PreUnitTestTargets);Compile</PreUnitTestTargets>
-    <PrePackageTargets>$(PrePackageTargets);UnitTest</PrePackageTargets>
-    <PreDeployTargets>$(PreDeployTargets);Package</PreDeployTargets>
-    <PreFunctionalTestTargets>$(PreFunctionalTestTargets);Deploy</PreFunctionalTestTargets>
-  </PropertyGroup>
-
   <!-- This is the main workflow. -->
-  <!-- It is designed so that, rather than redefining it, you hook into it with properties, as shown above -->
+  <!-- It is designed so that, rather than redefining it, you hook into it with properties -->
   <Target Name="Build" DependsOnTargets="
       $(PreBuildTargets);
       Clean;
@@ -27,51 +19,59 @@
     <OnError ExecuteTargets="$(PostCleanTargets)" />
   </Target>
 
-  <Target Name="Compile" DependsOnTargets="$(PreCompileTargets)">
+  <Target Name="Compile" DependsOnTargets="Clean;$(PreCompileTargets)">
     <CallTarget Targets="$(CompileTargets);$(PostCompileTargets)" />
     <OnError ExecuteTargets="$(PostCompileTargets)" />
   </Target>
 
-  <Target Name="UnitTest" DependsOnTargets="$(PreUnitTestTargets)">
+  <Target Name="UnitTest" DependsOnTargets="Compile;$(PreUnitTestTargets)">
     <CallTarget Targets="$(UnitTestTargets);$(PostUnitTestTargets)" />
     <OnError ExecuteTargets="$(PostUnitTestTargets)" />
   </Target>
 
-  <Target Name="Package" DependsOnTargets="$(PrePackageTargets)">
+  <Target Name="Package" DependsOnTargets="Compile;$(PrePackageTargets)">
     <CallTarget Targets="$(PackageTargets);$(PostPackageTargets)" />
     <OnError ExecuteTargets="$(PostPackageTargets)" />
   </Target>
 
-  <Target Name="Deploy" DependsOnTargets="$(PreDeployTargets)">
+  <Target Name="Deploy" DependsOnTargets="Package;$(PreDeployTargets)">
     <CallTarget Targets="$(DeployTargets);$(PostPackageTargets)" />
     <OnError ExecuteTargets="$(PostPackageTargets)" />
   </Target>
 
-  <Target Name="FunctionalTest" DependsOnTargets="$(PreFunctionalTestTargets)">
+  <Target Name="FunctionalTest" DependsOnTargets="Deploy;$(PreFunctionalTestTargets)">
     <CallTarget Targets="$(FunctionalTestTargets);$(PostFunctionalTestTargets)" />
     <OnError ExecuteTargets="$(PostFunctionalTestTargets)" />
   </Target>
 
-  <Target Name="Trace">
-    <Message Text="PreBuildTargets: $(PreBuildTargets)" />
-    <Message Text="PreCleanTargets: $(PreCleanTargets)" />
-    <Message Text="CleanTargets: $(CleanTargets)" />
-    <Message Text="PostBuildTargets: $(PostBuildTargets)" />
-    <Message Text="PreCompileTargets: $(PreCompileTargets)" />
-    <Message Text="CompileTargets: $(CompileTargets)" />
-    <Message Text="PostCompileTargets: $(PostCompleTargets)" />
-    <Message Text="PreUnitTestTargets: $(PreUnitTestTargets)" />
-    <Message Text="UnitTestTargets: $(UnitTestTargets)" />
-    <Message Text="PostUnitTestTargets: $(PostUnitTestTargets)" />
-    <Message Text="PrePackageTargets: $(PrePackageTargets)" />
-    <Message Text="PackageTargets: $(PackageTargets)" />
-    <Message Text="PostPackageTargets: $(PostPackageTargets)" />
-    <Message Text="PreDeployTargets: $(PreDeployTargets)" />
-    <Message Text="DeployTargets: $(DeployTargets)" />
-    <Message Text="PostDeployTargets: $(PostDeployTargets)" />
-    <Message Text="PreFunctionalTestTargets: $(PreFunctionalTestTargets)" />
-    <Message Text="FunctionalTestTargets: $(FunctionalTestTargets)" />
-    <Message Text="PostFunctionalTestTargets: $(PostFunctionalTestTargets)" />
-    <Message Text="PostBuildTargets: $(PostBuildTargets)" />
+  <!-- Tracing targets to allow debugging -->
+  <Target Name="Trace" DependsOnTargets="TraceWorkflow;TraceData" />
+
+  <Target Name="TraceWorkflow">
+    <Message Text="Workflow:" />
+    <Message Text="  PreBuildTargets: $(PreBuildTargets)" Condition="$(PreBuildTargets) != ''" />
+    <Message Text="  PreCleanTargets: $(PreCleanTargets)" Condition="$(PreCleanTargets) != ''" />
+    <Message Text="  CleanTargets: $(CleanTargets)" Condition="$(CleanTargets) != ''" />
+    <Message Text="  PostBuildTargets: $(PostBuildTargets)" Condition="$(PostBuildTargets) != ''" />
+    <Message Text="  PreCompileTargets: $(PreCompileTargets)" Condition="$(PreCompileTargets) != ''" />
+    <Message Text="  CompileTargets: $(CompileTargets)" Condition="$(CompileTargets) != ''" />
+    <Message Text="  PostCompileTargets: $(PostCompleTargets)" Condition="$(PostCompleTargets) != ''" />
+    <Message Text="  PreUnitTestTargets: $(PreUnitTestTargets)" Condition="$(PreUnitTestTargets) != ''" />
+    <Message Text="  UnitTestTargets: $(UnitTestTargets)" Condition="$(UnitTestTargets) != ''" />
+    <Message Text="  PostUnitTestTargets: $(PostUnitTestTargets)" Condition="$(PostUnitTestTargets) != ''" />
+    <Message Text="  PrePackageTargets: $(PrePackageTargets)" Condition="$(PrePackageTargets) != ''" />
+    <Message Text="  PackageTargets: $(PackageTargets)" Condition="$(PackageTargets) != ''" />
+    <Message Text="  PostPackageTargets: $(PostPackageTargets)" Condition="$(PostPackageTargets) != ''" />
+    <Message Text="  PreDeployTargets: $(PreDeployTargets)" Condition="$(PreDeployTargets) != ''" />
+    <Message Text="  DeployTargets: $(DeployTargets)" Condition="$(DeployTargets) != ''" />
+    <Message Text="  PostDeployTargets: $(PostDeployTargets)" Condition="$(PostDeployTargets) != ''" />
+    <Message Text="  PreFunctionalTestTargets: $(PreFunctionalTestTargets)" Condition="$(PreFunctionalTestTargets) != ''" />
+    <Message Text="  FunctionalTestTargets: $(FunctionalTestTargets)" Condition="$(FunctionalTestTargets) != ''" />
+    <Message Text="  PostFunctionalTestTargets: $(PostFunctionalTestTargets)" Condition="$(PostFunctionalTestTargets) != ''" />
+    <Message Text="  PostBuildTargets: $(PostBuildTargets)" Condition="$(PostBuildTargets) != ''" />
+
+    <CallTarget Targets="$(TraceWorkflowTargets)" />
   </Target>
+
+  <Target Name="TraceData" DependsOnTargets="$(TraceDataTargets)" />
 </Project>

@@ -16,6 +16,7 @@
     <CleanTargets>$(CleanTargets);CleanPackageDirectory</CleanTargets>
     <PostCleanTargets>$(PostCleanTargets);CreatePackageDirectory</PostCleanTargets>
     <PackageTargets>$(PackageTargets);CreateSfx</PackageTargets>
+    <TraceDataTargets>$(TraceDataTargets);TraceSfxData</TraceDataTargets>
   </PropertyGroup>
 
   <Target Name="CleanPackageDirectory">
@@ -44,5 +45,13 @@ RunProgram="$(PackageDirectory)\@(DeployExe->'%(Filename)').exe"
     <WriteLinesToFile File="$(SfxDirectory)\config.txt" Lines="$(SevenZipConfig)" />
     <Exec Command="copy /b 7zS.sfx + config.txt + package.7z $(PackageName).exe" 
       WorkingDirectory="$(SfxDirectory)" />
+  </Target>
+
+  <Target Name="TraceSfxData">
+    <Message Text="Sfx.targets" />
+    <Message Text="  PackageName: $(PackageName)" />
+    <Message Text="  SevenZipDirectory: $(SevenZipDirectory)" />
+    <Message Text="  PackageDirectory: $(PackageDirectory)" />
+    <Message Text="  SfxDirectory: $(SfxDirectory)" />
   </Target>
 </Project>

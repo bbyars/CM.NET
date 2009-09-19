@@ -18,6 +18,7 @@
     <PostCompileTargets>$(PostCompileTargets);RestoreAssemblyInfos</PostCompileTargets>
     <UnitTestTargets>$(UnitTestTargets);RunUnitTests</UnitTestTargets>
     <FunctionalTestTargets>$(UnitTestTargets);RunFunctionalTests</FunctionalTestTargets>
+    <TraceDataTargets>$(TraceDataTargets);TraceDotNetData</TraceDataTargets>
   </PropertyGroup>
 
   <UsingTask AssemblyFile="$(MSBuildCommunityTasksPath)\MSBuild.Community.Tasks.dll" TaskName="MSBuild.Community.Tasks.FileUpdate" />
@@ -70,5 +71,16 @@
     <NUnit Assemblies="$(MSBuildProjectDirectory)\$(FunctionalTestProject)\bin\$(Configuration)\$(FunctionalTestProject).dll"
       ToolPath="$(NUnitDirectory)"
       Condition="$(FunctionalTestProject) != ''" />
+  </Target>
+
+  <Target Name="TraceDotNetData">
+    <Message Text="DotNet.targets" />
+    <Message Text="  Solution: $(Solution)" />
+    <Message Text="  UnitTestProject: $(UnitTestProject)" />
+    <Message Text="  FunctionalTestProject: $(FunctionalTestProject)" />
+    <Message Text="  Configuration: $(Configuration)" />
+    <Message Text="  Version: $(Version)" />
+    <Message Text="  NUnitDirectory: $(NUnitDirectory)" />
+    <Message Text="  MSBuildCommunityTasksPath: $(MSBuildCommunityTasksPath)" />
   </Target>
 </Project>

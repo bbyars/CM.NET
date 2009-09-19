@@ -12,6 +12,7 @@
     <CleanTargets>$(CleanTargets);CleanBuildDirectory</CleanTargets>
     <PostCleanTargets>$(PostCleanTargets);MakeBuildDirectory</PostCleanTargets>
     <PreCompileTargets>$(PreCompileTargets);GetVersionParts</PreCompileTargets>
+    <TraceDataTargets>$(TraceDataTargets);TraceDefaultData</TraceDataTargets>
   </PropertyGroup>
 
   <Import Project="$(CMDirectory)\MasterWorkflow.targets" />
@@ -34,5 +35,14 @@
       <Output TaskParameter="BuildNumber" PropertyName="Version-Build" />
       <Output TaskParameter="RevisionNumber" PropertyName="Version-Revision" />
     </VersionNumber.Parse>
+  </Target>
+
+  <Target Name="TraceDefaultData">
+    <Message Text="Default.targets" />
+    <Message Text="  BuildDirectory: $(BuildDirectory)" />
+    <Message Text="  Version: $(Version)" />
+    <Message Text="  CMDirectory: $(CMDirectory)" />
+    <Message Text="  MSBuildCommunityTasksPath: $(MSBuildCommunityTasksPath)" />
+    <Message Text="  SdcTasksDirectory: $(SdcTasksDirectory)" />
   </Target>
 </Project>
