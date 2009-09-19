@@ -10,6 +10,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "scripts", "scripts", "{9F5A
 		scripts\Master.targets = scripts\Master.targets
 		scripts\Sfx.targets = scripts\Sfx.targets
 		scripts\Subversion.targets = scripts\Subversion.targets
+		scripts\TeamCity.targets = scripts\TeamCity.targets
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{1A0E42CF-9EF1-474F-86AC-FA096F307C57}"

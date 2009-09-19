@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Version Condition="$(BUILD_NUMBER) != ''">$(BUILD_NUMBER)</Version>
+    <SdcTasksDirectory Condition="$(SdcTasksDirectory) == ''">$(MSBuildProjectDirectory)\Dependencies\CM.NET</SdcTasksDirectory>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <PreCleanTargets>$(PreCleanTargets);InitializeDefaultProperties</PreCleanTargets>
+  </PropertyGroup>
+
+  <UsingTask TaskName="StringReplace" AssemblyFile="$(SdcTasksDirectory)\Microsoft.Sdc.Tasks.dll" />
+
+  <Target Name="InitializeDefaultProperties">
+    <!-- The only reason this has to be dynamic is because TeamCity patches our build script -->
+    <StringReplace Input="$(MSBuildProjectName)" OldValue=".proj.teamcity.patch" NewValue="" Condition="$(ProjectName)==''">
+      <Output TaskParameter="Output" PropertyName="ProjectName" />
+    </StringReplace>
+    <CreateProperty Value="$(ProjectName).sln" Condition="$(Solution)==''">
+      <Output TaskParameter="Value" PropertyName="Solution" />
+    </CreateProperty>
+    <CreateProperty Value="$(ProjectName).UnitTests" Condition="$(UnitTestProject)=='' And Exists('$(MSBuildProjectDirectory)\$(ProjectName).UnitTests')">
+      <Output TaskParameter="Value" PropertyName="UnitTestProject" />
+    </CreateProperty>
+    <CreateProperty Value="$(ProjectName).FunctionalTests" Condition="$(FunctionalTestProject)=='' And Exists('$(MSBuildProjectDirectory)\$(ProjectName).FunctionalTests')">
+      <Output TaskParameter="Value" PropertyName="FunctionalTestProject" />
+    </CreateProperty>
+  </Target>
+</Project>

@@ -2,12 +2,16 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <BuildDirectory Condition="$(BuildDirectory) == ''">$(MSBuildProjectDirectory)\build</BuildDirectory>
+    <SdcTasksDirectory Condition="$(SdcTasksDirectory) == ''">$(MSBuildProjectDirectory)\Dependencies\CM.NET</SdcTasksDirectory>
   </PropertyGroup>
 
   <PropertyGroup>
     <CleanTargets>$(CleanTargets);CleanBuildDirectory</CleanTargets>
     <PostCleanTargets>$(PostCleanTargets);MakeBuildDirectory</PostCleanTargets>
+    <PreCompileTargets>$(PreCompileTargets);GetVersionParts</PreCompileTargets>
   </PropertyGroup>
+
+  <UsingTask TaskName="Microsoft.Sdc.Tasks.VersionNumber.Parse" AssemblyFile="$(SdcTasksDirectory)\Microsoft.Sdc.Tasks.dll" />
 
   <Target Name="CleanBuildDirectory">
     <RemoveDir Directories="$(BuildDirectory)" Condition="Exists('$(BuildDirectory)')" />
@@ -15,5 +19,14 @@
 
   <Target Name="MakeBuildDirectory">
     <MakeDir Directories="$(BuildDirectory)" Condition="!Exists('$(BuildDirectory)')" />
+  </Target>
+
+  <Target Name="GetVersionParts">
+    <VersionNumber.Parse Text="$(Version)">
+      <Output TaskParameter="MajorNumber" PropertyName="Version-Major" />
+      <Output TaskParameter="MinorNumber" PropertyName="Version-Minor" />
+      <Output TaskParameter="BuildNumber" PropertyName="Version-Build" />
+      <Output TaskParameter="RevisionNumber" PropertyName="Version-Revision" />
+    </VersionNumber.Parse>
   </Target>
 </Project>
