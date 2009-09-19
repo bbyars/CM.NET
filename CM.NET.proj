@@ -2,7 +2,7 @@
   <PropertyGroup>
     <UnitTestProject>CM.UnitTests</UnitTestProject>
     <FunctionalTestProject>CM.FunctionalTests</FunctionalTestProject>
-    <PackageDirectory>$(MSBuildDirectory)\build\package</PackageDirectory>
+    <PackageDirectory>$(MSBuildProjectDirectory)\build\package</PackageDirectory>
     
     <CMDirectory>$(MSBuildProjectDirectory)\scripts</CMDirectory>
     <MSBuildCommunityTasksPath>$(MSBuildProjectDirectory)\Dependencies\msbuild-community-tasks</MSBuildCommunityTasksPath>
@@ -33,7 +33,8 @@
       <Output TaskParameter="Include" ItemName="PackageFiles" />
     </CreateItem>
 
-    <Copy SourceFiles="@(PackageFiles)" DestinationFolder="$(PackageDirectory)" />
+    <Copy SourceFiles="@(PackageFiles)"
+      DestinationFiles="@(PackageFiles->'$(PackageDirectory)\%(RecursiveDir)%(Filename)%(Extension)')" />
 
     <CreateItem Include="$(PackageDirectory)\**\*">
       <Output TaskParameter="Include" ItemName="ArchiveFiles" />
