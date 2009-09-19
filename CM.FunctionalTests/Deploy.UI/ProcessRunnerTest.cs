@@ -70,5 +70,15 @@ namespace CM.FunctionalTests.Deploy.UI
             var orphanedProcesses = Process.GetProcessesByName("ping");
             Assert.That(orphanedProcesses.Length, Is.EqualTo(0));
         }
+
+        [Test]
+        public void ShouldAllowKillingTreeWhenRunInBackground()
+        {
+            var runner = new ProcessRunner("cmd");
+            runner.Start("/c cmd /c ping 127.0.0.1 -n 20");
+            runner.KillTree();
+            var orphanedProcesses = Process.GetProcessesByName("ping");
+            Assert.That(orphanedProcesses.Length, Is.EqualTo(0));
+        }
     }
 }

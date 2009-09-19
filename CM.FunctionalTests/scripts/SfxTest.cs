@@ -2,6 +2,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Threading;
+using CM.Deploy.UI;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 
@@ -34,17 +35,15 @@ namespace CM.FunctionalTests.scripts
                 var output = RunMSBuild("test.proj");
                 Assert.That(File.Exists(@"sfx\SfxTest-1.2.3.4.exe"), output);
 
-                var sfxProcess = Process.Start(@"sfx\SfxTest-1.2.3.4.exe");
+                var sfxProcess = new ProcessRunner(@"sfx\SfxTest-1.2.3.4.exe");
+                sfxProcess.Start("");
                 try
                 {
-                    var deployerProcess = WaitForProcess("deployer");
-                    Assert.That(deployerProcess, Is.Not.Null, "no deployer process is running");
-                    deployerProcess.Kill();
+                    Assert.That(WaitForProcess("deployer"), Is.Not.Null, "no deployer process is running");
                 }
                 finally
                 {
-                    sfxProcess.Kill();
-                    WaitForProcessExit("SfxTest-1.2.3.4");
+                    sfxProcess.KillTree();
                 }
             });
         }

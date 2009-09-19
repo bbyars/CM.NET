@@ -26,11 +26,11 @@ namespace CM.Deploy.UI
             get { return ExitCode == 0; }
         }
         
-        public virtual void Run(string args, TimeSpan timeout)
+        public virtual Process Start(string args)
         {
             var startInfo = new ProcessStartInfo
             {
-                FileName = command, 
+                FileName = command,
                 Arguments = args,
                 RedirectStandardOutput = true,
                 UseShellExecute = false,
@@ -40,13 +40,31 @@ namespace CM.Deploy.UI
             Pid = process.Id;
             process.OutputDataReceived += OnStandardOutputUpdated;
             process.BeginOutputReadLine();
+            return process;
+        }
 
+        public virtual void Run(string args, TimeSpan timeout)
+        {
+            var process = Start(args);
             process.WaitForExit(GetMillisecondsToWait(timeout));
 
             if (process.HasExited)
                 ExitCode = process.ExitCode;
             else
                 KillTree();
+        }
+
+        public virtual void KillTree()
+        {
+            var startInfo = new ProcessStartInfo
+            {
+                FileName = "taskkill",
+                Arguments = string.Format("/PID {0} /T /F", Pid),
+                UseShellExecute = false,
+                CreateNoWindow = true
+            };
+            var killProcess = Process.Start(startInfo);
+            killProcess.WaitForExit(5000);
         }
 
         protected virtual void OnOutputUpdated()
@@ -59,19 +77,6 @@ namespace CM.Deploy.UI
         {
             var milliseconds = Convert.ToInt64(timeout.TotalMilliseconds);
             return milliseconds > int.MaxValue ? int.MaxValue : Convert.ToInt32(milliseconds);
-        }
-
-        private void KillTree()
-        {
-            var startInfo = new ProcessStartInfo
-            {
-                FileName = "taskkill",
-                Arguments = string.Format("/PID {0} /T /F", Pid),
-                UseShellExecute = false,
-                CreateNoWindow = true
-            };
-            var killProcess = Process.Start(startInfo);
-            killProcess.WaitForExit(5000);
         }
 
         private void OnStandardOutputUpdated(object sender, DataReceivedEventArgs e)
