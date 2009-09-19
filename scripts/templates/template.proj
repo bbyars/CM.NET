@@ -18,8 +18,7 @@
   </PropertyGroup>
 
   <!-- Add any common-build scripts that also hook into the workflow in Master.Targets -->
-  <Import Project="$(CommonBuildDirectory)\Common.Targets" />
-  <Import Project="$(CommonBuildDirectory)\DotNet.Targets" />
+  <Import Project="$(CommonBuildDirectory)\Default.Targets" />
 
   <!-- Add environment-specific properties in the appropriate .Propeties file -->
   <Import Project="$(MSBuildProjectDirectory)\environments\$(Environment).properties" />

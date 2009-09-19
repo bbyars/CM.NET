@@ -3,7 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "scripts", "scripts", "{9F5AF7E5-7B4B-4544-80C7-48E3F6D8322D}"
 	ProjectSection(SolutionItems) = preProject
-		scripts\Common.targets = scripts\Common.targets
 		scripts\create-project.bat = scripts\create-project.bat
 		scripts\Default.targets = scripts\Default.targets
 		scripts\DotNet.targets = scripts\DotNet.targets

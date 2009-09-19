@@ -2,7 +2,9 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <BuildDirectory Condition="$(BuildDirectory) == ''">$(MSBuildProjectDirectory)\build</BuildDirectory>
-    <SdcTasksDirectory Condition="$(SdcTasksDirectory) == ''">$(MSBuildProjectDirectory)\Dependencies\CM.NET</SdcTasksDirectory>
+    <CMDirectory Condition="$(CMDirectory) == ''">$(MSBuildProjectDirectory)\Dependencies\CM.NET</CMDirectory>
+    <MSBuildCommunityTasksPath Condition="$(MSBuildCommunityTasksPath) == ''">$(CMDirectory)</MSBuildCommunityTasksPath>
+    <SdcTasksDirectory Condition="$(SdcTasksDirectory) == ''">$(CMDirectory)</SdcTasksDirectory>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -10,6 +12,9 @@
     <PostCleanTargets>$(PostCleanTargets);MakeBuildDirectory</PostCleanTargets>
     <PreCompileTargets>$(PreCompileTargets);GetVersionParts</PreCompileTargets>
   </PropertyGroup>
+
+  <Import Project="$(CMDirectory)\Master.targets" />
+  <Import Project="$(CMDirectory)\DotNet.targets" />
 
   <UsingTask TaskName="Microsoft.Sdc.Tasks.VersionNumber.Parse" AssemblyFile="$(SdcTasksDirectory)\Microsoft.Sdc.Tasks.dll" />
 

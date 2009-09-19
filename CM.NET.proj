@@ -23,7 +23,7 @@
   </PropertyGroup>
 
   <Import Project="$(CMDirectory)\TeamCity.targets" />
-  <Import Project="$(CMDirectory)\Common.targets" />
+  <Import Project="$(CMDirectory)\Default.targets" />
   <UsingTask AssemblyFile="$(MSBuildCommunityTasksPath)\MSBuild.Community.Tasks.dll" TaskName="MSBuild.Community.Tasks.Zip" />
 
   <Target Name="CopyFilesForPackaging">
