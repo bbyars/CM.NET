@@ -6,27 +6,28 @@
   </PropertyGroup>
 
   <PropertyGroup>
-<!--    <PreCleanTargets>$(PreCleanTargets);InitializeDefaultProperties</PreCleanTargets>-->
+    <PreCleanTargets>$(PreCleanTargets);FixInferredProperties</PreCleanTargets>
     <TraceDataTargets>$(TraceDataTargets);TraceTeamCityData</TraceDataTargets>
   </PropertyGroup>
 
   <UsingTask TaskName="StringReplace" AssemblyFile="$(SdcTasksDirectory)\Microsoft.Sdc.Tasks.dll" />
 
-  <Target Name="InitializeDefaultProperties">
-    <!-- The only reason this has to be dynamic is because TeamCity patches our build script -->
+  <Target Name="FixInferredProperties">
+    <!-- Team City patches our build script, which changes $(MSBuildProjectName). -->
+    <!-- Properties previously inferred from that property may no longer be set -->
     <StringReplace Input="$(MSBuildProjectName)" OldValue=".proj.teamcity.patch" NewValue="">
       <Output TaskParameter="Output" PropertyName="ProjectName" />
     </StringReplace>
-    <CreateProperty Value="$(ProjectName).sln" Condition="$(Solution)==''">
+    <CreateProperty Value="$(ProjectName).sln" Condition="$(Solution) == '' And Exists('$(ProjectName).sln')">
       <Output TaskParameter="Value" PropertyName="Solution" />
     </CreateProperty>
-    <CreateProperty Value="$(ProjectName).UnitTests" Condition="$(UnitTestProject)=='' And Exists('$(MSBuildProjectDirectory)\$(ProjectName).UnitTests')">
+    <CreateProperty Value="$(ProjectName).UnitTests" Condition="$(UnitTestProject) == '' And Exists('$(MSBuildProjectDirectory)\$(ProjectName).UnitTests')">
       <Output TaskParameter="Value" PropertyName="UnitTestProject" />
     </CreateProperty>
-    <CreateProperty Value="$(ProjectName).FunctionalTests" Condition="$(FunctionalTestProject)=='' And Exists('$(MSBuildProjectDirectory)\$(ProjectName).FunctionalTests')">
+    <CreateProperty Value="$(ProjectName).FunctionalTests" Condition="$(FunctionalTestProject) == '' And Exists('$(MSBuildProjectDirectory)\$(ProjectName).FunctionalTests')">
       <Output TaskParameter="Value" PropertyName="FunctionalTestProject" />
     </CreateProperty>
-    <CreateProperty Value="$(ProjectName)-$(Version)" Condition="$(PackageName) == ''">
+    <CreateProperty Value="$(ProjectName)-$(Version)" Condition="$(PackageName) == '' Or $(PackageName) == '$(ProjectName).teamcity.patch-$(Version)'">
       <Output TaskParameter="Value" PropertyName="PackageName" />
     </CreateProperty>
   </Target>
