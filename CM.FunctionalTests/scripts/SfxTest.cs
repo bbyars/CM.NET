@@ -44,6 +44,7 @@ namespace CM.FunctionalTests.scripts
                 finally
                 {
                     sfxProcess.Kill();
+                    WaitForProcessExit("SfxTest-1.2.3.4");
                 }
             });
         }
@@ -73,6 +74,17 @@ namespace CM.FunctionalTests.scripts
                 processes = Process.GetProcessesByName(processName);
             }
             return processes.Length == 0 ? null : processes[0];
+        }
+
+        private static void WaitForProcessExit(string processName)
+        {
+            var maxWait = DateTime.Now.AddSeconds(3);
+            var processes = Process.GetProcessesByName(processName);
+            while (processes.Length > 1 && DateTime.Now < maxWait)
+            {
+                Thread.Sleep(200);
+                processes = Process.GetProcessesByName(processName);
+            }
         }
     }
 }
