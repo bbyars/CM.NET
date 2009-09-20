@@ -7,23 +7,23 @@ namespace CM.MSBuild.Tasks
     {
         public virtual bool Exists(string url)
         {
-            var process = RunCommand(string.Format("ls \"{0}\"", url));
+            var process = RunCommand(string.Format("ls \"{0}\"", url), ".");
             return process.ExitCode == 0;
         }
 
         public virtual void CreateWorkingDirectory(string url, string localPath)
         {
-            RunCommand(string.Format("co \"{0}\" \"{1}\"", url, localPath));
+            RunCommand(string.Format("co \"{0}\" \"{1}\"", url, localPath), ".");
         }
 
-        public virtual void Commit(string workingDirectory)
+        public virtual void Commit(string workingDirectory, string message)
         {
-            
+            RunCommand(string.Format("ci --message \"{0}\"", message), workingDirectory);
         }
 
         public virtual void Import(string workingDirectory, string url, string message)
         {
-            RunCommand(string.Format("import \"{0}\" \"{1}\" --message \"{2}\"", workingDirectory, url, message));
+            RunCommand(string.Format("import \"{0}\" \"{1}\" --message \"{2}\"", workingDirectory, url, message), ".");
         }
 
         public virtual void Branch(string sourceUrl, string destinationUrl)
@@ -38,7 +38,7 @@ namespace CM.MSBuild.Tasks
 
         public virtual void AddDirectory(string directory, string workingDirectory)
         {
-            throw new NotImplementedException();
+            RunCommand(string.Format("add \"{0}\"", directory), workingDirectory);
         }
 
         public virtual void UpdateFile(string file, string workingDirectory)
@@ -56,7 +56,7 @@ namespace CM.MSBuild.Tasks
             throw new NotImplementedException();
         }
 
-        private Process RunCommand(string command)
+        private Process RunCommand(string command, string workingDirectory)
         {
             var startInfo = new ProcessStartInfo
             {
@@ -65,7 +65,8 @@ namespace CM.MSBuild.Tasks
                 CreateNoWindow = true,
                 UseShellExecute = false,
                 RedirectStandardOutput = true,
-                RedirectStandardError = true
+                RedirectStandardError = true,
+                WorkingDirectory = workingDirectory
             };
             Console.WriteLine("svn " + command);
             var process = Process.Start(startInfo);

@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Diagnostics;
 using System.IO;
-using System.Threading;
 using CM.Deploy.UI;
 
 namespace CM.FunctionalTests
@@ -23,39 +21,32 @@ namespace CM.FunctionalTests
             finally
             {
                 Environment.CurrentDirectory = originalDirectory;
-                try
-                {
-//                    System.IO.Directory.Delete(directoryName, true);
-                    var runner = new ProcessRunner("rmdir");
-                    runner.Run(string.Format("/S /Q \"{0}\"", directoryName), TimeSpan.MaxValue);
-                    Console.WriteLine("rmdir output: " + runner.StandardOutput);
-                    Console.WriteLine("rmdir err: " + runner.StandardError);
-                }
-                catch(Exception ex)
-                {
-                    Console.WriteLine(ex);
-                }
+
+                // I can't figure out why we can't delete the directory using Directory.Delete, but we can in the shell.
+                // Neither Process Explorer nor Unlocker find any locks on the directory.
+                new ProcessRunner("cmd").Run(string.Format("/c rmdir /S /Q \"{0}\"", directoryName), TimeSpan.FromSeconds(10));
             }
         }
 
         public static void SvnRepo(Action<string> test)
         {
-            //TODO: I want to use a relative directory under the test directory, but I 
-            // can't figure out why we can't delete the directory here, but we can in the shell.
-            // Neither Process Explorer nor Unlocker find any locks on the directory.
-            // I'm providing an ugly work-around - writing to a temp directory and just leaving them there.
             var repoPath = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
-            var currentDirectory = Environment.CurrentDirectory;
-            Using.Directory(repoPath, () =>
+            System.IO.Directory.CreateDirectory(repoPath);
+            try
             {
                 var runner = new ProcessRunner("svnadmin");
-                runner.Run("create .", TimeSpan.FromSeconds(3));
+                runner.Run(string.Format("create \"{0}\"", repoPath), TimeSpan.FromSeconds(3));
                 NUnit.Framework.Assert.That(runner.WasSuccessful, runner.StandardError);
 
                 var repoUrl = "file:///" + repoPath.Replace('\\', '/');
-                Environment.CurrentDirectory = currentDirectory;
                 test(repoUrl);
-            });
+            }
+            finally
+            {
+                // I can't figure out why we can't delete the directory using Directory.Delete, but we can in the shell.
+                // Neither Process Explorer nor Unlocker find any locks on the directory.
+                new ProcessRunner("cmd").Run(string.Format("/c rmdir /S /Q \"{0}\"", repoPath), TimeSpan.FromSeconds(10));
+            }
         }
     }
 }

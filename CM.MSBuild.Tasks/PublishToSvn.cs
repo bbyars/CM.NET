@@ -58,7 +58,7 @@ namespace CM.MSBuild.Tasks
             {
                 gateway.CreateWorkingDirectory(TrunkUrl, trunkWorkingDirectory);
                 MergeToTrunkWorkingDirectory(newWorkingDirectory, trunkWorkingDirectory);
-                gateway.Commit(trunkWorkingDirectory);
+                gateway.Commit(trunkWorkingDirectory, "");
             }
             else
             {

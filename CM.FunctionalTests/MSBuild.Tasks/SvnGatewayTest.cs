@@ -66,7 +66,7 @@ namespace CM.FunctionalTests.MSBuild.Tasks
                 gateway.CreateWorkingDirectory(url + "/test", "workingDir");
                 Directory.CreateDirectory(@"workingDir\trunk");
                 gateway.AddDirectory("trunk", "workingDir");
-                gateway.Commit("workingDir");
+                gateway.Commit("workingDir", "");
 
                 Assert.That(gateway.Exists(url + "/test/trunk"));
             }));
