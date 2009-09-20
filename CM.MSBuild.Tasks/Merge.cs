@@ -8,6 +8,11 @@ namespace CM.MSBuild.Tasks
     public class Merge
     {
         private readonly DirectoryInfo sourceDirectory;
+        private string destinationDirectory;
+        private string[] sourceFiles;
+        private string[] destinationFiles;
+        private string[] sourceDirectories;
+        private string[] destinationDirectories;
         private string[] excludedDirectories = new string[0];
         private string parentPath = "";
 
@@ -65,94 +70,67 @@ namespace CM.MSBuild.Tasks
 
         public virtual Merge Into(string destinationDirectory)
         {
-            UpdateChangedFiles(destinationDirectory);
-            AddNewFiles(destinationDirectory);
-            DeleteRemovedFiles(destinationDirectory);
-            AddNewSubdirectories(destinationDirectory);
-            DeleteRemovedDirectories(destinationDirectory);
-            MergeSubdirectories(destinationDirectory);
+            this.destinationDirectory = destinationDirectory;
+            sourceFiles = GetFilenames(sourceDirectory.FullName);
+            destinationFiles = GetFilenames(destinationDirectory);
+            sourceDirectories = GetDirectories(sourceDirectory);
+            destinationDirectories = GetDirectories(new DirectoryInfo(destinationDirectory));
+
+            UpdateChangedFiles();
+            AddNewFiles();
+            DeleteRemovedFiles();
+            AddNewSubdirectories();
+            DeleteRemovedDirectories();
+            MergeSubdirectories();
+
             return this;
         }
 
-        private void UpdateChangedFiles(string destinationDirectory)
+        private void UpdateChangedFiles()
         {
-            foreach (var file in sourceDirectory.GetFiles())
-            {
-                var destinationFile = Path.Combine(destinationDirectory, file.Name);
-                if (File.Exists(destinationFile))
-                {
-                    file.CopyTo(destinationFile, true);
-
-                    // This is always called, even if the file hasn't changed.
-                    // I haven't bothered fixing that because I can't think of any
-                    // reason to pay the cost of file compares.  We won't do anything
-                    // here in svn, and in git it won't matter if we call extra git adds.
-                    changeFileCallback(Path.Combine(parentPath, file.Name));
-                }
-            }
+            var newFiles = sourceFiles.Except(destinationFiles);
+            var removedFiles = destinationFiles.Except(sourceFiles);
+            DoMerge(sourceFiles, newFiles.Union(removedFiles), changeFileCallback,
+                file => File.Copy(Path.Combine(sourceDirectory.FullName, file), Path.Combine(destinationDirectory, file), true));
         }
 
-        private void AddNewFiles(string destinationDirectory)
+        private void AddNewFiles()
         {
-            var sourceFiles = GetFilenames(sourceDirectory.FullName);
-            var destinationFiles = GetFilenames(destinationDirectory);
-
-            MergeFiles(sourceFiles, destinationFiles, addFileCallback,
+            DoMerge(sourceFiles, destinationFiles, addFileCallback,
                 file => File.Copy(Path.Combine(sourceDirectory.FullName, file), Path.Combine(destinationDirectory, file)));
         }
 
-        private void DeleteRemovedFiles(string destinationDirectory)
+        private void DeleteRemovedFiles()
         {
-            var sourceFiles = GetFilenames(sourceDirectory.FullName);
-            var destinationFiles = GetFilenames(destinationDirectory);
-
-            MergeFiles(destinationFiles, sourceFiles, deleteFileCallback,
+            DoMerge(destinationFiles, sourceFiles, deleteFileCallback,
                 file => File.Delete(Path.Combine(destinationDirectory, file)));
         }
 
-        private void MergeFiles(IEnumerable<string> baseFiles, IEnumerable<string> excludeFiles, 
-            Action<string> callback, Action<string> mergeOperation)
+        private void AddNewSubdirectories()
         {
-            var files = baseFiles.Except(excludeFiles).ToList();
-
-            foreach (var file in files)
-            {
-                mergeOperation(file);
-                callback(Path.Combine(parentPath, file));
-            }
-        }
-
-        private void AddNewSubdirectories(string destinationDirectory)
-        {
-            var sourceDirectories = GetDirectories(sourceDirectory);
-            var destinationDirectories = GetDirectories(new DirectoryInfo(destinationDirectory));
-
-            MergeDirectories(sourceDirectories, destinationDirectories, addDirectoryCallback,
+            DoMerge(sourceDirectories, destinationDirectories, addDirectoryCallback,
                 dir => Directory.CreateDirectory(Path.Combine(destinationDirectory, dir)));
         }
 
-        private void DeleteRemovedDirectories(string destinationDirectory)
+        private void DeleteRemovedDirectories()
         {
-            var sourceDirectories = GetDirectories(sourceDirectory);
-            var destinationDirectories = GetDirectories(new DirectoryInfo(destinationDirectory));
-
-            MergeDirectories(destinationDirectories, sourceDirectories, deleteDirectoryCallback,
+            DoMerge(destinationDirectories, sourceDirectories.Union(excludedDirectories), deleteDirectoryCallback,
                 dir => Directory.Delete(Path.Combine(destinationDirectory, dir), true));
         }
 
-        private void MergeDirectories(string[] baseDirectories, string[] excludeDirectories,
+        private void DoMerge(IEnumerable<string> baseObjects, IEnumerable<string> excludeObjects,
             Action<string> callback, Action<string> mergeOperation)
         {
-            var directories = baseDirectories.Except(excludeDirectories).Except(excludedDirectories).ToList();
+            var fileSystemObjects = baseObjects.Except(excludeObjects).ToList();
 
-            foreach (var directory in directories)
+            foreach (var fileSystemObject in fileSystemObjects)
             {
-                mergeOperation(directory);
-                callback(Path.Combine(parentPath, directory));
+                mergeOperation(fileSystemObject);
+                callback(Path.Combine(parentPath, fileSystemObject));
             }
         }
 
-        private void MergeSubdirectories(string destinationDirectory)
+        private void MergeSubdirectories()
         {
             foreach (var subdirectory in sourceDirectory.GetDirectories())
             {
