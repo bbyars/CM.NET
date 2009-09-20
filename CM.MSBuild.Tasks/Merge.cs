@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
@@ -8,12 +9,13 @@ namespace CM.MSBuild.Tasks
     {
         private readonly DirectoryInfo sourceDirectory;
         private string[] excludedDirectories = new string[0];
+        private string parentPath = "";
+
         private Action<string> addFileCallback = delegate { };
         private Action<string> changeFileCallback = delegate { };
         private Action<string> deleteFileCallback = delegate { };
         private Action<string> addDirectoryCallback = delegate { };
         private Action<string> deleteDirectoryCallback = delegate { };
-        private string parentPath = "";
 
         public static Merge From(string sourceDirectory)
         {
@@ -94,25 +96,29 @@ namespace CM.MSBuild.Tasks
         {
             var sourceFiles = GetFilenames(sourceDirectory.FullName);
             var destinationFiles = GetFilenames(destinationDirectory);
-            var filesToAdd = sourceFiles.Where(filename => !destinationFiles.Contains(filename)).ToList();
 
-            foreach (var file in filesToAdd)
-            {
-                File.Copy(Path.Combine(sourceDirectory.FullName, file), Path.Combine(destinationDirectory, file));
-                addFileCallback(Path.Combine(parentPath, file));
-            }
+            MergeFiles(sourceFiles, destinationFiles, addFileCallback,
+                file => File.Copy(Path.Combine(sourceDirectory.FullName, file), Path.Combine(destinationDirectory, file)));
         }
 
         private void DeleteRemovedFiles(string destinationDirectory)
         {
             var sourceFiles = GetFilenames(sourceDirectory.FullName);
             var destinationFiles = GetFilenames(destinationDirectory);
-            var filesToRemove = destinationFiles.Where(filename => !sourceFiles.Contains(filename)).ToList();
 
-            foreach (var file in filesToRemove)
+            MergeFiles(destinationFiles, sourceFiles, deleteFileCallback,
+                file => File.Delete(Path.Combine(destinationDirectory, file)));
+        }
+
+        private void MergeFiles(IEnumerable<string> baseFiles, IEnumerable<string> excludeFiles, 
+            Action<string> callback, Action<string> mergeOperation)
+        {
+            var files = baseFiles.Except(excludeFiles).ToList();
+
+            foreach (var file in files)
             {
-                File.Delete(Path.Combine(destinationDirectory, file));
-                deleteFileCallback(Path.Combine(parentPath, file));
+                mergeOperation(file);
+                callback(Path.Combine(parentPath, file));
             }
         }
 
@@ -120,26 +126,29 @@ namespace CM.MSBuild.Tasks
         {
             var sourceDirectories = GetDirectories(sourceDirectory);
             var destinationDirectories = GetDirectories(new DirectoryInfo(destinationDirectory));
-            var directoriesToAdd = sourceDirectories.Where(dir => !destinationDirectories.Contains(dir)).ToList();
 
-            foreach (var directory in directoriesToAdd)
-            {
-                Directory.CreateDirectory(Path.Combine(destinationDirectory, directory));
-                addDirectoryCallback(Path.Combine(parentPath, directory));
-            }
+            MergeDirectories(sourceDirectories, destinationDirectories, addDirectoryCallback,
+                dir => Directory.CreateDirectory(Path.Combine(destinationDirectory, dir)));
         }
 
         private void DeleteRemovedDirectories(string destinationDirectory)
         {
             var sourceDirectories = GetDirectories(sourceDirectory);
             var destinationDirectories = GetDirectories(new DirectoryInfo(destinationDirectory));
-            var directoriesToRemove = destinationDirectories.Where(
-                dir => !sourceDirectories.Contains(dir) && !excludedDirectories.Contains(dir)).ToList();
 
-            foreach (var directory in directoriesToRemove)
+            MergeDirectories(destinationDirectories, sourceDirectories, deleteDirectoryCallback,
+                dir => Directory.Delete(Path.Combine(destinationDirectory, dir), true));
+        }
+
+        private void MergeDirectories(string[] baseDirectories, string[] excludeDirectories,
+            Action<string> callback, Action<string> mergeOperation)
+        {
+            var directories = baseDirectories.Except(excludeDirectories).Except(excludedDirectories).ToList();
+
+            foreach (var directory in directories)
             {
-                Directory.Delete(Path.Combine(destinationDirectory, directory), true);
-                deleteDirectoryCallback(Path.Combine(parentPath, directory));
+                mergeOperation(directory);
+                callback(Path.Combine(parentPath, directory));
             }
         }
 
