@@ -1,3 +1,5 @@
+using System;
+using System.Diagnostics;
 using System.IO;
 using CM.MSBuild.Tasks;
 using NUnit.Framework;
@@ -147,6 +149,45 @@ namespace CM.FunctionalTests.MSBuild.Tasks
             Merge.From("new").ExcludingDirectories(".svn").Into("old");
 
             Assert.That(Directory.GetDirectories(@"old\subdir"), Is.EqualTo(new[] { @"old\subdir\.svn" }));
+        }
+
+        [Test]
+        public void ShouldExecuteCallbackWhenAddingFiles()
+        {
+            File.WriteAllText(@"new\test.txt", "");
+            var log = "";
+            Merge.From("new").WithAddFileCallback(file => log = file).Into("old");
+
+            Assert.That(log, Is.EqualTo("test.txt"));
+        }
+
+        [Test]
+        public void ShouldExecuteCallbackAfterCopyingNewFile()
+        {
+            File.WriteAllText(@"new\test.txt", "");
+            Merge.From("new").WithAddFileCallback(file => Assert.That(File.Exists(@"old\test.txt"))).Into("old");
+        }
+
+        [Test]
+        public void ShouldIncludeParentDirectoryWhenCallingAddFileCallbackInSubdirectory()
+        {
+            Directory.CreateDirectory(@"new\subdir");
+            File.WriteAllText(@"new\subdir\test.txt", "");
+            var log = "";
+            Merge.From("new").WithAddFileCallback(file => log = file).Into("old");
+
+            Assert.That(log, Is.EqualTo(@"subdir\test.txt"));
+        }
+
+        [Test]
+        public void ShouldNotExecuteAddFileCallbackWhenUpdatingFiles()
+        {
+            File.WriteAllText(@"old\test.txt", "old");
+            File.WriteAllText(@"new\test.txt", "new");
+            var log = "";
+            Merge.From("new").WithAddFileCallback(file => log = file).Into("old");
+
+            Assert.That(log, Is.EqualTo(""));
         }
     }
 }

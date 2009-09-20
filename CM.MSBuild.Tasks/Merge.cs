@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using System.Linq;
 
@@ -7,6 +8,8 @@ namespace CM.MSBuild.Tasks
     {
         private readonly DirectoryInfo sourceDirectory;
         private string[] excludedDirectories = new string[0];
+        private Action<string> addFileCallback = delegate { };
+        private string parentPath = "";
 
         public static Merge From(string sourceDirectory)
         {
@@ -24,8 +27,15 @@ namespace CM.MSBuild.Tasks
             return this;
         }
         
+        public virtual Merge WithAddFileCallback(Action<string> callback)
+        {
+            addFileCallback = callback;
+            return this;
+        }
+
         public virtual Merge Into(string destinationDirectory)
         {
+            AddNewFiles(destinationDirectory);
             AddOrUpdateFiles(destinationDirectory);
             DeleteRemovedFiles(destinationDirectory);
             AddNewSubdirectories(destinationDirectory);
@@ -34,10 +44,25 @@ namespace CM.MSBuild.Tasks
             return this;
         }
 
+        private void AddNewFiles(string destinationDirectory)
+        {
+            var sourceFiles = GetFilenames(sourceDirectory.FullName);
+            var destinationFiles = GetFilenames(destinationDirectory);
+            var filesToAdd = sourceFiles.Where(filename => !destinationFiles.Contains(filename)).ToList();
+
+            foreach (var file in filesToAdd)
+            {
+                File.Copy(Path.Combine(sourceDirectory.FullName, file), Path.Combine(destinationDirectory, file));
+                addFileCallback(Path.Combine(parentPath, file));
+            }
+        }
+
         private void AddOrUpdateFiles(string destinationDirectory)
         {
             foreach (var file in sourceDirectory.GetFiles())
+            {
                 file.CopyTo(Path.Combine(destinationDirectory, file.Name), true);
+            }
         }
 
         private void DeleteRemovedFiles(string destinationDirectory)
@@ -69,9 +94,18 @@ namespace CM.MSBuild.Tasks
         {
             foreach (var subdirectory in sourceDirectory.GetDirectories())
             {
-                var merge = new Merge(subdirectory).ExcludingDirectories(excludedDirectories);
+                var merge = new Merge(subdirectory)
+                    .ExcludingDirectories(excludedDirectories)
+                    .WithAddFileCallback(addFileCallback)
+                    .WithParentPath(Path.Combine(parentPath, subdirectory.Name));
                 merge.Into(Path.Combine(destinationDirectory, subdirectory.Name));
             }
+        }
+
+        private Merge WithParentPath(string path)
+        {
+            parentPath = path;
+            return this;
         }
 
         private static string[] GetFilenames(string directory)
