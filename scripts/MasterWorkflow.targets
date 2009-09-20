@@ -10,9 +10,7 @@
       Package;
       Deploy;
       FunctionalTest;
-      $(PostBuildTargets)">
-    <OnError ExecuteTargets="$(PostBuildTargets)" />
-  </Target>
+      $(PostBuildTargets)" />
 
   <Target Name="Clean" DependsOnTargets="$(PreCleanTargets)">
     <CallTarget Targets="$(CleanTargets);$(PostCleanTargets)" />

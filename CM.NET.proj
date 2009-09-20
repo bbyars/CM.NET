@@ -10,6 +10,7 @@
 
   <PropertyGroup>
     <PrePackageTargets>CreatePackageFiles</PrePackageTargets>
+    <PostBuildTargets>Publish</PostBuildTargets>
   </PropertyGroup>
 
   <Import Project="$(CMDirectory)\TeamCity.targets" />
@@ -31,5 +32,9 @@
     <CreateItem Include="$(MSBuildProjectDirectory)\CM.MSBuild.Tasks\bin\$(Configuration)\CM.MSBuild.Tasks.dll">
       <Output TaskParameter="Include" ItemName="PackageFiles" />
     </CreateItem>
+  </Target>
+
+  <Target Name="Publish">
+    
   </Target>
 </Project>

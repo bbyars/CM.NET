@@ -2,6 +2,7 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Version Condition="$(BUILD_NUMBER) != ''">$(BUILD_NUMBER)</Version>
+    <IsInContinuousIntegration Condition="$(BUILD_NUMBER) != ''">true</IsInContinuousIntegration>
     <SdcTasksDirectory Condition="$(SdcTasksDirectory) == ''">$(MSBuildProjectDirectory)\Dependencies\CM.NET</SdcTasksDirectory>
   </PropertyGroup>
 
@@ -35,6 +36,7 @@
   <Target Name="TraceTeamCityData">
     <Message Text="TeamCity.targets" />
     <Message Text="  Version: $(Version)" />
+    <Message Text="  IsInContinuousIntegration: $(IsInContinuousIntegration)" />
     <Message Text="  SdcTasksDirectory: $(SdcTasksDirectory)" />
     
     <!-- Dynamic properties -->
