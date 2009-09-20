@@ -47,12 +47,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CopyToPhysicalDirectory.cs" />
-    <Compile Include="Merge.cs" />
     <Compile Include="MSBuildLogAdapter.cs" />
     <Compile Include="PublishToSvn.cs" />
-    <Compile Include="NetworkDirectory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SvnGateway.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CM.MSBuild.Tasks">

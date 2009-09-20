@@ -40,7 +40,7 @@ namespace CM.FunctionalTests.Common
         [Test]
         public void ShouldRunGivenProcessAndSaveStandardError()
         {
-            // I had trouble finding k simple Windows exe (in system32) that 
+            // I had trouble finding a simple Windows exe (in system32) that 
             // behaves correctly with regards to stderr
             var runner = new ProcessRunner("svn");
             runner.Run("", TimeSpan.MaxValue);

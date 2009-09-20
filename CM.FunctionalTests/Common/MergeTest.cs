@@ -1,9 +1,9 @@
 using System.IO;
-using CM.MSBuild.Tasks;
+using CM.Common;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 
-namespace CM.FunctionalTests.MSBuild.Tasks
+namespace CM.FunctionalTests.Common
 {
     [TestFixture]
     public class MergeTest

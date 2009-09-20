@@ -1,7 +1,7 @@
 using System;
 using System.IO;
 
-namespace CM.MSBuild.Tasks
+namespace CM.Common
 {
     public class NetworkDirectory
     {

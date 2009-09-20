@@ -36,7 +36,7 @@ namespace CM.FunctionalTests
             try
             {
                 var runner = new ProcessRunner("svnadmin");
-                runner.Run(string.Format("create \"{0}\"", repoPath), TimeSpan.FromSeconds(5));
+                runner.Run(string.Format("create \"{0}\"", repoPath), TimeSpan.FromSeconds(10));
                 NUnit.Framework.Assert.That(runner.WasSuccessful,
                     string.Format("svnadmin failed\n\tstdout: {0}\n\tstderr: {1}", runner.StandardOutput, runner.StandardError));
 

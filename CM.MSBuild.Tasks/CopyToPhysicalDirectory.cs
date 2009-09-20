@@ -1,4 +1,5 @@
 using System;
+using CM.Common;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
 

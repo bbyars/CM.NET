@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-namespace CM.MSBuild.Tasks
+namespace CM.Common
 {
     public class Merge
     {

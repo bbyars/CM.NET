@@ -45,9 +45,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Common\FileSystemTest.cs" />
+    <Compile Include="Common\MergeTest.cs" />
+    <Compile Include="Common\NetworkDirectoryTest.cs" />
     <Compile Include="Common\ProcessRunnerTest.cs" />
-    <Compile Include="MSBuild.Tasks\MergeTest.cs" />
-    <Compile Include="MSBuild.Tasks\SvnGatewayTest.cs" />
+    <Compile Include="Common\SvnGatewayTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="scripts\SfxTest.cs" />
     <Compile Include="TestLogger.cs" />

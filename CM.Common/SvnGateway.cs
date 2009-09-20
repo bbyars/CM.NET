@@ -1,7 +1,6 @@
 using System.Diagnostics;
-using CM.Common;
 
-namespace CM.MSBuild.Tasks
+namespace CM.Common
 {
     public class SvnGateway
     {
