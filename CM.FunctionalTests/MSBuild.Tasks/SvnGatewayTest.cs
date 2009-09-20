@@ -71,5 +71,93 @@ namespace CM.FunctionalTests.MSBuild.Tasks
                 Assert.That(gateway.Exists(url + "/test/trunk"));
             }));
         }
+
+        [Test]
+        public void CommittingDeletedDirectoryShouldRemoveItFromTheRepository()
+        {
+            Using.Directory("svn", () =>
+            Using.SvnRepo(url =>
+            {
+                Directory.CreateDirectory("test");
+                var gateway = new SvnGateway();
+                gateway.Import(".", url + "/test", "");
+
+                gateway.CreateWorkingDirectory(url + "/test", "workingDir");
+                gateway.DeleteDirectory("test", "workingDir");
+                gateway.Commit("workingDir", "");
+
+                Assert.That(!gateway.Exists(url + "/test/test"));
+            }));
+        }
+
+        [Test]
+        public void CommittingNewFileShouldAddItToTheRepository()
+        {
+            Using.Directory("svn", () =>
+            Using.SvnRepo(url =>
+            {
+                var gateway = new SvnGateway();
+                gateway.Import(".", url + "/test", "");
+
+                gateway.CreateWorkingDirectory(url + "/test", "workingDir");
+                File.WriteAllText(@"workingDir\test.txt", "");
+                gateway.AddFile("test.txt", "workingDir");
+                gateway.Commit("workingDir", "");
+
+                Assert.That(gateway.Exists(url + "/test/test.txt"));
+            }));
+        }
+
+        [Test]
+        public void CommittingDeletedFileShouldRemoveItFromTheRepository()
+        {
+            Using.Directory("svn", () =>
+            Using.SvnRepo(url =>
+            {
+                File.WriteAllText("test.txt", "");
+                var gateway = new SvnGateway();
+                gateway.Import(".", url + "/test", "");
+
+                gateway.CreateWorkingDirectory(url + "/test", "workingDir");
+                gateway.DeleteFile("test.txt", "workingDir");
+                gateway.Commit("workingDir", "");
+
+                Assert.That(!gateway.Exists(url + "/test/test.txt"));
+            }));
+        }
+
+        [Test]
+        public void CommittingUpdatedFileShouldChangeItInTheRepository()
+        {
+            Using.Directory("svn", () =>
+            Using.SvnRepo(url =>
+            {
+                File.WriteAllText("test.txt", "");
+                var gateway = new SvnGateway();
+                gateway.Import(".", url + "/test", "");
+
+                gateway.CreateWorkingDirectory(url + "/test", "workingDir");
+                File.WriteAllText(@"workingDir\test.txt", "update");
+                gateway.Commit("workingDir", "");
+                gateway.CreateWorkingDirectory(url + "/test", "validationDir");
+
+                Assert.That(File.ReadAllText(@"validationDir\test.txt"), Is.EqualTo("update"));
+            }));
+        }
+
+        [Test]
+        public void BranchingShouldCopyRepositoryToNewEndpoint()
+        {
+            Using.Directory("svn", () =>
+            Using.SvnRepo(url =>
+            {
+                File.WriteAllText("test.txt", "");
+                var gateway = new SvnGateway();
+                gateway.Import(".", url + "/test", "");
+
+                gateway.Branch(url + "/test", url + "/branch", "");
+                Assert.That(gateway.Exists(url + "/branch/test.txt"));
+            }));
+        }
     }
 }

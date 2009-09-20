@@ -1,4 +1,3 @@
-using System;
 using System.Diagnostics;
 
 namespace CM.MSBuild.Tasks
@@ -7,18 +6,17 @@ namespace CM.MSBuild.Tasks
     {
         public virtual bool Exists(string url)
         {
-            var process = RunCommand(string.Format("ls \"{0}\"", url), ".");
-            return process.ExitCode == 0;
+            return RunCommand(string.Format("ls \"{0}\"", url), ".") == 0;
         }
 
         public virtual void CreateWorkingDirectory(string url, string localPath)
         {
-            RunCommand(string.Format("co \"{0}\" \"{1}\"", url, localPath), ".");
+            RunCommand(string.Format("checkout \"{0}\" \"{1}\"", url, localPath), ".");
         }
 
         public virtual void Commit(string workingDirectory, string message)
         {
-            RunCommand(string.Format("ci --message \"{0}\"", message), workingDirectory);
+            RunCommand(string.Format("commit . --message \"{0}\"", message), workingDirectory);
         }
 
         public virtual void Import(string workingDirectory, string url, string message)
@@ -26,14 +24,14 @@ namespace CM.MSBuild.Tasks
             RunCommand(string.Format("import \"{0}\" \"{1}\" --message \"{2}\"", workingDirectory, url, message), ".");
         }
 
-        public virtual void Branch(string sourceUrl, string destinationUrl)
+        public virtual void Branch(string sourceUrl, string destinationUrl, string message)
         {
-            
+            RunCommand(string.Format("copy \"{0}\" \"{1}\" --message \"{2}\"", sourceUrl, destinationUrl, message), ".");
         }
 
         public virtual void AddFile(string file, string workingDirectory)
         {
-            throw new NotImplementedException();
+            RunCommand(string.Format("add \"{0}\"", file), workingDirectory);
         }
 
         public virtual void AddDirectory(string directory, string workingDirectory)
@@ -43,20 +41,19 @@ namespace CM.MSBuild.Tasks
 
         public virtual void UpdateFile(string file, string workingDirectory)
         {
-            throw new NotImplementedException();
         }
 
         public virtual void DeleteFile(string file, string workingDirectory)
         {
-            throw new NotImplementedException();
+            RunCommand(string.Format("rm \"{0}\"", file), workingDirectory);
         }
 
         public virtual void DeleteDirectory(string directory, string workingDirectory)
         {
-            throw new NotImplementedException();
+            RunCommand(string.Format("rm \"{0}\"", directory), workingDirectory);
         }
 
-        private Process RunCommand(string command, string workingDirectory)
+        private static int RunCommand(string command, string workingDirectory)
         {
             var startInfo = new ProcessStartInfo
             {
@@ -68,12 +65,9 @@ namespace CM.MSBuild.Tasks
                 RedirectStandardError = true,
                 WorkingDirectory = workingDirectory
             };
-            Console.WriteLine("svn " + command);
             var process = Process.Start(startInfo);
             process.WaitForExit();
-            Console.WriteLine("  Output: " + process.StandardOutput.ReadToEnd());
-            Console.WriteLine("  Error: " + process.StandardError.ReadToEnd());
-            return process;
+            return process.ExitCode;
         }
     }
 }

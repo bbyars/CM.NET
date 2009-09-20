@@ -64,7 +64,7 @@ namespace CM.MSBuild.Tasks
             {
                 gateway.Import(newWorkingDirectory, TrunkUrl, "");
             }
-            gateway.Branch(TrunkUrl, PublishedUrl);
+            gateway.Branch(TrunkUrl, PublishedUrl, "");
         }
 
         private void CreateNewWorkingDirectory(string path)
