@@ -38,6 +38,28 @@ namespace CM.FunctionalTests.Deploy.UI
         }
 
         [Test]
+        public void ShouldRunGivenProcessAndSaveStandardError()
+        {
+            // I had trouble finding k simple Windows exe (in system32) that 
+            // behaves correctly with regards to stderr
+            var runner = new ProcessRunner("svn");
+            runner.Run("", TimeSpan.MaxValue);
+            Console.WriteLine(runner.StandardOutput);
+            Assert.That(!runner.WasSuccessful);
+            Assert.That(runner.StandardError, Is.EqualTo("Type 'svn help' for usage."));
+        }
+
+        [Test]
+        public void ShouldAllowAsynchronousReadingOfStandardError()
+        {
+            var runner = new ProcessRunner("svn");
+            var error = "";
+            runner.ErrorUpdated += () => error = runner.StandardError;
+            runner.Run("", TimeSpan.MaxValue);
+            Assert.That(error, Is.EqualTo("Type 'svn help' for usage."));
+        }
+
+        [Test]
         public void ShouldHandleMultilineOutput()
         {
             Using.Directory("processRunnerTest", () =>

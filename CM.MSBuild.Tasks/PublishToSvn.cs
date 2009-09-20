@@ -29,31 +29,45 @@ namespace CM.MSBuild.Tasks
 
         public override bool Execute()
         {
+            var newWorkingDirectory = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
+            var trunkWorkingDirectory = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
             try
             {
-                CreateWorkingDirectory(@"C:\dev\CM.NET\tmp");
+                Publish(newWorkingDirectory, trunkWorkingDirectory);
             }
             catch (Exception e)
             {
                 Log.LogErrorFromException(e);
                 return false;
             }
-//            if (TrunkExists())
-//            {
-//                CheckoutTrunk();
-//                MergeToTrunkWorkingDirectory();
-//                CommitTrunk();
-//            }
-//            else
-//            {
-//                ImportTrunk();
-//            }
-//
-//            CopyTrunkToPublishedUrl();
+            finally
+            {
+                if (Directory.Exists(newWorkingDirectory))
+                    Directory.Delete(newWorkingDirectory, true);
+                if (Directory.Exists(trunkWorkingDirectory))
+                    Directory.Delete(trunkWorkingDirectory);
+            }
+
             return true;
         }
 
-        public void CreateWorkingDirectory(string path)
+        private void Publish(string newWorkingDirectory, string trunkWorkingDirectory)
+        {
+            CreateNewWorkingDirectory(newWorkingDirectory);
+            if (gateway.Exists(TrunkUrl))
+            {
+                gateway.CreateWorkingDirectory(TrunkUrl, trunkWorkingDirectory);
+                MergeToTrunkWorkingDirectory(newWorkingDirectory, trunkWorkingDirectory);
+                gateway.Commit(trunkWorkingDirectory);
+            }
+            else
+            {
+                gateway.Import(newWorkingDirectory, TrunkUrl, "");
+            }
+            gateway.Branch(TrunkUrl, PublishedUrl);
+        }
+
+        private void CreateNewWorkingDirectory(string path)
         {
             foreach (var item in FilesToPublish)
             {
@@ -67,34 +81,16 @@ namespace CM.MSBuild.Tasks
             }
         }
 
-        private bool TrunkExists()
+        private void MergeToTrunkWorkingDirectory(string newWorkingDirectory, string trunkWorkingDirectory)
         {
-            throw new NotImplementedException();
-        }
-
-        private void CheckoutTrunk()
-        {
-            throw new NotImplementedException();
-        }
-
-        private void MergeToTrunkWorkingDirectory()
-        {
-            throw new NotImplementedException();
-        }
-
-        private void CommitTrunk()
-        {
-            throw new NotImplementedException();
-        }
-
-        private void ImportTrunk()
-        {
-            throw new NotImplementedException();
-        }
-
-        private void CopyTrunkToPublishedUrl()
-        {
-            throw new NotImplementedException();
+            Merge.From(newWorkingDirectory)
+                .ExcludingDirectories(".svn")
+                .OnNewFiles(file => gateway.AddFile(file, trunkWorkingDirectory))
+                .OnNewDirectories(dir => gateway.AddDirectory(dir, trunkWorkingDirectory))
+                .OnChangedFiles(file => gateway.UpdateFile(file, trunkWorkingDirectory))
+                .OnDeletedFiles(file => gateway.DeleteFile(file, trunkWorkingDirectory))
+                .OnDeletedDirectories(dir => gateway.DeleteDirectory(dir, trunkWorkingDirectory))
+                .Into(trunkWorkingDirectory);
         }
     }
 }

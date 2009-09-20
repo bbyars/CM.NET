@@ -5,9 +5,10 @@ namespace CM.Deploy.UI
 {
     public class ProcessRunner
     {
-        public delegate void OutputUpdatedHandler();
+        public delegate void UpdatedHandler();
 
-        public event OutputUpdatedHandler OutputUpdated;
+        public event UpdatedHandler OutputUpdated;
+        public event UpdatedHandler ErrorUpdated;
 
         private readonly string command;
 
@@ -19,6 +20,7 @@ namespace CM.Deploy.UI
 
         public virtual int Pid { get; private set; }
         public virtual string StandardOutput { get; private set; }
+        public virtual string StandardError { get; private set; }
         public virtual int ExitCode { get; private set; }
 
         public virtual bool WasSuccessful
@@ -33,6 +35,7 @@ namespace CM.Deploy.UI
                 FileName = command,
                 Arguments = args,
                 RedirectStandardOutput = true,
+                RedirectStandardError = true,
                 UseShellExecute = false,
                 CreateNoWindow = true
             };
@@ -40,6 +43,9 @@ namespace CM.Deploy.UI
             Pid = process.Id;
             process.OutputDataReceived += OnStandardOutputUpdated;
             process.BeginOutputReadLine();
+            process.ErrorDataReceived += OnStandardErrorUpdated;
+            process.BeginErrorReadLine();
+
             return process;
         }
 
@@ -73,6 +79,12 @@ namespace CM.Deploy.UI
             if (handler != null) handler();
         }
 
+        protected virtual void OnErrorUpdated()
+        {
+            var handler = ErrorUpdated;
+            if (handler != null) handler();
+        }
+
         private static int GetMillisecondsToWait(TimeSpan timeout)
         {
             var milliseconds = Convert.ToInt64(timeout.TotalMilliseconds);
@@ -89,6 +101,18 @@ namespace CM.Deploy.UI
 
             StandardOutput += e.Data;
             OnOutputUpdated();
+        }
+
+        private void OnStandardErrorUpdated(object sender, DataReceivedEventArgs e)
+        {
+            if (e.Data == null)
+                return;
+
+            if (!string.IsNullOrEmpty(StandardError))
+                StandardError += Environment.NewLine;
+
+            StandardError += e.Data;
+            OnErrorUpdated();
         }
     }
 }
