@@ -11,6 +11,8 @@ namespace CM.MSBuild.Tasks
         private Action<string> addFileCallback = delegate { };
         private Action<string> changeFileCallback = delegate { };
         private Action<string> deleteFileCallback = delegate { };
+        private Action<string> addDirectoryCallback = delegate { };
+        private Action<string> deleteDirectoryCallback = delegate { };
         private string parentPath = "";
 
         public static Merge From(string sourceDirectory)
@@ -44,6 +46,18 @@ namespace CM.MSBuild.Tasks
         public virtual Merge OnDeletedFiles(Action<string> callback)
         {
             deleteFileCallback = callback;
+            return this;
+        }
+
+        public virtual Merge OnNewDirectories(Action<string> callback)
+        {
+            addDirectoryCallback = callback;
+            return this;
+        }
+
+        public virtual Merge OnDeletedDirectories(Action<string> callback)
+        {
+            deleteDirectoryCallback = callback;
             return this;
         }
 
@@ -107,7 +121,12 @@ namespace CM.MSBuild.Tasks
             var sourceDirectories = GetDirectories(sourceDirectory);
             var destinationDirectories = GetDirectories(new DirectoryInfo(destinationDirectory));
             var directoriesToAdd = sourceDirectories.Where(dir => !destinationDirectories.Contains(dir)).ToList();
-            directoriesToAdd.ForEach(dir => Directory.CreateDirectory(Path.Combine(destinationDirectory, dir)));
+
+            foreach (var directory in directoriesToAdd)
+            {
+                Directory.CreateDirectory(Path.Combine(destinationDirectory, directory));
+                addDirectoryCallback(Path.Combine(parentPath, directory));
+            }
         }
 
         private void DeleteRemovedDirectories(string destinationDirectory)
@@ -116,7 +135,12 @@ namespace CM.MSBuild.Tasks
             var destinationDirectories = GetDirectories(new DirectoryInfo(destinationDirectory));
             var directoriesToRemove = destinationDirectories.Where(
                 dir => !sourceDirectories.Contains(dir) && !excludedDirectories.Contains(dir)).ToList();
-            directoriesToRemove.ForEach(dir => Directory.Delete(Path.Combine(destinationDirectory, dir), true));
+
+            foreach (var directory in directoriesToRemove)
+            {
+                Directory.Delete(Path.Combine(destinationDirectory, directory), true);
+                deleteDirectoryCallback(Path.Combine(parentPath, directory));
+            }
         }
 
         private void MergeSubdirectories(string destinationDirectory)
@@ -128,6 +152,8 @@ namespace CM.MSBuild.Tasks
                     .OnNewFiles(addFileCallback)
                     .OnChangedFiles(changeFileCallback)
                     .OnDeletedFiles(deleteFileCallback)
+                    .OnNewDirectories(addDirectoryCallback)
+                    .OnDeletedDirectories(deleteDirectoryCallback)
                     .WithParentPath(Path.Combine(parentPath, subdirectory.Name));
                 merge.Into(Path.Combine(destinationDirectory, subdirectory.Name));
             }

@@ -1,5 +1,3 @@
-using System;
-using System.Diagnostics;
 using System.IO;
 using CM.MSBuild.Tasks;
 using NUnit.Framework;
@@ -234,6 +232,50 @@ namespace CM.FunctionalTests.MSBuild.Tasks
             Merge.From("new").OnDeletedFiles(file => log = file).Into("old");
 
             Assert.That(log, Is.EqualTo(@"subdir\test.txt"));
+        }
+
+        [Test]
+        public void ShouldExecuteCallbackWhenAddingDirectories()
+        {
+            Directory.CreateDirectory(@"new\subdir");
+            var log = "";
+            Merge.From("new").OnNewDirectories(dir => log = dir).Into("old");
+
+            Assert.That(log, Is.EqualTo("subdir"));
+        }
+
+        [Test]
+        public void ShouldIncludeParentDirectoryWhenCallingAddingDirectoryCallbackInSubdirectory()
+        {
+            Directory.CreateDirectory(@"old\subdir");
+            Directory.CreateDirectory(@"new\subdir");
+            Directory.CreateDirectory(@"new\subdir\test");
+            var log = "";
+            Merge.From("new").OnNewDirectories(dir => log = dir).Into("old");
+
+            Assert.That(log, Is.EqualTo(@"subdir\test"));
+        }
+
+        [Test]
+        public void ShouldExecuteCallbackWhenDeletingDirectories()
+        {
+            Directory.CreateDirectory(@"old\subdir");
+            var log = "";
+            Merge.From("new").OnDeletedDirectories(dir => log = dir).Into("old");
+
+            Assert.That(log, Is.EqualTo("subdir"));
+        }
+
+        [Test]
+        public void ShouldIncludeParentDirectoryWhenCallingDeleteDirectoryCallbackInSubdirectory()
+        {
+            Directory.CreateDirectory(@"old\subdir");
+            Directory.CreateDirectory(@"old\subdir\test");
+            Directory.CreateDirectory(@"new\subdir");
+            var log = "";
+            Merge.From("new").OnDeletedDirectories(dir => log = dir).Into("old");
+
+            Assert.That(log, Is.EqualTo(@"subdir\test"));
         }
     }
 }
