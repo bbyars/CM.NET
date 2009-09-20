@@ -156,7 +156,7 @@ namespace CM.FunctionalTests.MSBuild.Tasks
         {
             File.WriteAllText(@"new\test.txt", "");
             var log = "";
-            Merge.From("new").WithAddFileCallback(file => log = file).Into("old");
+            Merge.From("new").OnNewFiles(file => log = file).Into("old");
 
             Assert.That(log, Is.EqualTo("test.txt"));
         }
@@ -165,7 +165,7 @@ namespace CM.FunctionalTests.MSBuild.Tasks
         public void ShouldExecuteCallbackAfterCopyingNewFile()
         {
             File.WriteAllText(@"new\test.txt", "");
-            Merge.From("new").WithAddFileCallback(file => Assert.That(File.Exists(@"old\test.txt"))).Into("old");
+            Merge.From("new").OnNewFiles(file => Assert.That(File.Exists(@"old\test.txt"))).Into("old");
         }
 
         [Test]
@@ -174,7 +174,7 @@ namespace CM.FunctionalTests.MSBuild.Tasks
             Directory.CreateDirectory(@"new\subdir");
             File.WriteAllText(@"new\subdir\test.txt", "");
             var log = "";
-            Merge.From("new").WithAddFileCallback(file => log = file).Into("old");
+            Merge.From("new").OnNewFiles(file => log = file).Into("old");
 
             Assert.That(log, Is.EqualTo(@"subdir\test.txt"));
         }
@@ -185,9 +185,55 @@ namespace CM.FunctionalTests.MSBuild.Tasks
             File.WriteAllText(@"old\test.txt", "old");
             File.WriteAllText(@"new\test.txt", "new");
             var log = "";
-            Merge.From("new").WithAddFileCallback(file => log = file).Into("old");
+            Merge.From("new").OnNewFiles(file => log = file).Into("old");
 
             Assert.That(log, Is.EqualTo(""));
+        }
+
+        [Test]
+        public void ShouldExecuteCallbackWhenUpdatingFiles()
+        {
+            File.WriteAllText(@"old\test.txt", "old");
+            File.WriteAllText(@"new\test.txt", "new");
+            var log = "";
+            Merge.From("new").OnChangedFiles(file => log = file).Into("old");
+
+            Assert.That(log, Is.EqualTo("test.txt"));
+        }
+
+        [Test]
+        public void ShouldIncludeParentDirectoryWhenCallingUpdateFileCallbackInSubdirectory()
+        {
+            Directory.CreateDirectory(@"old\subdir");
+            Directory.CreateDirectory(@"new\subdir");
+            File.WriteAllText(@"old\subdir\test.txt", "old");
+            File.WriteAllText(@"new\subdir\test.txt", "new");
+            var log = "";
+            Merge.From("new").OnChangedFiles(file => log = file).Into("old");
+
+            Assert.That(log, Is.EqualTo(@"subdir\test.txt"));
+        }
+
+        [Test]
+        public void ShouldExecuteCallbackWhenDeletingFiles()
+        {
+            File.WriteAllText(@"old\test.txt", "old");
+            var log = "";
+            Merge.From("new").OnDeletedFiles(file => log = file).Into("old");
+
+            Assert.That(log, Is.EqualTo("test.txt"));
+        }
+
+        [Test]
+        public void ShouldIncludeParentDirectoryWhenCallingDeleteFileCallbackInSubdirectory()
+        {
+            Directory.CreateDirectory(@"old\subdir");
+            Directory.CreateDirectory(@"new\subdir");
+            File.WriteAllText(@"old\subdir\test.txt", "old");
+            var log = "";
+            Merge.From("new").OnDeletedFiles(file => log = file).Into("old");
+
+            Assert.That(log, Is.EqualTo(@"subdir\test.txt"));
         }
     }
 }

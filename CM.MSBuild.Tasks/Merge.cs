@@ -9,6 +9,8 @@ namespace CM.MSBuild.Tasks
         private readonly DirectoryInfo sourceDirectory;
         private string[] excludedDirectories = new string[0];
         private Action<string> addFileCallback = delegate { };
+        private Action<string> changeFileCallback = delegate { };
+        private Action<string> deleteFileCallback = delegate { };
         private string parentPath = "";
 
         public static Merge From(string sourceDirectory)
@@ -27,21 +29,51 @@ namespace CM.MSBuild.Tasks
             return this;
         }
         
-        public virtual Merge WithAddFileCallback(Action<string> callback)
+        public virtual Merge OnNewFiles(Action<string> callback)
         {
             addFileCallback = callback;
             return this;
         }
 
+        public virtual Merge OnChangedFiles(Action<string> callback)
+        {
+            changeFileCallback = callback;
+            return this;
+        }
+
+        public virtual Merge OnDeletedFiles(Action<string> callback)
+        {
+            deleteFileCallback = callback;
+            return this;
+        }
+
         public virtual Merge Into(string destinationDirectory)
         {
+            UpdateChangedFiles(destinationDirectory);
             AddNewFiles(destinationDirectory);
-            AddOrUpdateFiles(destinationDirectory);
             DeleteRemovedFiles(destinationDirectory);
             AddNewSubdirectories(destinationDirectory);
             DeleteRemovedDirectories(destinationDirectory);
             MergeSubdirectories(destinationDirectory);
             return this;
+        }
+
+        private void UpdateChangedFiles(string destinationDirectory)
+        {
+            foreach (var file in sourceDirectory.GetFiles())
+            {
+                var destinationFile = Path.Combine(destinationDirectory, file.Name);
+                if (File.Exists(destinationFile))
+                {
+                    file.CopyTo(destinationFile, true);
+
+                    // This is always called, even if the file hasn't changed.
+                    // I haven't bothered fixing that because I can't think of any
+                    // reason to pay the cost of file compares.  We won't do anything
+                    // here in svn, and in git it won't matter if we call extra git adds.
+                    changeFileCallback(Path.Combine(parentPath, file.Name));
+                }
+            }
         }
 
         private void AddNewFiles(string destinationDirectory)
@@ -57,20 +89,17 @@ namespace CM.MSBuild.Tasks
             }
         }
 
-        private void AddOrUpdateFiles(string destinationDirectory)
-        {
-            foreach (var file in sourceDirectory.GetFiles())
-            {
-                file.CopyTo(Path.Combine(destinationDirectory, file.Name), true);
-            }
-        }
-
         private void DeleteRemovedFiles(string destinationDirectory)
         {
             var sourceFiles = GetFilenames(sourceDirectory.FullName);
             var destinationFiles = GetFilenames(destinationDirectory);
             var filesToRemove = destinationFiles.Where(filename => !sourceFiles.Contains(filename)).ToList();
-            filesToRemove.ForEach(filename => File.Delete(Path.Combine(destinationDirectory, filename)));
+
+            foreach (var file in filesToRemove)
+            {
+                File.Delete(Path.Combine(destinationDirectory, file));
+                deleteFileCallback(Path.Combine(parentPath, file));
+            }
         }
 
         private void AddNewSubdirectories(string destinationDirectory)
@@ -96,7 +125,9 @@ namespace CM.MSBuild.Tasks
             {
                 var merge = new Merge(subdirectory)
                     .ExcludingDirectories(excludedDirectories)
-                    .WithAddFileCallback(addFileCallback)
+                    .OnNewFiles(addFileCallback)
+                    .OnChangedFiles(changeFileCallback)
+                    .OnDeletedFiles(deleteFileCallback)
                     .WithParentPath(Path.Combine(parentPath, subdirectory.Name));
                 merge.Into(Path.Combine(destinationDirectory, subdirectory.Name));
             }
