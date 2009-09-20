@@ -34,7 +34,16 @@
     </CreateItem>
   </Target>
 
+  <UsingTask TaskName="PublishToSvn" AssemblyFile="CM.MSBuild.Tasks\bin\Release\CM.MSBuild.Tasks.dll" />
+
   <Target Name="Publish">
-    
+    <CreateItem Include="$(PackageDirectory)\**\*">
+      <Output TaskParameter="Include" ItemName="FilesToPublish" />
+    </CreateItem>
+
+<!--    <PublishToSvn-->
+<!--      TrunkUrl="ignore"-->
+<!--      PublishedUrl="ignore"-->
+<!--      FilesToPublish="@(FilesToPublish)" />-->
   </Target>
 </Project>
