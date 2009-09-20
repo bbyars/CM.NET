@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using CM.Common;
 using CM.Deploy.UI;
 using Moq;
 using NUnit.Framework;

@@ -1,7 +1,7 @@
 using System.IO;
 using System.Linq;
 
-namespace CM.Deploy.UI
+namespace CM.Common
 {
     public class FileSystem
     {

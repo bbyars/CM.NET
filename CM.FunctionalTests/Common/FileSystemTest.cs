@@ -1,9 +1,9 @@
 using System.IO;
-using CM.Deploy.UI;
+using CM.Common;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 
-namespace CM.FunctionalTests.Deploy.UI
+namespace CM.FunctionalTests.Common
 {
     [TestFixture]
     public class FileSystemTest

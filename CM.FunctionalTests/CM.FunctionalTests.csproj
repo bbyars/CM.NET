@@ -44,8 +44,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Deploy.UI\FileSystemTest.cs" />
-    <Compile Include="Deploy.UI\ProcessRunnerTest.cs" />
+    <Compile Include="Common\FileSystemTest.cs" />
+    <Compile Include="Common\ProcessRunnerTest.cs" />
     <Compile Include="MSBuild.Tasks\MergeTest.cs" />
     <Compile Include="MSBuild.Tasks\SvnGatewayTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

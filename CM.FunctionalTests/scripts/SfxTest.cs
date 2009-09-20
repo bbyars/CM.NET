@@ -2,7 +2,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Threading;
-using CM.Deploy.UI;
+using CM.Common;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 

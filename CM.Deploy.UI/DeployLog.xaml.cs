@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Windows;
+using CM.Common;
 using Microsoft.Win32;
 
 namespace CM.Deploy.UI

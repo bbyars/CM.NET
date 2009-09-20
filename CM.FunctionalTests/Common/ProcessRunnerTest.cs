@@ -2,11 +2,11 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
-using CM.Deploy.UI;
+using CM.Common;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 
-namespace CM.FunctionalTests.Deploy.UI
+namespace CM.FunctionalTests.Common
 {
     [TestFixture]
     public class ProcessRunnerTest

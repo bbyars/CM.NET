@@ -1,6 +1,6 @@
 ﻿using System;
 using System.IO;
-using CM.Deploy.UI;
+using CM.Common;
 
 namespace CM.FunctionalTests
 {
