@@ -118,5 +118,35 @@ namespace CM.FunctionalTests.MSBuild.Tasks
 
             Assert.That(Directory.GetFiles(@"old\subdir"), Is.EqualTo(new string[0]));
         }
+
+        [Test]
+        public void ShouldRecursivelyDeleteRemovedDirectory()
+        {
+            Directory.CreateDirectory(@"old\subdir");
+            File.WriteAllText(@"old\subdir\test.txt", "");
+            Merge.From("new").Into("old");
+
+            Assert.That(Directory.GetDirectories("old"), Is.EqualTo(new string[0]));
+        }
+
+        [Test]
+        public void ShouldBeAbleToExcludeDirectories()
+        {
+            Directory.CreateDirectory(@"old\.svn");
+            Merge.From("new").ExcludingDirectories(".svn").Into("old");
+
+            Assert.That(Directory.GetDirectories("old"), Is.EqualTo(new[] {@"old\.svn"}));
+        }
+
+        [Test]
+        public void ShouldKeepExcludeDirectoriesWhenRecursing()
+        {
+            Directory.CreateDirectory(@"old\subdir");
+            Directory.CreateDirectory(@"old\subdir\.svn");
+            Directory.CreateDirectory(@"new\subdir");
+            Merge.From("new").ExcludingDirectories(".svn").Into("old");
+
+            Assert.That(Directory.GetDirectories(@"old\subdir"), Is.EqualTo(new[] { @"old\subdir\.svn" }));
+        }
     }
 }
