@@ -8,22 +8,30 @@ namespace CM.FunctionalTests.MSBuild.Tasks
     [TestFixture]
     public class SvnGatewayTest
     {
+        private TestLogger log;
+
+        [SetUp]
+        public void CreateLogger()
+        {
+            log = new TestLogger();
+        }
+
         [Test]
         public void UncreatedUrlShouldNotExist()
         {
-            Assert.That(new SvnGateway().Exists(@"file:///missing/svn/repo"), Is.False);
+            Assert.That(!new SvnGateway(log).Exists(@"file:///missing/svn/repo"), log.Contents);
         }
 
         [Test]
         public void CreatedUrlShouldExist()
         {
-            Using.SvnRepo(url => Assert.That(new SvnGateway().Exists(url)));
+            Using.SvnRepo(url => Assert.That(new SvnGateway(log).Exists(url), log.Contents));
         }
 
         [Test]
         public void ShouldNotExistIfEndpointDoesNotExist()
         {
-            Using.SvnRepo(url => Assert.That(new SvnGateway().Exists(url + "/test"), Is.False));
+            Using.SvnRepo(url => Assert.That(!new SvnGateway(log).Exists(url + "/test"), log.Contents));
         }
 
         [Test]
@@ -33,9 +41,9 @@ namespace CM.FunctionalTests.MSBuild.Tasks
             Using.SvnRepo(url =>
             {
                 Directory.CreateDirectory("trunk");
-                var gateway = new SvnGateway();
+                var gateway = new SvnGateway(log);
                 gateway.Import(".", url + "/test", "");
-                Assert.That(gateway.Exists(url + "/test/trunk"));
+                Assert.That(gateway.Exists(url + "/test/trunk"), log.Contents);
             }));
         }
 
@@ -45,12 +53,12 @@ namespace CM.FunctionalTests.MSBuild.Tasks
             Using.Directory("svn", () =>
             Using.SvnRepo(url =>
             {
-                var gateway = new SvnGateway();
+                var gateway = new SvnGateway(log);
                 Directory.CreateDirectory("trunk");
                 gateway.Import(".", url + "/test", "");
 
                 gateway.CreateWorkingDirectory(url + "/test", "workingDir");
-                Assert.That(Directory.Exists(@"workingDir\trunk"));
+                Assert.That(Directory.Exists(@"workingDir\trunk"), log.Contents);
             }));
         }
 
@@ -60,7 +68,7 @@ namespace CM.FunctionalTests.MSBuild.Tasks
             Using.Directory("svn", () =>
             Using.SvnRepo(url =>
             {
-                var gateway = new SvnGateway();
+                var gateway = new SvnGateway(log);
                 gateway.Import(".", url + "/test", "");
 
                 gateway.CreateWorkingDirectory(url + "/test", "workingDir");
@@ -68,7 +76,7 @@ namespace CM.FunctionalTests.MSBuild.Tasks
                 gateway.AddDirectory("trunk", "workingDir");
                 gateway.Commit("workingDir", "");
 
-                Assert.That(gateway.Exists(url + "/test/trunk"));
+                Assert.That(gateway.Exists(url + "/test/trunk"), log.Contents);
             }));
         }
 
@@ -79,14 +87,14 @@ namespace CM.FunctionalTests.MSBuild.Tasks
             Using.SvnRepo(url =>
             {
                 Directory.CreateDirectory("test");
-                var gateway = new SvnGateway();
+                var gateway = new SvnGateway(log);
                 gateway.Import(".", url + "/test", "");
 
                 gateway.CreateWorkingDirectory(url + "/test", "workingDir");
                 gateway.DeleteDirectory("test", "workingDir");
                 gateway.Commit("workingDir", "");
 
-                Assert.That(!gateway.Exists(url + "/test/test"));
+                Assert.That(!gateway.Exists(url + "/test/test"), log.Contents);
             }));
         }
 
@@ -96,7 +104,7 @@ namespace CM.FunctionalTests.MSBuild.Tasks
             Using.Directory("svn", () =>
             Using.SvnRepo(url =>
             {
-                var gateway = new SvnGateway();
+                var gateway = new SvnGateway(log);
                 gateway.Import(".", url + "/test", "");
 
                 gateway.CreateWorkingDirectory(url + "/test", "workingDir");
@@ -104,7 +112,7 @@ namespace CM.FunctionalTests.MSBuild.Tasks
                 gateway.AddFile("test.txt", "workingDir");
                 gateway.Commit("workingDir", "");
 
-                Assert.That(gateway.Exists(url + "/test/test.txt"));
+                Assert.That(gateway.Exists(url + "/test/test.txt"), log.Contents);
             }));
         }
 
@@ -115,14 +123,14 @@ namespace CM.FunctionalTests.MSBuild.Tasks
             Using.SvnRepo(url =>
             {
                 File.WriteAllText("test.txt", "");
-                var gateway = new SvnGateway();
+                var gateway = new SvnGateway(log);
                 gateway.Import(".", url + "/test", "");
 
                 gateway.CreateWorkingDirectory(url + "/test", "workingDir");
                 gateway.DeleteFile("test.txt", "workingDir");
                 gateway.Commit("workingDir", "");
 
-                Assert.That(!gateway.Exists(url + "/test/test.txt"));
+                Assert.That(!gateway.Exists(url + "/test/test.txt"), log.Contents);
             }));
         }
 
@@ -133,7 +141,7 @@ namespace CM.FunctionalTests.MSBuild.Tasks
             Using.SvnRepo(url =>
             {
                 File.WriteAllText("test.txt", "");
-                var gateway = new SvnGateway();
+                var gateway = new SvnGateway(log);
                 gateway.Import(".", url + "/test", "");
 
                 gateway.CreateWorkingDirectory(url + "/test", "workingDir");
@@ -141,7 +149,7 @@ namespace CM.FunctionalTests.MSBuild.Tasks
                 gateway.Commit("workingDir", "");
                 gateway.CreateWorkingDirectory(url + "/test", "validationDir");
 
-                Assert.That(File.ReadAllText(@"validationDir\test.txt"), Is.EqualTo("update"));
+                Assert.That(File.ReadAllText(@"validationDir\test.txt"), Is.EqualTo("update"), log.Contents);
             }));
         }
 
@@ -152,11 +160,11 @@ namespace CM.FunctionalTests.MSBuild.Tasks
             Using.SvnRepo(url =>
             {
                 File.WriteAllText("test.txt", "");
-                var gateway = new SvnGateway();
+                var gateway = new SvnGateway(log);
                 gateway.Import(".", url + "/test", "");
 
                 gateway.Branch(url + "/test", url + "/branch", "");
-                Assert.That(gateway.Exists(url + "/branch/test.txt"));
+                Assert.That(gateway.Exists(url + "/branch/test.txt"), log.Contents);
             }));
         }
     }

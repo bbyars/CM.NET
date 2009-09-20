@@ -9,8 +9,9 @@ namespace CM.MSBuild.Tasks
     {
         private readonly SvnGateway gateway;
 
-        public PublishToSvn() : this(new SvnGateway())
+        public PublishToSvn()
         {
+            gateway = new SvnGateway(new MSBuildLogAdapter(Log));
         }
 
         public PublishToSvn(SvnGateway gateway)

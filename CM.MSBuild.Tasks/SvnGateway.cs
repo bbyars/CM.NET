@@ -1,9 +1,17 @@
 using System.Diagnostics;
+using CM.Common;
 
 namespace CM.MSBuild.Tasks
 {
     public class SvnGateway
     {
+        private readonly ILogger log;
+
+        public SvnGateway(ILogger log)
+        {
+            this.log = log;
+        }
+
         public virtual bool Exists(string url)
         {
             return RunCommand(string.Format("ls \"{0}\"", url), ".") == 0;
@@ -53,7 +61,7 @@ namespace CM.MSBuild.Tasks
             RunCommand(string.Format("rm \"{0}\"", directory), workingDirectory);
         }
 
-        private static int RunCommand(string command, string workingDirectory)
+        private int RunCommand(string command, string workingDirectory)
         {
             var startInfo = new ProcessStartInfo
             {
@@ -65,6 +73,7 @@ namespace CM.MSBuild.Tasks
                 RedirectStandardError = true,
                 WorkingDirectory = workingDirectory
             };
+            log.Info("svn {0}", command);
             var process = Process.Start(startInfo);
             process.WaitForExit();
             return process.ExitCode;
