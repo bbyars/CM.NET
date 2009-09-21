@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 
 namespace CM.Common
@@ -44,7 +45,12 @@ namespace CM.Common
             finally
             {
                 if (Directory.Exists(mainlineWorkingDirectory))
-                    Directory.Delete(mainlineWorkingDirectory, true);
+                {
+                    // I can't figure out why we can't delete the directory using Directory.Delete, but we can in the shell.
+                    // Neither Process Explorer nor Unlocker find any locks on the directory.
+                    // It only happens with svn files.
+                    new ProcessRunner("cmd").Run(string.Format("/c rmdir /S /Q \"{0}\"", mainlineWorkingDirectory), TimeSpan.FromSeconds(10));
+                }
             }
 
             return this;

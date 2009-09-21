@@ -36,14 +36,15 @@
 
   <UsingTask TaskName="PublishToSvn" AssemblyFile="CM.MSBuild.Tasks\bin\Release\CM.MSBuild.Tasks.dll" />
 
-  <Target Name="Publish">
+  <Target Name="Publish" Condition="$(IsInContinuousIntegration) == 'true'">
     <CreateItem Include="$(PackageDirectory)\**\*">
       <Output TaskParameter="Include" ItemName="FilesToPublish" />
     </CreateItem>
 
-<!--    <PublishToSvn-->
-<!--      TrunkUrl="ignore"-->
-<!--      PublishedUrl="ignore"-->
-<!--      FilesToPublish="@(FilesToPublish)" />-->
+    <PublishToSvn
+      TrunkUrl="file:///published/CM.NET/trunk"
+      PublishedUrl="file:///published/CM.NET/tags/$(Version)"
+      FilesToPublish="@(FilesToPublish)"
+      CommitMessage="auto-publishing successful build" />
   </Target>
 </Project>
