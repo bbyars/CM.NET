@@ -16,5 +16,10 @@ namespace CM.MSBuild.Tasks
         {
             msbuildLogger.LogMessage(message, formatArgs);
         }
+
+        public void Error(string message, params object[] formatArgs)
+        {
+            msbuildLogger.LogWarning(message, formatArgs);
+        }
     }
 }

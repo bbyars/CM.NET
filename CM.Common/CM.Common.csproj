@@ -49,10 +49,12 @@
   <ItemGroup>
     <Compile Include="FileSystem.cs" />
     <Compile Include="ILogger.cs" />
+    <Compile Include="ISourceControlGateway.cs" />
     <Compile Include="Merge.cs" />
     <Compile Include="NetworkDirectory.cs" />
     <Compile Include="ProcessRunner.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="PublishToSourceControl.cs" />
     <Compile Include="SvnGateway.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

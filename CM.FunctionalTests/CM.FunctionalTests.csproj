@@ -48,6 +48,7 @@
     <Compile Include="Common\MergeTest.cs" />
     <Compile Include="Common\NetworkDirectoryTest.cs" />
     <Compile Include="Common\ProcessRunnerTest.cs" />
+    <Compile Include="Common\PublishToSvnTest.cs" />
     <Compile Include="Common\SvnGatewayTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="scripts\SfxTest.cs" />

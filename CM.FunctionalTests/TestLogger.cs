@@ -10,7 +10,12 @@ namespace CM.FunctionalTests
 
         public void Info(string message, params object[] formatArgs)
         {
-            logs.Add(string.Format(message, formatArgs));
+            logs.Add("INFO: " + string.Format(message, formatArgs));
+        }
+
+        public void Error(string message, params object[] formatArgs)
+        {
+            logs.Add("ERROR: " + string.Format(message, formatArgs));
         }
 
         public string Contents

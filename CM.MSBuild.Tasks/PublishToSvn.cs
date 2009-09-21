@@ -8,18 +8,6 @@ namespace CM.MSBuild.Tasks
 {
     public class PublishToSvn : Task
     {
-        private readonly SvnGateway gateway;
-
-        public PublishToSvn()
-        {
-            gateway = new SvnGateway(new MSBuildLogAdapter(Log));
-        }
-
-        public PublishToSvn(SvnGateway gateway)
-        {
-            this.gateway = gateway;
-        }
-
         [Required]
         public virtual string TrunkUrl { get; set; }
 
@@ -27,15 +15,22 @@ namespace CM.MSBuild.Tasks
         public virtual string PublishedUrl { get; set; }
 
         [Required]
-        public virtual ITaskItem[] FilesToPublish { get; set; } 
+        public virtual ITaskItem[] FilesToPublish { get; set; }
+
+        [Required]
+        public virtual string CommitMessage { get; set; }
 
         public override bool Execute()
         {
-            var newWorkingDirectory = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
-            var trunkWorkingDirectory = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
+            var workingDirectory = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
             try
             {
-                Publish(newWorkingDirectory, trunkWorkingDirectory);
+                CreateNewWorkingDirectory(workingDirectory);
+                var publish = new PublishToSourceControl(new SvnGateway(new MSBuildLogAdapter(Log)));
+                publish.FromWorkingDirectory(workingDirectory)
+                    .WithMainline(TrunkUrl)
+                    .WithCommitMessage(CommitMessage)
+                    .To(PublishedUrl);
             }
             catch (Exception e)
             {
@@ -44,29 +39,11 @@ namespace CM.MSBuild.Tasks
             }
             finally
             {
-                if (Directory.Exists(newWorkingDirectory))
-                    Directory.Delete(newWorkingDirectory, true);
-                if (Directory.Exists(trunkWorkingDirectory))
-                    Directory.Delete(trunkWorkingDirectory);
+                if (Directory.Exists(workingDirectory))
+                    Directory.Delete(workingDirectory, true);
             }
 
             return true;
-        }
-
-        private void Publish(string newWorkingDirectory, string trunkWorkingDirectory)
-        {
-            CreateNewWorkingDirectory(newWorkingDirectory);
-            if (gateway.Exists(TrunkUrl))
-            {
-                gateway.CreateWorkingDirectory(TrunkUrl, trunkWorkingDirectory);
-                MergeToTrunkWorkingDirectory(newWorkingDirectory, trunkWorkingDirectory);
-                gateway.Commit(trunkWorkingDirectory, "");
-            }
-            else
-            {
-                gateway.Import(newWorkingDirectory, TrunkUrl, "");
-            }
-            gateway.Branch(TrunkUrl, PublishedUrl, "");
         }
 
         private void CreateNewWorkingDirectory(string path)
@@ -81,18 +58,6 @@ namespace CM.MSBuild.Tasks
                 var destinationPath = Path.Combine(destinationDirectory, destinationFilename);
                 File.Copy(item.GetMetadata("FullPath"), destinationPath);
             }
-        }
-
-        private void MergeToTrunkWorkingDirectory(string newWorkingDirectory, string trunkWorkingDirectory)
-        {
-            Merge.From(newWorkingDirectory)
-                .ExcludingDirectories(".svn")
-                .OnNewFiles(file => gateway.AddFile(file, trunkWorkingDirectory))
-                .OnNewDirectories(dir => gateway.AddDirectory(dir, trunkWorkingDirectory))
-                .OnChangedFiles(file => gateway.UpdateFile(file, trunkWorkingDirectory))
-                .OnDeletedFiles(file => gateway.DeleteFile(file, trunkWorkingDirectory))
-                .OnDeletedDirectories(dir => gateway.DeleteDirectory(dir, trunkWorkingDirectory))
-                .Into(trunkWorkingDirectory);
         }
     }
 }

@@ -164,7 +164,37 @@ namespace CM.FunctionalTests.Common
                 gateway.Import(".", url + "/test", "");
 
                 gateway.Branch(url + "/test", url + "/branch", "");
+
                 Assert.That(gateway.Exists(url + "/branch/test.txt"), log.Contents);
+            }));
+        }
+
+        [Test]
+        public void BranchingShouldCreateParentDirectories()
+        {
+            Using.Directory("svn", () =>
+            Using.SvnRepo(url =>
+            {
+                File.WriteAllText("test.txt", "");
+                var gateway = new SvnGateway(log);
+                gateway.Import(".", url + "/test", "");
+
+                gateway.Branch(url + "/test", url + "/branch/v1", "");
+                Assert.That(gateway.Exists(url + "/branch/v1/test.txt"), log.Contents);
+            }));
+        }
+
+        [Test]
+        public void ImportingShouldCreateParentDirectories()
+        {
+            Using.Directory("svn", () =>
+            Using.SvnRepo(url =>
+            {
+                File.WriteAllText("test.txt", "");
+                var gateway = new SvnGateway(log);
+                gateway.Import(".", url + "/test/trunk", "");
+
+                Assert.That(gateway.Exists(url + "/test/trunk/test.txt"), log.Contents);
             }));
         }
     }
