@@ -42,8 +42,8 @@
     </CreateItem>
 
     <PublishToSvn
-      TrunkUrl="file:///published/CM.NET/trunk"
-      PublishedUrl="file:///published/CM.NET/tags/$(Version)"
+      TrunkUrl="file:///svn/published/CM.NET/trunk"
+      PublishedUrl="file:///svn/published/CM.NET/tags/$(Version)"
       FilesToPublish="@(FilesToPublish)"
       CommitMessage="auto-publishing successful build" />
   </Target>
