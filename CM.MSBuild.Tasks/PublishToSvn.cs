@@ -26,11 +26,15 @@ namespace CM.MSBuild.Tasks
             try
             {
                 CreateNewWorkingDirectory(workingDirectory);
-                var publish = new PublishToSourceControl(new SvnGateway(new MSBuildLogAdapter(Log)));
+                var logAdapter = new MSBuildLogAdapter(Log);
+                var publish = new PublishToSourceControl(new SvnGateway(logAdapter));
                 publish.FromWorkingDirectory(workingDirectory)
                     .WithMainline(TrunkUrl)
                     .WithCommitMessage(CommitMessage)
                     .To(PublishedUrl);
+
+                if (logAdapter.HasErrors)
+                    return false;
             }
             catch (Exception e)
             {

@@ -12,6 +12,8 @@ namespace CM.MSBuild.Tasks
             this.msbuildLogger = msbuildLogger;
         }
 
+        public bool HasErrors { get; private set; }
+
         public void Info(string message, params object[] formatArgs)
         {
             msbuildLogger.LogMessage(message, formatArgs);
@@ -19,6 +21,7 @@ namespace CM.MSBuild.Tasks
 
         public void Error(string message, params object[] formatArgs)
         {
+            HasErrors = true;
             msbuildLogger.LogWarning(message, formatArgs);
         }
     }
