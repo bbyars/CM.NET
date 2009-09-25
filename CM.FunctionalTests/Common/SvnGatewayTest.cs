@@ -37,20 +37,18 @@ namespace CM.FunctionalTests.Common
         [Test]
         public void ImportShouldAddFilesToRepository()
         {
-            Using.Directory("svn", () =>
             Using.SvnRepo(url =>
             {
                 Directory.CreateDirectory("trunk");
                 var gateway = new SvnGateway(log);
                 gateway.Import(".", url + "/test", "");
                 Assert.That(gateway.Exists(url + "/test/trunk"), log.Contents);
-            }));
+            });
         }
 
         [Test]
         public void CreateWorkingDirectoryShouldPerformACheckout()
         {
-            Using.Directory("svn", () =>
             Using.SvnRepo(url =>
             {
                 var gateway = new SvnGateway(log);
@@ -59,13 +57,12 @@ namespace CM.FunctionalTests.Common
 
                 gateway.CreateWorkingDirectory(url + "/test", "workingDir");
                 Assert.That(Directory.Exists(@"workingDir\trunk"), log.Contents);
-            }));
+            });
         }
 
         [Test]
         public void CommittingNewDirectoryShouldAddItToTheRepository()
         {
-            Using.Directory("svn", () =>
             Using.SvnRepo(url =>
             {
                 var gateway = new SvnGateway(log);
@@ -77,13 +74,12 @@ namespace CM.FunctionalTests.Common
                 gateway.Commit("workingDir", "");
 
                 Assert.That(gateway.Exists(url + "/test/trunk"), log.Contents);
-            }));
+            });
         }
 
         [Test]
         public void CommittingDeletedDirectoryShouldRemoveItFromTheRepository()
         {
-            Using.Directory("svn", () =>
             Using.SvnRepo(url =>
             {
                 Directory.CreateDirectory("test");
@@ -95,13 +91,12 @@ namespace CM.FunctionalTests.Common
                 gateway.Commit("workingDir", "");
 
                 Assert.That(!gateway.Exists(url + "/test/test"), log.Contents);
-            }));
+            });
         }
 
         [Test]
         public void CommittingNewFileShouldAddItToTheRepository()
         {
-            Using.Directory("svn", () =>
             Using.SvnRepo(url =>
             {
                 var gateway = new SvnGateway(log);
@@ -113,13 +108,12 @@ namespace CM.FunctionalTests.Common
                 gateway.Commit("workingDir", "");
 
                 Assert.That(gateway.Exists(url + "/test/test.txt"), log.Contents);
-            }));
+            });
         }
 
         [Test]
         public void CommittingDeletedFileShouldRemoveItFromTheRepository()
         {
-            Using.Directory("svn", () =>
             Using.SvnRepo(url =>
             {
                 File.WriteAllText("test.txt", "");
@@ -131,13 +125,12 @@ namespace CM.FunctionalTests.Common
                 gateway.Commit("workingDir", "");
 
                 Assert.That(!gateway.Exists(url + "/test/test.txt"), log.Contents);
-            }));
+            });
         }
 
         [Test]
         public void CommittingUpdatedFileShouldChangeItInTheRepository()
         {
-            Using.Directory("svn", () =>
             Using.SvnRepo(url =>
             {
                 File.WriteAllText("test.txt", "");
@@ -150,13 +143,12 @@ namespace CM.FunctionalTests.Common
                 gateway.CreateWorkingDirectory(url + "/test", "validationDir");
 
                 Assert.That(File.ReadAllText(@"validationDir\test.txt"), Is.EqualTo("update"), log.Contents);
-            }));
+            });
         }
 
         [Test]
         public void BranchingShouldCopyRepositoryToNewEndpoint()
         {
-            Using.Directory("svn", () =>
             Using.SvnRepo(url =>
             {
                 File.WriteAllText("test.txt", "");
@@ -166,13 +158,12 @@ namespace CM.FunctionalTests.Common
                 gateway.Branch(url + "/test", url + "/branch", "");
 
                 Assert.That(gateway.Exists(url + "/branch/test.txt"), log.Contents);
-            }));
+            });
         }
 
         [Test]
         public void BranchingShouldCreateParentDirectories()
         {
-            Using.Directory("svn", () =>
             Using.SvnRepo(url =>
             {
                 File.WriteAllText("test.txt", "");
@@ -181,13 +172,12 @@ namespace CM.FunctionalTests.Common
 
                 gateway.Branch(url + "/test", url + "/branch/v1", "");
                 Assert.That(gateway.Exists(url + "/branch/v1/test.txt"), log.Contents);
-            }));
+            });
         }
 
         [Test]
         public void ImportingShouldCreateParentDirectories()
         {
-            Using.Directory("svn", () =>
             Using.SvnRepo(url =>
             {
                 File.WriteAllText("test.txt", "");
@@ -195,7 +185,7 @@ namespace CM.FunctionalTests.Common
                 gateway.Import(".", url + "/test/trunk", "");
 
                 Assert.That(gateway.Exists(url + "/test/trunk/test.txt"), log.Contents);
-            }));
+            });
         }
     }
 }

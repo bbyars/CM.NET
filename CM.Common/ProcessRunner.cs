@@ -18,6 +18,7 @@ namespace CM.Common
             ExitCode = -1;
         }
 
+        public virtual string WorkingDirectory { get; set; }
         public virtual int Pid { get; private set; }
         public virtual string StandardOutput { get; private set; }
         public virtual string StandardError { get; private set; }
@@ -37,8 +38,10 @@ namespace CM.Common
                 RedirectStandardOutput = true,
                 RedirectStandardError = true,
                 UseShellExecute = false,
-                CreateNoWindow = true
+                CreateNoWindow = true,
+                WorkingDirectory = WorkingDirectory ?? "."
             };
+
             var process = Process.Start(startInfo);
             Pid = process.Id;
             process.OutputDataReceived += OnStandardOutputUpdated;

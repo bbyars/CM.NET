@@ -3,7 +3,7 @@ namespace CM.Common
     public interface ISourceControlGateway
     {
         string[] MetadataDirectories { get; }
-        bool Exists(string url);
+        bool Exists(string path);
         void CreateWorkingDirectory(string url, string localPath);
         void Commit(string workingDirectory, string message);
         void Import(string workingDirectory, string url, string message);

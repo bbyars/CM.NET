@@ -32,23 +32,45 @@ namespace CM.FunctionalTests
         public static void SvnRepo(Action<string> test)
         {
             var repoPath = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
-            System.IO.Directory.CreateDirectory(repoPath);
-            try
+            var currentDirectory = Environment.CurrentDirectory;
+            Using.Directory(repoPath, () =>
             {
                 var runner = new ProcessRunner("svnadmin");
-                runner.Run(string.Format("create \"{0}\"", repoPath), TimeSpan.FromSeconds(10));
+                runner.Run("create .", TimeSpan.FromSeconds(10));
                 NUnit.Framework.Assert.That(runner.WasSuccessful,
-                    string.Format("svnadmin failed\n\tstdout: {0}\n\tstderr: {1}", runner.StandardOutput, runner.StandardError));
+                    "svnadmin failed\n\tstdout: {0}\n\tstderr: {1}", runner.StandardOutput, runner.StandardError);
 
-                var repoUrl = "file:///" + repoPath.Replace('\\', '/');
-                test(repoUrl);
-            }
-            finally
+                Using.Directory(Path.Combine(currentDirectory, "svn"), () => test(MakeFileUrl(repoPath)));
+            });
+        }
+
+        public static void GitRepo(Action<string> test)
+        {
+            var repoPath = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
+            var currentDirectory = Environment.CurrentDirectory;
+            Using.Directory(repoPath, () =>
             {
-                // I can't figure out why we can't delete the directory using Directory.Delete, but we can in the shell.
-                // Neither Process Explorer nor Unlocker find any locks on the directory.
-                new ProcessRunner("cmd").Run(string.Format("/c rmdir /S /Q \"{0}\"", repoPath), TimeSpan.FromSeconds(10));
-            }
+                var runner = new ProcessRunner("git");
+                runner.Run("init", TimeSpan.FromSeconds(10));
+                NUnit.Framework.Assert.That(runner.WasSuccessful,
+                    "git init failed\n\tstdout: {0}\n\tstderr: {1}", runner.StandardOutput, runner.StandardError);
+
+                File.WriteAllText(Path.Combine(repoPath, "git-repo"), "");
+                runner.Run("add git-repo", TimeSpan.FromSeconds(5));
+                NUnit.Framework.Assert.That(runner.WasSuccessful,
+                    "git add failed\n\tstdout: {0}\n\tstderr: {1}", runner.StandardOutput, runner.StandardError);
+
+                runner.Run("commit -a -m 'init'", TimeSpan.FromSeconds(5));
+                NUnit.Framework.Assert.That(runner.WasSuccessful,
+                    "git commit failed\n\tstdout: {0}\n\tstderr: {1}", runner.StandardOutput, runner.StandardError);
+
+                Using.Directory(Path.Combine(currentDirectory, "git"), () => test(repoPath));
+            });
+        }
+
+        private static string MakeFileUrl(string repoPath)
+        {
+            return "file:///" + repoPath.Replace('\\', '/').Replace(" ", "%20");
         }
     }
 }

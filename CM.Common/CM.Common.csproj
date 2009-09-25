@@ -48,6 +48,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="FileSystem.cs" />
+    <Compile Include="GitGateway.cs" />
     <Compile Include="ILogger.cs" />
     <Compile Include="ISourceControlGateway.cs" />
     <Compile Include="Merge.cs" />
