@@ -6,6 +6,7 @@
     <CMDirectory>$(MSBuildProjectDirectory)\scripts</CMDirectory>
     <MSBuildCommunityTasksPath>$(MSBuildProjectDirectory)\Dependencies\msbuild-community-tasks</MSBuildCommunityTasksPath>
     <SdcTasksDirectory>$(MSBuildProjectDirectory)\Dependencies\sdc-tasks</SdcTasksDirectory>
+    <SevenZipDirectory>$(MSBuildProjectDirectory)\Dependencies\7-zip</SevenZipDirectory>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -24,6 +25,8 @@
       <PackageFiles Include="$(MSBuildCommunityTasksPath)\*.dll" />
       <PackageFiles Include="$(SdcTasksDirectory)\*.dll" />
       <PackageFiles Include="$(SdcTasksDirectory)\*.Tasks" />
+      <PackageFiles Include="$(SevenZipDirectory)\7z.exe" />
+      <PackageFiles Include="$(SevenZipDirectory)\7zS.sfx" />
     </ItemGroup>
 
     <CreateItem Include="$(MSBuildProjectDirectory)\CM.Deploy.UI\bin\$(Configuration)\deployer.exe">
