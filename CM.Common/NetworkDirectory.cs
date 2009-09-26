@@ -28,6 +28,20 @@ namespace CM.Common
             }
         }
 
+        public virtual string BaseDirectoryName
+        {
+            get
+            {
+                var directories = NetworkPath.Split('\\');
+                return directories[directories.Length - 1];
+            }
+        }
+        
+        public virtual string ParentDirectoryName
+        {
+            get { return NetworkPath.Replace("\\" + BaseDirectoryName, ""); }
+        }
+
         public virtual void EnsureExistsAndIsEmpty()
         {
             if (Directory.Exists(NetworkPath))
@@ -40,6 +54,12 @@ namespace CM.Common
             }
         }
 
+        public virtual void MirrorFrom(string sourceDirectory)
+        {
+            EnsureExistsAndIsEmpty();
+            MirrorFrom(sourceDirectory, NetworkPath);
+        }
+
         private void Empty()
         {
             foreach (var subdirectory in Directory.GetDirectories(NetworkPath))
@@ -50,12 +70,6 @@ namespace CM.Common
             {
                 File.Delete(filename);
             }
-        }
-
-        public virtual void MirrorFrom(string sourceDirectory)
-        {
-            EnsureExistsAndIsEmpty();
-            MirrorFrom(sourceDirectory, NetworkPath);
         }
 
         private static void MirrorFrom(string sourceDirectory, string destinationDirectory)

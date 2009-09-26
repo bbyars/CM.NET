@@ -29,7 +29,7 @@ namespace CM.FunctionalTests.MSBuild.Tasks
                             <WriteLinesToFile File='$(MSBuildProjectDirectory)\physicalDirectory.txt' Lines='$(PhysicalDirectory)' />
                         </Target>
                     </Project>");
-                var output = Shell.RunMSBuild(@"source\test.proj", TimeSpan.FromSeconds(5));
+                var output = Shell.RunMSBuild(@"source\test.proj", TimeSpan.FromSeconds(10));
 
                 Assert.That(File.Exists(@"source\physicalDirectory.txt"), "directory not written to file: " + output);
                 var physicalDirectory = Path.GetFullPath(File.ReadAllText(@"source\physicalDirectory.txt"));
@@ -39,6 +39,34 @@ namespace CM.FunctionalTests.MSBuild.Tasks
             });
         }
 
-        // Should only keep N copies
+        [Test]
+        public void ShouldOnlyKeepNCopiesOfPhysicalDirectory()
+        {
+            Using.Directory("copyToPhysicalDirectoryTest", () =>
+            {
+                Directory.CreateDirectory("source");
+                File.WriteAllText(@"source\test.proj", @"
+                    <Project DefaultTargets='test' xmlns='http://schemas.microsoft.com/developer/msbuild/2003'>
+                        <UsingTask TaskName='CopyToPhysicalDirectory' AssemblyFile='$(MSBuildProjectDirectory)\..\..\CM.MSBuild.Tasks.dll' />
+
+                        <Target Name='test'>
+                            <CopyToPhysicalDirectory Server='localhost' SourceDirectory='.' NumberOfOldDeploysToKeep='1'
+                                DestinationDirectory='$(MSBuildProjectDirectory)\..\destination' />
+                        </Target>
+                    </Project>");
+                var output = RunProjectThreeTimes(@"source\test.proj");
+
+                var directories = Directory.GetDirectories(".", "destination-*");
+                Assert.That(directories.Length, Is.EqualTo(2), "did not delete directories:\n" + output);
+            });
+        }
+
+        private static string RunProjectThreeTimes(string project)
+        {
+            var output = "";
+            for (var i = 0; i < 3; i++)
+                output += Shell.RunMSBuild(project, TimeSpan.FromSeconds(10)) + "\n\n";
+            return output;
+        }
     }
 }

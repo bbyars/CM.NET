@@ -26,5 +26,26 @@ namespace CM.UnitTests.Common
             var directory = new NetworkDirectory("localhost", @"C:\dir\subdir");
             Assert.AreEqual(@"C:\dir\subdir", directory.NetworkPath);
         }
+
+        [Test]
+        public void ShouldGetParentDirectoryForLocalhost()
+        {
+            var directory = new NetworkDirectory("localhost", @"C:\dir\subdir");
+            Assert.AreEqual(@"C:\dir", directory.ParentDirectoryName);
+        }
+
+        [Test]
+        public void ShouldGetParentDirectoryForUncPath()
+        {
+            var directory = new NetworkDirectory("host", @"C:\dir\subdir");
+            Assert.AreEqual(@"\\host\C$\dir", directory.ParentDirectoryName);
+        }
+
+        [Test]
+        public void ShouldGetBaseDirectoryName()
+        {
+            var directory = new NetworkDirectory("host", @"C:dir\subdir");
+            Assert.AreEqual("subdir", directory.BaseDirectoryName);
+        }
     }
 }
