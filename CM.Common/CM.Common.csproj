@@ -56,6 +56,7 @@
     <Compile Include="ProcessRunner.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PublishToSourceControl.cs" />
+    <Compile Include="Shell.cs" />
     <Compile Include="SvnGateway.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

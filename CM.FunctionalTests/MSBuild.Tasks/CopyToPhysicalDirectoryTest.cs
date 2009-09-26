@@ -1,7 +1,7 @@
 using System;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using CM.Common;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 
@@ -29,7 +29,7 @@ namespace CM.FunctionalTests.MSBuild.Tasks
                             <WriteLinesToFile File='$(MSBuildProjectDirectory)\physicalDirectory.txt' Lines='$(PhysicalDirectory)' />
                         </Target>
                     </Project>");
-                var output = RunMSBuild(@"source\test.proj");
+                var output = Shell.RunMSBuild(@"source\test.proj", TimeSpan.FromSeconds(5));
 
                 Assert.That(File.Exists(@"source\physicalDirectory.txt"), "directory not written to file: " + output);
                 var physicalDirectory = Path.GetFullPath(File.ReadAllText(@"source\physicalDirectory.txt"));
@@ -40,20 +40,5 @@ namespace CM.FunctionalTests.MSBuild.Tasks
         }
 
         // Should only keep N copies
-        // Move RunMSBuild 
-        private static string RunMSBuild(string msbuildFilename)
-        {
-            var startInfo = new ProcessStartInfo
-            {
-                FileName = @"C:\Windows\Microsoft.NET\Framework\v3.5\MSBuild.exe",
-                Arguments = msbuildFilename,
-                CreateNoWindow = true,
-                RedirectStandardOutput = true,
-                UseShellExecute = false
-            };
-            var process = Process.Start(startInfo);
-            process.WaitForExit(5000);
-            return process.StandardOutput.ReadToEnd();
-        }
     }
 }

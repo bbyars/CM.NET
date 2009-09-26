@@ -32,7 +32,7 @@ namespace CM.FunctionalTests.scripts
                       <Import Project='$(MSBuildProjectDirectory)\..\scripts\Sfx.targets' />
                     </Project>");
 
-                var output = RunMSBuild("test.proj");
+                var output = Shell.RunMSBuild("test.proj", TimeSpan.FromSeconds(5));
                 Assert.That(File.Exists(@"build\sfx\SfxTest.exe"), output);
 
                 var sfxProcess = new ProcessRunner(@"build\sfx\SfxTest.exe");
@@ -46,21 +46,6 @@ namespace CM.FunctionalTests.scripts
                     sfxProcess.KillTree();
                 }
             });
-        }
-
-        private static string RunMSBuild(string msbuildFilename)
-        {
-            var startInfo = new ProcessStartInfo
-            {
-                FileName = @"C:\Windows\Microsoft.NET\Framework\v3.5\MSBuild.exe",
-                Arguments = msbuildFilename,
-                CreateNoWindow = true,
-                RedirectStandardOutput = true,
-                UseShellExecute = false
-            };
-            var process = Process.Start(startInfo);
-            process.WaitForExit(5000);
-            return process.StandardOutput.ReadToEnd();
         }
 
         private static Process WaitForProcess(string processName)
