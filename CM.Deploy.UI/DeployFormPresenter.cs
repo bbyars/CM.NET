@@ -36,7 +36,7 @@ namespace CM.Deploy.UI
             view.ExternalFileEnabled = !view.UsePackagedEnvironment;
         }
 
-        public void LoadEnvironment(string environment)
+        public virtual void LoadEnvironment(string environment)
         {
             var path = string.Format(@"Environments\{0}.properties", environment);
             var xml = XElement.Parse(fileSystem.ReadAllText(path));
@@ -50,7 +50,7 @@ namespace CM.Deploy.UI
             view.ShowProperties(properties);
         }
 
-        public void Deploy()
+        public virtual void Deploy()
         {
             var msbuildFile = fileSystem.ListAllFilesIn(".", "*.proj")[0];
             var args = string.Format("{0} /t:Deploy /p:\"ConfigPath={1}\" /p:\"PackageDirectory=.\"", 

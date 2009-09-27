@@ -7,10 +7,13 @@
     <PackageName Condition="$(PackageName) == ''">$(MSBuildProjectName)-$(Version)</PackageName>
     <SevenZipDirectory Condition="$(SevenZipDirectory) == ''">$(MSBuildProjectDirectory)\Dependencies\CM.NET</SevenZipDirectory>
     <SfxDirectory Condition="$(SfxDirectory) == ''">$(BuildDirectory)\sfx</SfxDirectory>
+    <CMDirectory Condition="$(CMDirectory) == ''">$(MSBuildProjectDirectory)\Dependencies\CM.NET</CMDirectory>
   </PropertyGroup>
 
   <ItemGroup>
     <DeployExe Condition="@(DeployExe) == ''" Include="$(MSBuildProjectDirectory)\Dependencies\CM.NET\deployer.exe" />
+    <PackageFiles Include="$(MSBuildProjectFullPath)" />
+    <PackageFiles Include="$(CMDirectory)\*" />
   </ItemGroup>
   
   <PropertyGroup>
@@ -44,6 +47,7 @@ RunProgram="@(DeployExe->'%(Filename)').exe"
     <Message Text="  PackageName: $(PackageName)" />
     <Message Text="  SevenZipDirectory: $(SevenZipDirectory)" />
     <Message Text="  SfxDirectory: $(SfxDirectory)" />
+    <Message Text="  CMDirectory: $(CMDirectory)" />
     <Message Text="  DeployExe: @(DeployExe)" />
   </Target>
 </Project>

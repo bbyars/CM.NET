@@ -37,6 +37,13 @@ namespace CM.FunctionalTests.Common
         }
 
         [Test]
+        public void ShouldReturnEmptyListIfDirectoryDoesNotExist()
+        {
+            var fileSystem = new FileSystem();
+            Assert.That(fileSystem.ListAllFilesIn("missingDir", "*"), Is.EqualTo(new string[0]));
+        }
+
+        [Test]
         public void ShouldReadAllText()
         {
             Using.Directory("fileSystemTest", () =>

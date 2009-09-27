@@ -7,7 +7,14 @@ namespace CM.Common
     {
         public virtual string[] ListAllFilesIn(string directory, string searchPattern)
         {
-            return Directory.GetFiles(directory, searchPattern).Select(file => Path.GetFileName(file)).ToArray();
+            try
+            {
+                return Directory.GetFiles(directory, searchPattern).Select(file => Path.GetFileName(file)).ToArray();
+            }
+            catch (DirectoryNotFoundException)
+            {
+                return new string[0];
+            }
         }
 
         public virtual string ReadAllText(string filename)
