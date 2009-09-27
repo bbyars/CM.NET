@@ -8,11 +8,12 @@ namespace CM.Deploy.UI
 {
     public partial class DeployLog
     {
-        public DeployLog(ProcessRunner processRunner)
+        public DeployLog(ProcessRunner processRunner, params string[] initialText)
         {
             InitializeComponent();
+            var firstLines = string.Join(Environment.NewLine, initialText) + Environment.NewLine;
             processRunner.OutputUpdated += (() => Dispatcher.BeginInvoke(
-                (Action)(() => uxLog.Text = processRunner.StandardOutput)));
+                (Action)(() => uxLog.Text = firstLines + processRunner.StandardOutput)));
         }
 
         private void Save(object sender, RoutedEventArgs e)

@@ -119,7 +119,7 @@ namespace CM.UnitTests.Deploy.UI
 
             presenter.Deploy();
 
-            mockView.Verify(v => v.ShowLogView(stubProcessRunner.Object));
+            mockView.Verify(v => v.ShowLogView(stubProcessRunner.Object, It.IsAny<string[]>()));
         }
 
         private static bool ValueEquals(IDictionary<string, string> expected, IDictionary<string, string> actual)

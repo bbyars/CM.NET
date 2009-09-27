@@ -12,7 +12,7 @@ namespace CM.Deploy.UI
 
         private static void AppDispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
         {
-            MessageBox.Show(e.ToString());
+            MessageBox.Show(e.Exception.ToString());
         }
     }
 }

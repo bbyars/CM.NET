@@ -55,7 +55,7 @@ namespace CM.Deploy.UI
             var msbuildFile = fileSystem.ListAllFilesIn(".", "*.proj")[0];
             var args = string.Format("{0} /t:Deploy /p:\"ConfigPath={1}\" /p:\"PackageDirectory=.\"", 
                 msbuildFile, ConfigFilePath);
-            view.ShowLogView(processRunner);
+            view.ShowLogView(processRunner, string.Format("{0} {1}", processRunner.Command, args));
             processRunner.Run(args, TimeSpan.MaxValue);
         }
 
