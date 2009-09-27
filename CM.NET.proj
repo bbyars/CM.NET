@@ -32,7 +32,7 @@
     <CreateItem Include="$(MSBuildProjectDirectory)\CM.Deploy.UI\bin\$(Configuration)\deployer.exe">
       <Output TaskParameter="Include" ItemName="PackageFiles" />
     </CreateItem>
-    <CreateItem Include="$(MSBuildProjectDirectory)\CM.MSBuild.Tasks\bin\$(Configuration)\CM.MSBuild.Tasks.dll">
+    <CreateItem Include="$(MSBuildProjectDirectory)\CM.MSBuild.Tasks\bin\$(Configuration)\*.dll">
       <Output TaskParameter="Include" ItemName="PackageFiles" />
     </CreateItem>
   </Target>
