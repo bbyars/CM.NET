@@ -13,6 +13,7 @@ namespace CM.Common
         public ProcessRunner(string command)
         {
             Command = command;
+            WorkingDirectory = Environment.CurrentDirectory;
             ExitCode = -1;
         }
 
@@ -40,7 +41,7 @@ namespace CM.Common
                 RedirectStandardError = true,
                 UseShellExecute = false,
                 CreateNoWindow = true,
-                WorkingDirectory = WorkingDirectory ?? "."
+                WorkingDirectory = WorkingDirectory
             };
 
             var process = Process.Start(startInfo);

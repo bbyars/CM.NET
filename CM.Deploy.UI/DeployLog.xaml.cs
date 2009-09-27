@@ -17,7 +17,7 @@ namespace CM.Deploy.UI
 
         private static string Header(ProcessRunner processRunner)
         {
-            return "Working Directory: " + Environment.CurrentDirectory + Environment.NewLine
+            return "Working Directory: " + processRunner.WorkingDirectory + Environment.NewLine
                 + "Command: " + processRunner.CommandLine + Environment.NewLine + Environment.NewLine;
         }
 
