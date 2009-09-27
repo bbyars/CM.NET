@@ -17,6 +17,7 @@ namespace CM.Common
         }
 
         public virtual string Command { get; private set; }
+        public virtual string CommandLine { get; private set; }
         public virtual string WorkingDirectory { get; set; }
         public virtual int Pid { get; private set; }
         public virtual string StandardOutput { get; private set; }
@@ -30,6 +31,7 @@ namespace CM.Common
         
         public virtual Process Start(string args)
         {
+            CommandLine = string.Format("{0} {1}", Command, args);
             var startInfo = new ProcessStartInfo
             {
                 FileName = Command,
