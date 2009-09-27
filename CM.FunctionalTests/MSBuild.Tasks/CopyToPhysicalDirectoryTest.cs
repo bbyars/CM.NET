@@ -61,6 +61,28 @@ namespace CM.FunctionalTests.MSBuild.Tasks
             });
         }
 
+        [Test]
+        public void ShouldCompareOnlyTimestampWhenDeletingPreviousDeploys()
+        {
+            Using.Directory("copyToPhysicalDirectoryTest", () =>
+            {
+                Directory.CreateDirectory("source");
+                Directory.CreateDirectory("destination-fooledYou");
+                File.WriteAllText(@"source\test.proj", @"
+                    <Project DefaultTargets='test' xmlns='http://schemas.microsoft.com/developer/msbuild/2003'>
+                        <UsingTask TaskName='CopyToPhysicalDirectory' AssemblyFile='$(MSBuildProjectDirectory)\..\..\CM.MSBuild.Tasks.dll' />
+
+                        <Target Name='test'>
+                            <CopyToPhysicalDirectory Server='localhost' SourceDirectory='.' NumberOfOldDeploysToKeep='0'
+                                DestinationDirectory='$(MSBuildProjectDirectory)\..\destination' />
+                        </Target>
+                    </Project>");
+                var output = Shell.MSBuild(@"source\test.proj", TimeSpan.FromSeconds(10));
+
+                Assert.That(Directory.Exists("destination-fooledYou"), "deleted wrong directory:\n" + output);
+            });
+        }
+
         private static string RunProjectThreeTimes(string project)
         {
             var output = "";
