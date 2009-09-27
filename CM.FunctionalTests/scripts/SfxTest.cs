@@ -32,7 +32,7 @@ namespace CM.FunctionalTests.scripts
                       <Import Project='$(MSBuildProjectDirectory)\..\scripts\Sfx.targets' />
                     </Project>");
 
-                var output = Shell.RunMSBuild("test.proj", TimeSpan.FromSeconds(5));
+                var output = Shell.MSBuild("test.proj", TimeSpan.FromSeconds(5));
                 Assert.That(File.Exists(@"build\sfx\SfxTest.exe"), output);
 
                 var sfxProcess = new ProcessRunner(@"build\sfx\SfxTest.exe");

@@ -29,7 +29,7 @@ namespace CM.FunctionalTests.MSBuild.Tasks
                             <WriteLinesToFile File='$(MSBuildProjectDirectory)\physicalDirectory.txt' Lines='$(PhysicalDirectory)' />
                         </Target>
                     </Project>");
-                var output = Shell.RunMSBuild(@"source\test.proj", TimeSpan.FromSeconds(10));
+                var output = Shell.MSBuild(@"source\test.proj", TimeSpan.FromSeconds(10));
 
                 Assert.That(File.Exists(@"source\physicalDirectory.txt"), "directory not written to file: " + output);
                 var physicalDirectory = Path.GetFullPath(File.ReadAllText(@"source\physicalDirectory.txt"));
@@ -65,7 +65,7 @@ namespace CM.FunctionalTests.MSBuild.Tasks
         {
             var output = "";
             for (var i = 0; i < 3; i++)
-                output += Shell.RunMSBuild(project, TimeSpan.FromSeconds(10)) + "\n\n";
+                output += Shell.MSBuild(project, TimeSpan.FromSeconds(10)) + "\n\n";
             return output;
         }
     }

@@ -10,14 +10,13 @@ namespace CM.Common
         public event UpdatedHandler OutputUpdated;
         public event UpdatedHandler ErrorUpdated;
 
-        private readonly string command;
-
         public ProcessRunner(string command)
         {
-            this.command = command;
+            Command = command;
             ExitCode = -1;
         }
 
+        public virtual string Command { get; private set; }
         public virtual string WorkingDirectory { get; set; }
         public virtual int Pid { get; private set; }
         public virtual string StandardOutput { get; private set; }
@@ -33,7 +32,7 @@ namespace CM.Common
         {
             var startInfo = new ProcessStartInfo
             {
-                FileName = command,
+                FileName = Command,
                 Arguments = args,
                 RedirectStandardOutput = true,
                 RedirectStandardError = true,

@@ -11,8 +11,8 @@ namespace CM.Common
             LocalDirectory = localDirectory;
         }
 
-        public string Machine { get; private set; }
-        public string LocalDirectory { get; private set; }
+        public virtual string Machine { get; private set; }
+        public virtual string LocalDirectory { get; private set; }
 
         public virtual string NetworkPath
         {
@@ -45,13 +45,9 @@ namespace CM.Common
         public virtual void EnsureExistsAndIsEmpty()
         {
             if (Directory.Exists(NetworkPath))
-            {
                 Empty();
-            }
             else
-            {
                 Directory.CreateDirectory(NetworkPath);
-            }
         }
 
         public virtual void MirrorFrom(string sourceDirectory)
