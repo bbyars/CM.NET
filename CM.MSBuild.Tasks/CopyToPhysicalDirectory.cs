@@ -44,6 +44,7 @@ namespace CM.MSBuild.Tasks
             try
             {
                 DeleteOldDeploys();
+                Log.LogMessage("Deploying to {0}", UncPhysicalDirectory);
                 new NetworkDirectory(Server, UncPhysicalDirectory).MirrorFrom(SourceDirectory);
                 return true;
             }
@@ -65,6 +66,7 @@ namespace CM.MSBuild.Tasks
                 var numberOfDirectoriesToDelete = matchingDirectories.Count - NumberOfOldDeploysToKeep;
                 for (var i = 0; i < numberOfDirectoriesToDelete; i++)
                 {
+                    Log.LogMessage("Deleting previously deployed directory {0}", matchingDirectories[i]);
                     Directory.Delete(matchingDirectories[i], true);
                 }
             }
