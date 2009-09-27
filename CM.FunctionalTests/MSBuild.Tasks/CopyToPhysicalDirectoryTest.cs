@@ -23,10 +23,10 @@ namespace CM.FunctionalTests.MSBuild.Tasks
                         <Target Name='test'>
                             <CopyToPhysicalDirectory Server='localhost' SourceDirectory='.'
                                     DestinationDirectory='$(MSBuildProjectDirectory)\..\destination'>
-                                <Output TaskParameter='PhysicalDirectory' PropertyName='PhysicalDirectory' />
+                                <Output TaskParameter='UncPhysicalDirectory' PropertyName='UncPhysicalDirectory' />
                             </CopyToPhysicalDirectory>
 
-                            <WriteLinesToFile File='$(MSBuildProjectDirectory)\physicalDirectory.txt' Lines='$(PhysicalDirectory)' />
+                            <WriteLinesToFile File='$(MSBuildProjectDirectory)\physicalDirectory.txt' Lines='$(UncPhysicalDirectory)' />
                         </Target>
                     </Project>");
                 var output = Shell.MSBuild(@"source\test.proj", TimeSpan.FromSeconds(10));

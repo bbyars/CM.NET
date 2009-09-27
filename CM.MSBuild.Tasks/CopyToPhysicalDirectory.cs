@@ -28,9 +28,15 @@ namespace CM.MSBuild.Tasks
         public virtual int NumberOfOldDeploysToKeep { get; set; }
 
         [Output]
-        public virtual string PhysicalDirectory
+        public virtual string UncPhysicalDirectory
         {
             get { return string.Format("{0}-{1}", new NetworkDirectory(Server, DestinationDirectory).NetworkPath, timestamp ); }
+        }
+
+        [Output]
+        public virtual string LocalPhysicalDirectory
+        {
+            get { return string.Format("{0}-{1}", DestinationDirectory, timestamp); }
         }
 
         public override bool Execute()
@@ -38,7 +44,7 @@ namespace CM.MSBuild.Tasks
             try
             {
                 DeleteOldDeploys();
-                new NetworkDirectory(Server, PhysicalDirectory).MirrorFrom(SourceDirectory);
+                new NetworkDirectory(Server, UncPhysicalDirectory).MirrorFrom(SourceDirectory);
                 return true;
             }
             catch (Exception e)
