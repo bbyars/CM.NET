@@ -12,8 +12,6 @@
 
   <ItemGroup>
     <DeployExe Condition="@(DeployExe) == ''" Include="$(MSBuildProjectDirectory)\Dependencies\CM.NET\deployer.exe" />
-    <PackageFiles Include="$(MSBuildProjectFullPath)" />
-    <PackageFiles Include="$(CMDirectory)\*" />
   </ItemGroup>
   
   <PropertyGroup>
