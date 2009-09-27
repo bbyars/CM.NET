@@ -87,7 +87,8 @@ namespace CM.UnitTests.Deploy.UI
 
             presenter.Deploy();
 
-            mockProcessRunner.Verify(pr => pr.Run(@"build.proj /t:Deploy /p:""ConfigPath=Environments\prod.properties""", TimeSpan.MaxValue));
+            const string expectedCommand = @"build.proj /t:Deploy /p:""ConfigPath=Environments\prod.properties"" /p:""PackageDirectory=.""";
+            mockProcessRunner.Verify(pr => pr.Run(expectedCommand, TimeSpan.MaxValue));
         }
 
         [Test]
@@ -103,7 +104,8 @@ namespace CM.UnitTests.Deploy.UI
 
             presenter.Deploy();
 
-            mockProcessRunner.Verify(pr => pr.Run("build.proj /t:Deploy /p:\"ConfigPath=prod.properties\"", TimeSpan.MaxValue));
+            const string properties = "build.proj /t:Deploy /p:\"ConfigPath=prod.properties\" /p:\"PackageDirectory=.\"";
+            mockProcessRunner.Verify(pr => pr.Run(properties, TimeSpan.MaxValue));
         }
 
         [Test]
