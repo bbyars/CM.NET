@@ -25,10 +25,10 @@
     <Copy SourceFiles="$(SevenZipDirectory)\7zS.sfx" DestinationFolder="$(SfxDirectory)" />
     
     <PropertyGroup>
-      <SevenZipConfig>
+      <SevenZipConfig Condition="%(DeployExe.Extension) == '.exe'">
 %3B!@Install@!UTF-8!
 Title="Deploy"
-RunProgram="@(DeployExe->'%(Filename)').exe"
+RunProgram="%(DeployExe.Filename).exe"
 %3B!@InstallEnd@!
       </SevenZipConfig>
     </PropertyGroup>

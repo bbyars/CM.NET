@@ -21,10 +21,10 @@ namespace CM.FunctionalTests.scripts
                       <PropertyGroup>
                         <PackageName>SfxTest</PackageName>
                         <SevenZipDirectory>$(MSBuildProjectDirectory)\..\scripts\Dependencies\7-zip</SevenZipDirectory>
+                        <CMDirectory>$(MSBuildProjectDirectory)\..</CMDirectory>
                       </PropertyGroup>
 
                       <ItemGroup>
-                        <DeployExe Include='$(MSBuildProjectDirectory)\..\deployer.exe' />
                         <PackageFiles Include='$(MSBuildProjectFullPath)' />
                       </ItemGroup>
 
