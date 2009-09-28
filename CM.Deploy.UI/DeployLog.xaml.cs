@@ -23,7 +23,12 @@ namespace CM.Deploy.UI
 
         private void Save(object sender, RoutedEventArgs e)
         {
-            var dialog = new OpenFileDialog { Title = "Save Log File", CheckFileExists = false };
+            var dialog = new OpenFileDialog
+            {
+                Title = "Save Log File",
+                CheckFileExists = false,
+                InitialDirectory = Environment.CurrentDirectory
+            };
             if (dialog.ShowDialog().GetValueOrDefault())
                 File.WriteAllText(dialog.FileName, uxLog.Text);
         }

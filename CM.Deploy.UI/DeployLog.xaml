@@ -4,7 +4,8 @@
     Title="DeployLog" Height="400" Width="600">
     <Grid>
         <StackPanel>
-            <TextBox Name="uxLog" Margin="0,0,0,0" Width="580" Height="320" IsReadOnly="True" />
+            <TextBox Name="uxLog" Margin="0,0,0,0" Width="580" Height="320" IsReadOnly="True" 
+                HorizontalScrollBarVisibility="Visible" VerticalScrollBarVisibility="Visible" />
             <StackPanel Orientation="Horizontal">
                 <Button Name="uxClose" Click="Close" Margin="490,10,0,10">Close</Button>
                 <Button Name="uxSave" Click="Save" Margin="10,10,0,10">Save</Button>

@@ -32,7 +32,7 @@
     <OnError ExecuteTargets="$(PostPackageTargets)" />
   </Target>
 
-  <Target Name="Deploy" DependsOnTargets="Package;$(PreDeployTargets)">
+  <Target Name="Deploy" DependsOnTargets="$(PreDeployTargets)">
     <CallTarget Targets="$(DeployTargets);$(PostPackageTargets)" />
     <OnError ExecuteTargets="$(PostPackageTargets)" />
   </Target>

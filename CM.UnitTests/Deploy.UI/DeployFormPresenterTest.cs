@@ -87,7 +87,9 @@ namespace CM.UnitTests.Deploy.UI
 
             presenter.Deploy();
 
-            const string expectedCommand = @"build.proj /t:Deploy /p:""ConfigPath=Environments\prod.properties"" /p:""PackageDirectory=.""";
+            var expectedCommand = string.Format(
+                @"build.proj /t:Deploy /p:""ConfigPath={0}\Environments\prod.properties"" /p:""PackageDirectory=.""",
+                Environment.CurrentDirectory);
             mockProcessRunner.Verify(pr => pr.Run(expectedCommand, TimeSpan.MaxValue));
         }
 

@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Environment Condition="$(Environment) == ''">dev</Environment>
     <EnvironmentsDirectory Condition="$(EnvironmentsDirectory) == ''">$(MSBuildProjectDirectory)\environments</EnvironmentsDirectory>
-    <ConfigPath Condition="$(ConfigPath) == ''">$(EnvironmetsDirectory)\$(Environment).properties</ConfigPath>
+    <ConfigPath Condition="$(ConfigPath) == ''">$(EnvironmentsDirectory)\$(Environment).properties</ConfigPath>
     <BuildDirectory Condition="$(BuildDirectory) == ''">$(MSBuildProjectDirectory)\build</BuildDirectory>
     <Version Condition="$(Version) == ''">0.0.0.0</Version>
     <CMDirectory Condition="$(CMDirectory) == ''">$(MSBuildProjectDirectory)\Dependencies\CM.NET</CMDirectory>

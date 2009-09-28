@@ -64,7 +64,8 @@ namespace CM.Deploy.UI
             get
             {
                 if (view.UsePackagedEnvironment)
-                    return string.Format(@"Environments\{0}.properties", view.SelectedEnvironment);
+                    return Path.Combine(Path.Combine(Environment.CurrentDirectory, "Environments"),
+                        view.SelectedEnvironment + ".properties");
                 else
                     return view.ExternalFile;
             }
