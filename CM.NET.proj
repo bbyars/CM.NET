@@ -39,6 +39,8 @@
       DestinationFiles="@(PackageFiles->'$(PackageDirectory)\%(RecursiveDir)%(Filename)%(Extension)')" />
   </Target>
 
+  <UsingTask TaskName="PublishToSvn" AssemblyFile="$(PackageDirectory)\CM.MSBuild.Tasks.dll" />
+
   <Target Name="Publish" Condition="$(IsInContinuousIntegration) == 'true'">
     <ItemGroup>
       <FilesToPublish Include="$(PackageDirectory)\**\*" />
