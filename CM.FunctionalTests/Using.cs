@@ -32,7 +32,7 @@ namespace CM.FunctionalTests
             Using.Directory(repoPath, () =>
             {
                 var runner = new ProcessRunner("svnadmin");
-                runner.Run("create .", TimeSpan.FromSeconds(10));
+                runner.Run("create .", TimeSpan.FromSeconds(20));
                 NUnit.Framework.Assert.That(runner.WasSuccessful,
                     "svnadmin failed\n\tstdout: {0}\n\tstderr: {1}", runner.StandardOutput, runner.StandardError);
 
@@ -47,7 +47,7 @@ namespace CM.FunctionalTests
             Using.Directory(repoPath, () =>
             {
                 var runner = new ProcessRunner("git");
-                runner.Run("init", TimeSpan.FromSeconds(10));
+                runner.Run("init", TimeSpan.FromSeconds(20));
                 NUnit.Framework.Assert.That(runner.WasSuccessful,
                     "git init failed\n\tstdout: {0}\n\tstderr: {1}", runner.StandardOutput, runner.StandardError);
 

@@ -27,7 +27,7 @@
     <OnError ExecuteTargets="$(PostUnitTestTargets)" />
   </Target>
 
-  <Target Name="Package" DependsOnTargets="Compile;$(PrePackageTargets)">
+  <Target Name="Package" DependsOnTargets="$(PrePackageTargets)">
     <CallTarget Targets="$(PackageTargets);$(PostPackageTargets)" />
     <OnError ExecuteTargets="$(PostPackageTargets)" />
   </Target>
@@ -37,7 +37,7 @@
     <OnError ExecuteTargets="$(PostPackageTargets)" />
   </Target>
 
-  <Target Name="FunctionalTest" DependsOnTargets="Deploy;$(PreFunctionalTestTargets)">
+  <Target Name="FunctionalTest" DependsOnTargets="$(PreFunctionalTestTargets)">
     <CallTarget Targets="$(FunctionalTestTargets);$(PostFunctionalTestTargets)" />
     <OnError ExecuteTargets="$(PostFunctionalTestTargets)" />
   </Target>

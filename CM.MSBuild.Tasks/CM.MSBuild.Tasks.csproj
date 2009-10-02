@@ -48,6 +48,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ChangeDirectoryPrefix.cs" />
     <Compile Include="CopyToPhysicalDirectory.cs" />
     <Compile Include="MSBuildLogAdapter.cs" />
     <Compile Include="PublishToSvn.cs" />

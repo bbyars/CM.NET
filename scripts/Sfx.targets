@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="Package.targets" />
-  
+
   <!-- Properties expected to be provided, unless these defaults are OK -->
   <PropertyGroup>
     <PackageName Condition="$(PackageName) == ''">$(MSBuildProjectName)-$(Version)</PackageName>
@@ -13,17 +13,16 @@
   <ItemGroup>
     <DeployExe Condition="@(DeployExe) == ''" Include="$(CMDirectory)\deployer.exe;$(CMDirectory)\CM.Common.dll" />
   </ItemGroup>
-  
+
   <PropertyGroup>
-    <PackageTargets>$(PackageTargets);CreateSfx</PackageTargets>
     <TraceDataTargets>$(TraceDataTargets);TraceSfxData</TraceDataTargets>
   </PropertyGroup>
 
-  <Target Name="CreateSfx">
+  <Target Name="CreatePackage">
     <Copy SourceFiles="@(DeployExe)"
       DestinationFiles="@(DeployExe->'$(PackageDirectory)\%(RecursiveDir)%(Filename)%(Extension)')" />
     <Copy SourceFiles="$(SevenZipDirectory)\7zS.sfx" DestinationFolder="$(SfxDirectory)" />
-    
+
     <PropertyGroup>
       <SevenZipConfig Condition="%(DeployExe.Extension) == '.exe'">
 %3B!@Install@!UTF-8!

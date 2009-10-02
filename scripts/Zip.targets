@@ -7,13 +7,12 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <PackageTargets>$(PackageTargets);CreateArchive</PackageTargets>
     <TraceDataTargets>$(TraceDataTargets);TraceZipData</TraceDataTargets>
   </PropertyGroup>
 
   <UsingTask AssemblyFile="$(MSBuildCommunityTasksPath)\MSBuild.Community.Tasks.dll" TaskName="MSBuild.Community.Tasks.Zip" />
 
-  <Target Name="CreateArchive">
+  <Target Name="CreatePackage">
     <Zip Files="@(ArchiveFiles)"
       WorkingDirectory="$(PackageDirectory)"
       ZipFileName="$(BuildDirectory)\$(PackageName).zip" />

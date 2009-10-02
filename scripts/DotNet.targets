@@ -10,7 +10,7 @@
     <NUnitDirectory Condition="$(NUnitDirectory) == '' And Exists('$(MSBuildProjectDirectory)\Dependencies\nunit')">$(MSBuildProjectDirectory)\Dependencies\nunit</NUnitDirectory>
     <MSBuildCommunityTasksPath Condition="$(MSBuildCommunityTasksPath) == ''">$(MSBuildProjectDirectory)\Dependencies\CM.NET</MSBuildCommunityTasksPath>
   </PropertyGroup>
-  
+
   <PropertyGroup>
     <CleanTargets>$(CleanTargets);CleanVisualStudioDirectories</CleanTargets>
     <PreCompileTargets>$(PreCompileTargets);WriteVersionToAssemblyInfos</PreCompileTargets>
@@ -23,19 +23,17 @@
 
   <UsingTask AssemblyFile="$(MSBuildCommunityTasksPath)\MSBuild.Community.Tasks.dll" TaskName="MSBuild.Community.Tasks.FileUpdate" />
   <UsingTask AssemblyFile="$(MSBuildCommunityTasksPath)\MSBuild.Community.Tasks.dll" TaskName="MSBuild.Community.Tasks.NUnit" />
-  
+
   <ItemGroup>
     <AssemblyInfoFiles Include="**\AssemblyInfo.cs" />
   </ItemGroup>
 
   <Target Name="CleanVisualStudioDirectories">
-    <CreateItem Include="**\bin\$(Configuration)\**\*">
-      <Output TaskParameter="Include" ItemName="VisualStudioOutput" />
-    </CreateItem>
-    <CreateItem Include="**\obj\$(Configuration)\**\*">
-      <Output TaskParameter="Include" ItemName="VisualStudioOutput" />
-    </CreateItem>
-    <Delete Files="@(VisualStudioOutput)" />
+    <ItemGroup>
+      <VisualStudioFiles Include="$(MSBuildProjectDirectory)\**\bin\$(Configuration)\**\*" />
+      <VisualStudioFiles Include="$(MSBuildProjectDirectory)\**\obj\$(Configuration)\**\*" />
+    </ItemGroup>
+    <Delete Files="@(VisualStudioFiles)" />
   </Target>
 
   <Target Name="CompileSolution" DependsOnTargets="CleanVisualStudioDirectories">

@@ -51,6 +51,7 @@
     <Compile Include="Common\ProcessRunnerTest.cs" />
     <Compile Include="Common\PublishToSvnTest.cs" />
     <Compile Include="Common\SvnGatewayTest.cs" />
+    <Compile Include="MSBuild.Tasks\ChangeDirectoryPrefixTest.cs" />
     <Compile Include="MSBuild.Tasks\CopyToPhysicalDirectoryTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="scripts\SfxTest.cs" />

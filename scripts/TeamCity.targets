@@ -19,18 +19,13 @@
     <StringReplace Input="$(MSBuildProjectName)" OldValue=".proj.teamcity.patch" NewValue="">
       <Output TaskParameter="Output" PropertyName="ProjectName" />
     </StringReplace>
-    <CreateProperty Value="$(ProjectName).sln" Condition="$(Solution) == '' And Exists('$(ProjectName).sln')">
-      <Output TaskParameter="Value" PropertyName="Solution" />
-    </CreateProperty>
-    <CreateProperty Value="$(ProjectName).UnitTests" Condition="$(UnitTestProject) == '' And Exists('$(MSBuildProjectDirectory)\$(ProjectName).UnitTests')">
-      <Output TaskParameter="Value" PropertyName="UnitTestProject" />
-    </CreateProperty>
-    <CreateProperty Value="$(ProjectName).FunctionalTests" Condition="$(FunctionalTestProject) == '' And Exists('$(MSBuildProjectDirectory)\$(ProjectName).FunctionalTests')">
-      <Output TaskParameter="Value" PropertyName="FunctionalTestProject" />
-    </CreateProperty>
-    <CreateProperty Value="$(ProjectName)-$(Version)" Condition="$(PackageName) == '' Or $(PackageName) == '$(MSBuildProjectName)-$(Version)'">
-      <Output TaskParameter="Value" PropertyName="PackageName" />
-    </CreateProperty>
+
+    <PropertyGroup>
+      <Solution Condition="$(Solution) == '' And Exists('$(ProjectName).sln')">$(ProjectName).sln</Solution>
+      <UnitTestProject Condition="$(UnitTestProject) == '' And Exists('$(ProjectName).UnitTests')">$(ProjectName).UnitTests</UnitTestProject>
+      <FunctionalTestProject Condition="$(FunctionalTestProject) == '' And Exists('$(ProjectName).FunctionalTests')">$(ProjectName).FunctionalTests</FunctionalTestProject>
+      <PackageName Condition="$(PackageName) == '' Or $(PackageName) == '$(MSBuildProjectName)-$(Version)'">$(ProjectName)-$(Version)</PackageName>
+    </PropertyGroup>
   </Target>
 
   <Target Name="TraceTeamCityData">

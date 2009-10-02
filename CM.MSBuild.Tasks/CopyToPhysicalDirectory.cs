@@ -91,8 +91,8 @@ namespace CM.MSBuild.Tasks
         {
             try
             {
-                DeleteOldDeploys();
                 Log.LogMessage("Deploying to {0}", UncPhysicalDirectory);
+                DeleteOldDeploys();
                 new NetworkDirectory(Server, UncPhysicalDirectory).MirrorFrom(SourceDirectory);
                 return true;
             }

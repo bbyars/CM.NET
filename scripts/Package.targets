@@ -4,14 +4,17 @@
   <PropertyGroup>
     <BuildDirectory Condition="$(BuildDirectory) == ''">$(MSBuildProjectDirectory)\build</BuildDirectory>
     <PackageDirectory Condition="$(PackageDirectory) == ''">$(BuildDirectory)\package</PackageDirectory>
+    <CMDirectory Condition="$(CMDirectory) == ''">$(MSBuildProjectDirectory)\Dependencies\CM.NET</CMDirectory>
   </PropertyGroup>
 
   <PropertyGroup>
     <CleanTargets>$(CleanTargets);CleanPackageDirectory</CleanTargets>
     <PostCleanTargets>$(PostCleanTargets);CreatePackageDirectory</PostCleanTargets>
-    <PackageTargets>$(PackageTargets);CopyFilesToPackageDirectory</PackageTargets>
+    <PackageTargets>$(PackageTargets);CopyCMFiles;CreatePackage</PackageTargets>
     <TraceDataTargets>$(TraceDataTargets);TracePackageData</TraceDataTargets>
   </PropertyGroup>
+
+  <UsingTask TaskName="ChangeDirectoryPrefix" AssemblyFile="$(CMDirectory)\CM.MSBuild.Tasks.dll" />
 
   <Target Name="CleanPackageDirectory">
     <RemoveDir Directories="$(PackageDirectory)" Condition="Exists('$(PackageDirectory)')" />
@@ -21,17 +24,24 @@
     <MakeDir Directories="$(PackageDirectory)" Condition="!Exists('$(PackageDirectory)')" />
   </Target>
 
-  <Target Name="CopyFilesToPackageDirectory">
-    <Error Text="No files were added to the PackageFiles item" Condition="@(PackageFiles) == ''" />
-    <Copy SourceFiles="@(PackageFiles)"
-      DestinationFiles="@(PackageFiles->'$(PackageDirectory)\%(RecursiveDir)%(Filename)%(Extension)')" />
+  <Target Name="CopyCMFiles">
+    <ItemGroup>
+      <CMFiles Include="$(CMDirectory)\**\*" />
+    </ItemGroup>
+    <ChangeDirectoryPrefix Files="@(CMFiles)" FromPrefix="$(MSBuildProjectDirectory)" ToPrefix="$(PackageDirectory)">
+      <Output TaskParameter="TransformedFiles" ItemName="CMPackageFiles" />
+    </ChangeDirectoryPrefix>
+    <Copy SourceFiles="@(CMFiles)" DestinationFiles="@(CMPackageFiles)" />
+  </Target>
+
+  <Target Name="CreatePackage">
+    <Error Text="Package.targets is not intended to be imported directly - it should be imported in a different packaging targets file, and the CreatePackage target must be overwritten" />
   </Target>
 
   <Target Name="TracePackageData">
     <Message Text="Package.targets" />
     <Message Text="  BuildDirectory: $(BuildDirectory)" />
+    <Message Text="  CMDirectory: $(CMDirectory)" />
     <Message Text="  PackageDirectory: $(PackageDirectory)" />
-    <Message Text="  PackageFiles: @(PackageFiles)" Condition="@(PackageFiles) != ''" />
-    <Message Text="  No PackageFiles have been added yet; try tracing after running the Package target" Condition="@(PackageFiles) == ''" />
   </Target>
 </Project>
