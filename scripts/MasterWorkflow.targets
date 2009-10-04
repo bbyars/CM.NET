@@ -12,36 +12,13 @@
       FunctionalTest;
       $(PostBuildTargets)" />
 
-  <Target Name="Clean" DependsOnTargets="$(PreCleanTargets)">
-    <CallTarget Targets="$(CleanTargets);$(PostCleanTargets)" />
-    <OnError ExecuteTargets="$(PostCleanTargets)" />
-  </Target>
-
-  <Target Name="Compile" DependsOnTargets="Clean;$(PreCompileTargets)">
-    <CallTarget Targets="$(CompileTargets);$(PostCompileTargets)" />
-    <OnError ExecuteTargets="$(PostCompileTargets)" />
-  </Target>
-
-  <Target Name="UnitTest" DependsOnTargets="Compile;$(PreUnitTestTargets)">
-    <CallTarget Targets="$(UnitTestTargets);$(PostUnitTestTargets)" />
-    <OnError ExecuteTargets="$(PostUnitTestTargets)" />
-  </Target>
-
-  <Target Name="Package" DependsOnTargets="$(PrePackageTargets)">
-    <CallTarget Targets="$(PackageTargets);$(PostPackageTargets)" />
-    <OnError ExecuteTargets="$(PostPackageTargets)" />
-  </Target>
-
-  <Target Name="Deploy" DependsOnTargets="$(PreDeployTargets)">
-    <CallTarget Targets="$(DeployTargets);$(PostPackageTargets)" />
-    <OnError ExecuteTargets="$(PostPackageTargets)" />
-  </Target>
-
-  <Target Name="FunctionalTest" DependsOnTargets="$(PreFunctionalTestTargets)">
-    <CallTarget Targets="$(FunctionalTestTargets);$(PostFunctionalTestTargets)" />
-    <OnError ExecuteTargets="$(PostFunctionalTestTargets)" />
-  </Target>
-
+  <Target Name="Clean" DependsOnTargets="$(PreCleanTargets);$(CleanTargets);$(PostCleanTargets)" />
+  <Target Name="Compile" DependsOnTargets="Clean;$(PreCompileTargets);$(CompileTargets);$(PostCompileTargets)" />
+  <Target Name="UnitTest" DependsOnTargets="Compile;$(PreUnitTestTargets);$(UnitTestTargets);$(PostUnitTestTargets)" />
+  <Target Name="Package" DependsOnTargets="$(PrePackageTargets);$(PackageTargets);$(PostPackageTargets)" />
+  <Target Name="Deploy" DependsOnTargets="$(PreDeployTargets);$(DeployTargets);$(PostPackageTargets)" />
+  <Target Name="FunctionalTest" DependsOnTargets="$(PreFunctionalTestTargets);$(FunctionalTestTargets);$(PostFunctionalTestTargets)" />
+  
   <!-- Tracing targets to allow debugging -->
   <Target Name="Trace" DependsOnTargets="TraceWorkflow;TraceData" />
 
