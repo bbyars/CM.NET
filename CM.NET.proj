@@ -32,6 +32,7 @@
       <PackageFiles Include="$(SevenZipDirectory)\7z.exe" />
       <PackageFiles Include="$(SevenZipDirectory)\7zS.sfx" />
       <PackageFiles Include="$(MSBuildProjectDirectory)\CM.Deploy.UI\bin\$(Configuration)\deployer.exe" />
+      <PackageFiles Include="$(MSBuildProjectDirectory)\CM.Deploy.UI\bin\$(Configuration)\deployer.exe.config" />
       <PackageFiles Include="$(MSBuildProjectDirectory)\CM.MSBuild.Tasks\bin\$(Configuration)\*.dll" />
     </ItemGroup>
 

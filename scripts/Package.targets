@@ -10,7 +10,7 @@
   <PropertyGroup>
     <CleanTargets>$(CleanTargets);CleanPackageDirectory</CleanTargets>
     <PostCleanTargets>$(PostCleanTargets);CreatePackageDirectory</PostCleanTargets>
-    <PackageTargets>$(PackageTargets);CopyCMFiles;CreatePackage</PackageTargets>
+    <PackageTargets>$(PackageTargets);CreatePackage</PackageTargets>
     <TraceDataTargets>$(TraceDataTargets);TracePackageData</TraceDataTargets>
   </PropertyGroup>
 
@@ -22,16 +22,6 @@
 
   <Target Name="CreatePackageDirectory">
     <MakeDir Directories="$(PackageDirectory)" Condition="!Exists('$(PackageDirectory)')" />
-  </Target>
-
-  <Target Name="CopyCMFiles">
-    <ItemGroup>
-      <CMFiles Include="$(CMDirectory)\**\*" />
-    </ItemGroup>
-    <ChangeDirectoryPrefix Files="@(CMFiles)" FromPrefix="$(MSBuildProjectDirectory)" ToPrefix="$(PackageDirectory)">
-      <Output TaskParameter="TransformedFiles" ItemName="CMPackageFiles" />
-    </ChangeDirectoryPrefix>
-    <Copy SourceFiles="@(CMFiles)" DestinationFiles="@(CMPackageFiles)" />
   </Target>
 
   <Target Name="CreatePackage">
