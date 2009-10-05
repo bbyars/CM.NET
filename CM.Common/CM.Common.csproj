@@ -48,16 +48,16 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="FileSystem.cs" />
-    <Compile Include="GitGateway.cs" />
+    <Compile Include="GitProvider.cs" />
     <Compile Include="ILogger.cs" />
-    <Compile Include="ISourceControlGateway.cs" />
+    <Compile Include="ISourceControlProvider.cs" />
     <Compile Include="Merge.cs" />
     <Compile Include="NetworkDirectory.cs" />
     <Compile Include="ProcessRunner.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PublishToSourceControl.cs" />
     <Compile Include="Shell.cs" />
-    <Compile Include="SvnGateway.cs" />
+    <Compile Include="SvnProvider.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

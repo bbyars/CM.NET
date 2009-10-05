@@ -1,6 +1,6 @@
 namespace CM.Common
 {
-    public interface ISourceControlGateway
+    public interface ISourceControlProvider
     {
         string[] MetadataDirectories { get; }
         bool Exists(string path);

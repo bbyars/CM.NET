@@ -8,7 +8,7 @@ namespace CM.FunctionalTests.Common
 {
 //    [TestFixture]
     // Runs in IDE, fails on command line - WHY?
-    public class GitGatewayTest
+    public class GitProviderTest
     {
         private TestLogger log;
 
@@ -22,7 +22,7 @@ namespace CM.FunctionalTests.Common
         [ExpectedException(typeof(ArgumentException))]
         public void ShouldThrowExceptionIfCannotClone()
         {
-            GitGateway.Clone("", log);
+            GitProvider.Clone("", log);
         }
 
         [Test]
@@ -30,8 +30,8 @@ namespace CM.FunctionalTests.Common
         {
             Using.GitRepo(url =>
             {
-                using (var gateway = GitGateway.Clone(url, log))
-                    Assert.That(gateway.Exists("test.txt"), Is.False, log.Contents);
+                using (var provider = GitProvider.Clone(url, log))
+                    Assert.That(provider.Exists("test.txt"), Is.False, log.Contents);
             });
         }
 
@@ -40,11 +40,11 @@ namespace CM.FunctionalTests.Common
         {
             Using.GitRepo(url =>
             {
-                using (var gateway = GitGateway.Clone(url, log))
+                using (var provider = GitProvider.Clone(url, log))
                 {
                     File.WriteAllText("test.txt", "");
-                    gateway.AddFile("test.txt", ".");
-                    Assert.That(gateway.Exists("test.txt"), log.Contents);
+                    provider.AddFile("test.txt", ".");
+                    Assert.That(provider.Exists("test.txt"), log.Contents);
                 }
             });
         }

@@ -4,12 +4,12 @@ using System.IO;
 
 namespace CM.Common
 {
-    public class GitGateway : ISourceControlGateway, IDisposable
+    public class GitProvider : ISourceControlProvider, IDisposable
     {
         private readonly ILogger log;
         private readonly string localPath;
 
-        public static GitGateway Clone(string url, ILogger log)
+        public static GitProvider Clone(string url, ILogger log)
         {
             var localPath = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
             Directory.CreateDirectory(localPath);
@@ -19,10 +19,10 @@ namespace CM.Common
             if (!runner.WasSuccessful)
                 throw new ArgumentException(runner.StandardError);
 
-            return new GitGateway(log, localPath);
+            return new GitProvider(log, localPath);
         }
 
-        private GitGateway(ILogger log, string localPath)
+        private GitProvider(ILogger log, string localPath)
         {
             this.log = log;
             this.localPath = localPath;

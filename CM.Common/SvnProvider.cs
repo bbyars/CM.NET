@@ -3,11 +3,11 @@ using System.Diagnostics;
 
 namespace CM.Common
 {
-    public class SvnGateway : ISourceControlGateway
+    public class SvnProvider : ISourceControlProvider
     {
         private readonly ILogger log;
 
-        public SvnGateway(ILogger log)
+        public SvnProvider(ILogger log)
         {
             this.log = log;
         }
@@ -101,7 +101,7 @@ namespace CM.Common
             throw new Exception("svn command failed");
         }
 
-        private string ParentPath(string url)
+        private static string ParentPath(string url)
         {
             var uri = new Uri(url);
             if (uri.AbsolutePath == "/")

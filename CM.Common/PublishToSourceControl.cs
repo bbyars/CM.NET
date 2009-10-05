@@ -4,16 +4,16 @@ namespace CM.Common
 {
     public class PublishToSourceControl
     {
-        private readonly ISourceControlGateway gateway;
+        private readonly ISourceControlProvider sourceControl;
 
         private string workingDirectory;
         private string mainlineUrl;
         private string mainlineWorkingDirectory;
         private string commitMessage;
 
-        public PublishToSourceControl(ISourceControlGateway gateway)
+        public PublishToSourceControl(ISourceControlProvider sourceControl)
         {
-            this.gateway = gateway;
+            this.sourceControl = sourceControl;
         }
 
         public virtual PublishToSourceControl WithCommitMessage(string commitMessage)
@@ -52,29 +52,29 @@ namespace CM.Common
 
         private void Publish(string urlToPublishTo)
         {
-            if (gateway.Exists(mainlineUrl))
+            if (sourceControl.Exists(mainlineUrl))
             {
-                gateway.CreateWorkingDirectory(mainlineUrl, mainlineWorkingDirectory);
+                sourceControl.CreateWorkingDirectory(mainlineUrl, mainlineWorkingDirectory);
                 MergeToMainlineWorkingDirectory();
-                gateway.Commit(mainlineWorkingDirectory, commitMessage);
+                sourceControl.Commit(mainlineWorkingDirectory, commitMessage);
             }
             else
             {
-                gateway.Import(workingDirectory, mainlineUrl, commitMessage);
+                sourceControl.Import(workingDirectory, mainlineUrl, commitMessage);
             }
 
-            gateway.Branch(mainlineUrl, urlToPublishTo, commitMessage);
+            sourceControl.Branch(mainlineUrl, urlToPublishTo, commitMessage);
         }
 
         private void MergeToMainlineWorkingDirectory()
         {
             Merge.From(workingDirectory)
-                .ExcludingDirectories(gateway.MetadataDirectories)
-                .OnNewFiles(file => gateway.AddFile(file, mainlineWorkingDirectory))
-                .OnNewDirectories(dir => gateway.AddDirectory(dir, mainlineWorkingDirectory))
-                .OnChangedFiles(file => gateway.UpdateFile(file, mainlineWorkingDirectory))
-                .OnDeletedFiles(file => gateway.DeleteFile(file, mainlineWorkingDirectory))
-                .OnDeletedDirectories(dir => gateway.DeleteDirectory(dir, mainlineWorkingDirectory))
+                .ExcludingDirectories(sourceControl.MetadataDirectories)
+                .OnNewFiles(file => sourceControl.AddFile(file, mainlineWorkingDirectory))
+                .OnNewDirectories(dir => sourceControl.AddDirectory(dir, mainlineWorkingDirectory))
+                .OnChangedFiles(file => sourceControl.UpdateFile(file, mainlineWorkingDirectory))
+                .OnDeletedFiles(file => sourceControl.DeleteFile(file, mainlineWorkingDirectory))
+                .OnDeletedDirectories(dir => sourceControl.DeleteDirectory(dir, mainlineWorkingDirectory))
                 .Into(mainlineWorkingDirectory);
         }
     }

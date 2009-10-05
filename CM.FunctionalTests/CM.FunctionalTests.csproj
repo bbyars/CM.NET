@@ -45,12 +45,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Common\FileSystemTest.cs" />
-    <Compile Include="Common\GitGatewayTest.cs" />
+    <Compile Include="Common\GitProviderTest.cs" />
     <Compile Include="Common\MergeTest.cs" />
     <Compile Include="Common\NetworkDirectoryTest.cs" />
     <Compile Include="Common\ProcessRunnerTest.cs" />
     <Compile Include="Common\PublishToSvnTest.cs" />
-    <Compile Include="Common\SvnGatewayTest.cs" />
+    <Compile Include="Common\SvnProviderTest.cs" />
     <Compile Include="MSBuild.Tasks\ChangeDirectoryPrefixTest.cs" />
     <Compile Include="MSBuild.Tasks\CopyToPhysicalDirectoryTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
