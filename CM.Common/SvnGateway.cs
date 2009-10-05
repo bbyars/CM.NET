@@ -98,6 +98,7 @@ namespace CM.Common
                 log.Error(stdout);
             if (!string.IsNullOrEmpty(stderr))
                 log.Error(stderr);
+            throw new Exception("svn command failed");
         }
 
         private string ParentPath(string url)
