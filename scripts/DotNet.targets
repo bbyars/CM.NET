@@ -17,7 +17,7 @@
     <CompileTargets>$(CompileTargets);CompileSolution</CompileTargets>
     <PostCompileTargets>$(PostCompileTargets);RestoreAssemblyInfos</PostCompileTargets>
     <UnitTestTargets>$(UnitTestTargets);RunUnitTests</UnitTestTargets>
-    <FunctionalTestTargets>$(UnitTestTargets);RunFunctionalTests</FunctionalTestTargets>
+    <FunctionalTestTargets>$(FunctionalTestTargets);RunFunctionalTests</FunctionalTestTargets>
     <TraceDataTargets>$(TraceDataTargets);TraceDotNetData</TraceDataTargets>
   </PropertyGroup>
 

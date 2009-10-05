@@ -16,7 +16,7 @@
   <Target Name="Compile" DependsOnTargets="Clean;$(PreCompileTargets);$(CompileTargets);$(PostCompileTargets)" />
   <Target Name="UnitTest" DependsOnTargets="Compile;$(PreUnitTestTargets);$(UnitTestTargets);$(PostUnitTestTargets)" />
   <Target Name="Package" DependsOnTargets="$(PrePackageTargets);$(PackageTargets);$(PostPackageTargets)" />
-  <Target Name="Deploy" DependsOnTargets="$(PreDeployTargets);$(DeployTargets);$(PostPackageTargets)" />
+  <Target Name="Deploy" DependsOnTargets="$(PreDeployTargets);$(DeployTargets);$(PostDeployTargets)" />
   <Target Name="FunctionalTest" DependsOnTargets="$(PreFunctionalTestTargets);$(FunctionalTestTargets);$(PostFunctionalTestTargets)" />
   
   <!-- Tracing targets to allow debugging -->
