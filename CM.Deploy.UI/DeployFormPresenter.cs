@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Xml.Linq;
 using CM.Common;
+using CM.Deploy.UI.Properties;
 
 namespace CM.Deploy.UI
 {
@@ -12,6 +13,7 @@ namespace CM.Deploy.UI
         private readonly IDeployView view;
         private readonly FileSystem fileSystem;
         private readonly ProcessRunner processRunner;
+        private readonly Settings settings = Settings.Default;
 
         private const string MSBuildNamespace = "http://schemas.microsoft.com/developer/msbuild/2003";
 
@@ -24,8 +26,8 @@ namespace CM.Deploy.UI
 
         public virtual void Initialize()
         {
-            var environments = fileSystem.ListAllFilesIn("Environments", "*.properties")
-                .Select(file => Path.GetFileNameWithoutExtension(file)).ToArray();
+            var files = fileSystem.ListAllFilesIn(settings.EnvironmentsDirectory, "*" + settings.ConfigurationFileExtension);
+            var environments = files.Select(file => Path.GetFileNameWithoutExtension(file)).ToArray();
             view.ShowEnvironments(environments);
             ToggleConfigSelection();
         }
@@ -38,7 +40,7 @@ namespace CM.Deploy.UI
 
         public virtual void LoadEnvironment(string environment)
         {
-            var path = string.Format(@"Environments\{0}.properties", environment);
+            var path = string.Format(@"{0}\{1}{2}", settings.EnvironmentsDirectory, environment, settings.ConfigurationFileExtension);
             var xml = XElement.Parse(fileSystem.ReadAllText(path));
             var keyValuePairs = xml.Descendants(ScopedName("PropertyGroup")).Descendants()
                 .Select(node => new KeyValuePair<string, string>(node.Name.LocalName, node.Value)).ToArray();
@@ -52,9 +54,8 @@ namespace CM.Deploy.UI
 
         public virtual void Deploy()
         {
-            var msbuildFile = fileSystem.ListAllFilesIn(".", "*.proj")[0];
             var args = string.Format("{0} /t:Deploy /p:\"ConfigPath={1}\" /p:\"PackageDirectory=.\"", 
-                msbuildFile, ConfigFilePath);
+                settings.MSBuildFilename, ConfigFilePath);
             view.ShowLogView(processRunner);
             processRunner.Run(args, TimeSpan.MaxValue);
         }
@@ -64,8 +65,8 @@ namespace CM.Deploy.UI
             get
             {
                 if (view.UsePackagedEnvironment)
-                    return Path.Combine(Path.Combine(Environment.CurrentDirectory, "Environments"),
-                        view.SelectedEnvironment + ".properties");
+                    return Path.Combine(Path.Combine(Environment.CurrentDirectory, settings.EnvironmentsDirectory),
+                        view.SelectedEnvironment + settings.ConfigurationFileExtension);
                 else
                     return view.ExternalFile;
             }

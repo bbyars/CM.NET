@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using CM.Common;
 using CM.Deploy.UI;
+using CM.Deploy.UI.Properties;
 using Moq;
 using NUnit.Framework;
 
@@ -81,14 +82,13 @@ namespace CM.UnitTests.Deploy.UI
             stubView.SetupGet(v => v.UsePackagedEnvironment).Returns(true);
             stubView.SetupGet(v => v.SelectedEnvironment).Returns("prod");
             var stubFileSystem = new Mock<FileSystem>();
-            stubFileSystem.Setup(fs => fs.ListAllFilesIn(".", "*.proj")).Returns(new[] {"build.proj"});
             var mockProcessRunner = new Mock<ProcessRunner>("");
             var presenter = new DeployFormPresenter(stubView.Object, stubFileSystem.Object, mockProcessRunner.Object);
 
             presenter.Deploy();
 
-            var expectedCommand = string.Format(
-                @"build.proj /t:Deploy /p:""ConfigPath={0}\Environments\prod.properties"" /p:""PackageDirectory=.""",
+            var expectedCommand = string.Format(Settings.Default.MSBuildFilename + 
+                @" /t:Deploy /p:""ConfigPath={0}\Environments\prod.properties"" /p:""PackageDirectory=.""",
                 Environment.CurrentDirectory);
             mockProcessRunner.Verify(pr => pr.Run(expectedCommand, TimeSpan.MaxValue));
         }
@@ -100,13 +100,12 @@ namespace CM.UnitTests.Deploy.UI
             stubView.SetupGet(v => v.UsePackagedEnvironment).Returns(false);
             stubView.SetupGet(v => v.ExternalFile).Returns("prod.properties");
             var stubFileSystem = new Mock<FileSystem>();
-            stubFileSystem.Setup(fs => fs.ListAllFilesIn(".", "*.proj")).Returns(new[] { "build.proj" });
             var mockProcessRunner = new Mock<ProcessRunner>("");
             var presenter = new DeployFormPresenter(stubView.Object, stubFileSystem.Object, mockProcessRunner.Object);
 
             presenter.Deploy();
 
-            const string properties = "build.proj /t:Deploy /p:\"ConfigPath=prod.properties\" /p:\"PackageDirectory=.\"";
+            var properties = Settings.Default.MSBuildFilename + " /t:Deploy /p:\"ConfigPath=prod.properties\" /p:\"PackageDirectory=.\"";
             mockProcessRunner.Verify(pr => pr.Run(properties, TimeSpan.MaxValue));
         }
 

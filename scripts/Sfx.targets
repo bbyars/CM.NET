@@ -5,23 +5,40 @@
   <!-- Properties expected to be provided, unless these defaults are OK -->
   <PropertyGroup>
     <PackageName Condition="$(PackageName) == ''">$(MSBuildProjectName)-$(Version)</PackageName>
-    <SevenZipDirectory Condition="$(SevenZipDirectory) == ''">$(MSBuildProjectDirectory)\Dependencies\CM.NET</SevenZipDirectory>
+    <EnvironmentsDirectory Condition="$(EnvironmentsDirectory) == ''">$(MSBuildProjectDirectory)\environments</EnvironmentsDirectory>
     <SfxDirectory Condition="$(SfxDirectory) == ''">$(BuildDirectory)\sfx</SfxDirectory>
     <CMDirectory Condition="$(CMDirectory) == ''">$(MSBuildProjectDirectory)\Dependencies\CM.NET</CMDirectory>
+    <SevenZipDirectory Condition="$(SevenZipDirectory) == ''">$(CMDirectory)</SevenZipDirectory>
+    <SdcTasksDirectory Condition="$(SdcTasksDirectory) == ''">$(CMDirectory)</SdcTasksDirectory>
   </PropertyGroup>
 
   <ItemGroup>
-    <DeployExe Condition="@(DeployExe) == ''" Include="$(CMDirectory)\deployer.exe;$(CMDirectory)\CM.Common.dll" />
+    <DeployExe Condition="@(DeployExe) == ''" Include="$(CMDirectory)\deployer.exe;$(CMDirectory)\CM.Common.dll;$(CMDirectory)\deployer.exe.config" />
   </ItemGroup>
 
   <PropertyGroup>
     <TraceDataTargets>$(TraceDataTargets);TraceSfxData</TraceDataTargets>
   </PropertyGroup>
 
+  <UsingTask TaskName="StringReplace" AssemblyFile="$(SdcTasksDirectory)\Microsoft.Sdc.Tasks.dll" />
+  <UsingTask TaskName="Microsoft.Sdc.Tasks.XmlFile.SetValue" AssemblyFile="$(SdcTasksDirectory)\Microsoft.Sdc.Tasks.dll" />
+
   <Target Name="CreatePackage">
     <Copy SourceFiles="@(DeployExe)"
-      DestinationFiles="@(DeployExe->'$(PackageDirectory)\%(RecursiveDir)%(Filename)%(Extension)')" />
+      DestinationFiles="@(DeployExe->'$(PackageDirectory)\%(Filename)%(Extension)')" />
     <Copy SourceFiles="$(SevenZipDirectory)\7zS.sfx" DestinationFolder="$(SfxDirectory)" />
+
+    <PropertyGroup>
+      <DeployExeConfigPath Condition="%(DeployExe.Extension) == '.exe'">$(PackageDirectory)\%(DeployExe.Filename).exe.config</DeployExeConfigPath>
+    </PropertyGroup>
+
+    <StringReplace Input="$(EnvironmentsDirectory)" OldValue="$(MSBuildProjectDirectory)\" NewValue="">
+      <Output TaskParameter="Output" PropertyName="RelativeEnvironmentsDirectory" />
+    </StringReplace>
+
+    <XmlFile.SetValue Path="$(DeployExeConfigPath)" XPath="//setting[@name='EnvironmentsDirectory']/value" Value="$(RelativeEnvironmentsDirectory)" />
+    <XmlFile.SetValue Path="$(DeployExeConfigPath)" XPath="//setting[@name='ConfigurationFileExtension']/value" Value=".properties" />
+    <XmlFile.SetValue Path="$(DeployExeConfigPath)" XPath="//setting[@name='MSBuildFilename']/value" Value="$(MSBuildProjectFile)" />
 
     <PropertyGroup>
       <SevenZipConfig Condition="%(DeployExe.Extension) == '.exe'">
@@ -45,6 +62,7 @@ RunProgram="%(DeployExe.Filename).exe"
     <Message Text="  SevenZipDirectory: $(SevenZipDirectory)" />
     <Message Text="  SfxDirectory: $(SfxDirectory)" />
     <Message Text="  CMDirectory: $(CMDirectory)" />
+    <Message Text="  SdcTasksDirectory: $(SdcTasksDirectory)" />
     <Message Text="  DeployExe: @(DeployExe)" />
   </Target>
 </Project>

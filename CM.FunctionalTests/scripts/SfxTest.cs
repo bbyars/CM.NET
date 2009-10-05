@@ -11,6 +11,39 @@ namespace CM.FunctionalTests.scripts
     [TestFixture]
     public class SfxTest
     {
+        [SetUp]
+        public void PrepareCMDirectory()
+        {
+            var cmFiles = new[] {"CM.Common.dll", "CM.MSBuild.Tasks.dll", "deployer.exe"};
+            foreach (var file in cmFiles)
+                File.Copy(file, Path.Combine("CM.NET", file), true);
+
+            File.Copy(@"..\..\..\CM.Deploy.UI\App.config", @"CM.NET\deployer.exe.config", true);
+        }
+
+        [Test]
+        public void ShouldSpliceEnvironmentsFileAndMSBuildFilenameIntoDeployerConfigFile()
+        {
+            Using.Directory("sfx-test", () =>
+            {
+                File.WriteAllText("test.proj", @"
+                    <Project DefaultTargets='Build' xmlns='http://schemas.microsoft.com/developer/msbuild/2003'>
+                      <PropertyGroup>
+                        <CMDirectory>$(MSBuildProjectDirectory)\..\CM.NET</CMDirectory>
+                        <EnvironmentsDirectory>$(MSBuildProjectDirectory)\env</EnvironmentsDirectory>
+                      </PropertyGroup>
+
+                      <Import Project='$(CMDirectory)\MasterWorkflow.targets' />
+                      <Import Project='$(CMDirectory)\Sfx.targets' />
+                    </Project>");
+
+                var output = Shell.MSBuild("test.proj", TimeSpan.FromSeconds(5));
+                var config = File.ReadAllText(@"build\package\deployer.exe.config");
+                Assert.That(config, Text.Contains("<value>test.proj</value>"), output);
+                Assert.That(config, Text.Contains("<value>env</value>"), output);
+            });
+        }
+
         [Test]
         public void ShouldCreateSelfExtractingExecutableThatRunsTheDeployer()
         {
@@ -20,16 +53,11 @@ namespace CM.FunctionalTests.scripts
                     <Project DefaultTargets='Build' xmlns='http://schemas.microsoft.com/developer/msbuild/2003'>
                       <PropertyGroup>
                         <PackageName>SfxTest</PackageName>
-                        <SevenZipDirectory>$(MSBuildProjectDirectory)\..\scripts\Dependencies\7-zip</SevenZipDirectory>
-                        <CMDirectory>$(MSBuildProjectDirectory)\..</CMDirectory>
+                        <CMDirectory>$(MSBuildProjectDirectory)\..\CM.NET</CMDirectory>
                       </PropertyGroup>
 
-                      <ItemGroup>
-                        <PackageFiles Include='$(MSBuildProjectFullPath)' />
-                      </ItemGroup>
-
-                      <Import Project='$(MSBuildProjectDirectory)\..\scripts\MasterWorkflow.targets' />
-                      <Import Project='$(MSBuildProjectDirectory)\..\scripts\Sfx.targets' />
+                      <Import Project='$(CMDirectory)\MasterWorkflow.targets' />
+                      <Import Project='$(CMDirectory)\Sfx.targets' />
                     </Project>");
 
                 var output = Shell.MSBuild("test.proj", TimeSpan.FromSeconds(5));
