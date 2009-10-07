@@ -54,7 +54,9 @@
     <Compile Include="MSBuild.Tasks\ChangeDirectoryPrefixTest.cs" />
     <Compile Include="MSBuild.Tasks\CopyToPhysicalDirectoryTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="scripts\CMTest.cs" />
     <Compile Include="scripts\SfxTest.cs" />
+    <Compile Include="scripts\ZipTest.cs" />
     <Compile Include="TestLogger.cs" />
     <Compile Include="Using.cs" />
   </ItemGroup>
@@ -75,6 +77,10 @@
   <ItemGroup>
     <Content Include="..\Dependencies\7-zip\7z.exe">
       <Link>CM.NET\7z.exe</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\Dependencies\msbuild-community-tasks\ICSharpCode.SharpZipLib.dll">
+      <Link>CM.NET\ICSharpCode.SharpZipLib.dll</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="..\Dependencies\msbuild-community-tasks\MSBuild.Community.Tasks.dll">

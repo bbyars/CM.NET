@@ -27,7 +27,8 @@ namespace CM.Common
         {
             if (!runner.WasSuccessful)
                 throw new ApplicationException(string.Format(
-                    runner.Command + " failed:\nstdout: {0}\nstderr: {1}", runner.StandardOutput, runner.StandardError));
+                    "{0} failed with exit code {1}:\nstdout: {2}\nstderr: {3}", 
+                    runner.Command, runner.ExitCode, runner.StandardOutput, runner.StandardError));
         }
     }
 }

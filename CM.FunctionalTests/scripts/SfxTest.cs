@@ -9,18 +9,8 @@ using NUnit.Framework.SyntaxHelpers;
 namespace CM.FunctionalTests.scripts
 {
     [TestFixture]
-    public class SfxTest
+    public class SfxTest : CMTest
     {
-        [SetUp]
-        public void PrepareCMDirectory()
-        {
-            var cmFiles = new[] {"CM.Common.dll", "CM.MSBuild.Tasks.dll", "deployer.exe"};
-            foreach (var file in cmFiles)
-                File.Copy(file, Path.Combine("CM.NET", file), true);
-
-            File.Copy(@"..\..\..\CM.Deploy.UI\App.config", @"CM.NET\deployer.exe.config", true);
-        }
-
         [Test]
         public void ShouldSpliceEnvironmentsFileAndMSBuildFilenameIntoDeployerConfigFile()
         {

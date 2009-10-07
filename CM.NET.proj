@@ -18,10 +18,6 @@
   <Import Project="$(CMDirectory)\Default.targets" />
   <Import Project="$(CMDirectory)\Zip.targets" />
 
-  <Target Name="CopyCMFiles">
-    <!-- Voiding the implementation package.targets - useful for clients but not for us for bootstrapping reasons -->
-  </Target>
-
   <Target Name="CopyPackageFiles">
     <ItemGroup>
       <PackageFiles Include="$(CMDirectory)\**\*" />

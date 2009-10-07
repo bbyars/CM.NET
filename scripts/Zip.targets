@@ -13,6 +13,10 @@
   <UsingTask AssemblyFile="$(MSBuildCommunityTasksPath)\MSBuild.Community.Tasks.dll" TaskName="MSBuild.Community.Tasks.Zip" />
 
   <Target Name="CreatePackage">
+    <ItemGroup>
+      <ArchiveFiles Include="$(PackageDirectory)\**\*" />
+    </ItemGroup>
+    
     <Zip Files="@(ArchiveFiles)"
       WorkingDirectory="$(PackageDirectory)"
       ZipFileName="$(BuildDirectory)\$(PackageName).zip" />
