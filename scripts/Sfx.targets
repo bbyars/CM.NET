@@ -21,12 +21,15 @@
     <TraceDataTargets>$(TraceDataTargets);TraceSfxData</TraceDataTargets>
   </PropertyGroup>
 
+  <UsingTask TaskName="ChangeDirectoryPrefix" AssemblyFile="$(CMDirectory)\CM.MSBuild.Tasks.dll" />
   <UsingTask TaskName="StringReplace" AssemblyFile="$(SdcTasksDirectory)\Microsoft.Sdc.Tasks.dll" />
   <UsingTask TaskName="Microsoft.Sdc.Tasks.XmlFile.SetValue" AssemblyFile="$(SdcTasksDirectory)\Microsoft.Sdc.Tasks.dll" />
 
   <Target Name="CopyCMFiles">
     <ItemGroup>
       <CMFiles Include="$(CMDirectory)\**\*" />
+      <CMFiles Include="$(EnvironmentsDirectory)\*" />
+      <CMFiles Include="$(MSBuildProjectFullPath)" />
     </ItemGroup>
     <ChangeDirectoryPrefix Files="@(CMFiles)" FromPrefix="$(MSBuildProjectDirectory)" ToPrefix="$(PackageDirectory)">
       <Output TaskParameter="TransformedFiles" ItemName="CMPackageFiles" />

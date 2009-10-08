@@ -4,7 +4,6 @@
   <PropertyGroup>
     <BuildDirectory Condition="$(BuildDirectory) == ''">$(MSBuildProjectDirectory)\build</BuildDirectory>
     <PackageDirectory Condition="$(PackageDirectory) == ''">$(BuildDirectory)\package</PackageDirectory>
-    <CMDirectory Condition="$(CMDirectory) == ''">$(MSBuildProjectDirectory)\Dependencies\CM.NET</CMDirectory>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -13,8 +12,6 @@
     <PackageTargets>$(PackageTargets);CreatePackage</PackageTargets>
     <TraceDataTargets>$(TraceDataTargets);TracePackageData</TraceDataTargets>
   </PropertyGroup>
-
-  <UsingTask TaskName="ChangeDirectoryPrefix" AssemblyFile="$(CMDirectory)\CM.MSBuild.Tasks.dll" />
 
   <Target Name="CleanPackageDirectory">
     <RemoveDir Directories="$(PackageDirectory)" Condition="Exists('$(PackageDirectory)')" />
@@ -31,7 +28,6 @@
   <Target Name="TracePackageData">
     <Message Text="Package.targets" />
     <Message Text="  BuildDirectory: $(BuildDirectory)" />
-    <Message Text="  CMDirectory: $(CMDirectory)" />
     <Message Text="  PackageDirectory: $(PackageDirectory)" />
   </Target>
 </Project>

@@ -1,6 +1,8 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using CM.Common;
 using NUnit.Framework;
@@ -35,6 +37,44 @@ namespace CM.FunctionalTests.scripts
         }
 
         [Test]
+        public void ShouldCopyCMFiles_EnvironmentFiles_DeployerFiles_AndProjectFile_ToPackage()
+        {
+            Using.Directory("sfx-test", () =>
+            {
+                // sfx.targets quite reasonably expects all CM.NET files to be underneath the project fie
+                XCopyCMFiles();
+
+                Directory.CreateDirectory("env");
+                File.WriteAllText(@"env\dev.properties", "");
+                File.WriteAllText(@"env\test.properties", "");
+
+                File.WriteAllText("test.proj", @"
+                    <Project DefaultTargets='Build' xmlns='http://schemas.microsoft.com/developer/msbuild/2003'>
+                      <PropertyGroup>
+                        <CMDirectory>$(MSBuildProjectDirectory)\CM.NET</CMDirectory>
+                        <EnvironmentsDirectory>$(MSBuildProjectDirectory)\env</EnvironmentsDirectory>
+                      </PropertyGroup>
+
+                      <Import Project='$(CMDirectory)\MasterWorkflow.targets' />
+                      <Import Project='$(CMDirectory)\Sfx.targets' />
+                    </Project>");
+                var output = Shell.MSBuild("test.proj", TimeSpan.FromSeconds(30));
+
+                var expectedFiles = new List<string>(Directory.GetFiles("CM.NET"));
+                expectedFiles.AddRange(new[] {@"test.proj", @"env\dev.properties", @"env\test.properties",
+                    "CM.Common.dll", "deployer.exe", "deployer.exe.config"});
+                expectedFiles.Sort();
+
+                var actualFiles = GetAllPackageFiles();
+                actualFiles.Sort();
+
+                Assert.That(actualFiles, Is.EqualTo(expectedFiles),
+                    string.Format("Package files not what was expected\nExpected: {0}\nActual {1}\nMSBuild: {2}",
+                        string.Join(", ", expectedFiles.ToArray()), string.Join(", ", actualFiles.ToArray()), output));
+            });
+        }
+
+        [Test]
         public void ShouldCreateSelfExtractingExecutableThatRunsTheDeployer()
         {
             Using.Directory("sfx-test", () =>
@@ -64,6 +104,21 @@ namespace CM.FunctionalTests.scripts
                     sfxProcess.KillTree();
                 }
             });
+        }
+
+        private static void XCopyCMFiles()
+        {
+            var startInfo = new ProcessStartInfo { FileName = "xcopy", Arguments = @"..\CM.NET CM.NET\", WindowStyle = ProcessWindowStyle.Hidden };
+            Process.Start(startInfo).WaitForExit();
+        }
+
+        private static List<string> GetAllPackageFiles()
+        {
+            var actualFiles = new List<string>(Directory.GetFiles(@"build\package"));
+            foreach (var subdirectory in Directory.GetDirectories(@"build\package"))
+                actualFiles.AddRange(Directory.GetFiles(subdirectory));
+            actualFiles = actualFiles.Select(file => file.Replace(@"build\package\", "")).ToList();
+            return actualFiles;
         }
 
         private static Process WaitForProcess(string processName)
