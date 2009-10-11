@@ -54,10 +54,10 @@ namespace CM.Deploy.UI
 
         public virtual void Deploy()
         {
-            var args = string.Format("{0} /t:Deploy /p:\"ConfigPath={1}\" /p:\"PackageDirectory=.\"", 
+            var args = string.Format(@"C:\Windows\Microsoft.NET\Framework\v3.5\msbuild.exe {0} /t:Deploy /p:""ConfigPath={1}"" /p:""PackageDirectory=.""", 
                 settings.MSBuildFilename, ConfigFilePath);
             view.ShowLogView(processRunner);
-            processRunner.Run(args, TimeSpan.MaxValue);
+            processRunner.Exec(args, TimeSpan.MaxValue);
         }
 
         private string ConfigFilePath

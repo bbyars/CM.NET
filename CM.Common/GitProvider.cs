@@ -14,8 +14,8 @@ namespace CM.Common
             var localPath = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
             Directory.CreateDirectory(localPath);
 
-            var runner = new ProcessRunner("git") {WorkingDirectory = localPath};
-            runner.Run(string.Format("clone \"{0}\"", url), TimeSpan.FromMinutes(5));
+            var runner = new ProcessRunner() {WorkingDirectory = localPath};
+            runner.Exec(string.Format("git clone \"{0}\"", url), TimeSpan.FromMinutes(5));
             if (!runner.WasSuccessful)
                 throw new ArgumentException(runner.StandardError);
 

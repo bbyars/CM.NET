@@ -31,8 +31,8 @@ namespace CM.FunctionalTests
             var currentDirectory = Environment.CurrentDirectory;
             Using.Directory(repoPath, () =>
             {
-                var runner = new ProcessRunner("svnadmin");
-                runner.Run("create .", TimeSpan.FromSeconds(20));
+                var runner = new ProcessRunner();
+                runner.Exec("svnadmin create .", TimeSpan.FromSeconds(20));
                 NUnit.Framework.Assert.That(runner.WasSuccessful,
                     "svnadmin failed\n\tstdout: {0}\n\tstderr: {1}", runner.StandardOutput, runner.StandardError);
 
@@ -46,17 +46,17 @@ namespace CM.FunctionalTests
             var currentDirectory = Environment.CurrentDirectory;
             Using.Directory(repoPath, () =>
             {
-                var runner = new ProcessRunner("git");
-                runner.Run("init", TimeSpan.FromSeconds(20));
+                var runner = new ProcessRunner();
+                runner.Exec("git init", TimeSpan.FromSeconds(20));
                 NUnit.Framework.Assert.That(runner.WasSuccessful,
                     "git init failed\n\tstdout: {0}\n\tstderr: {1}", runner.StandardOutput, runner.StandardError);
 
                 File.WriteAllText(Path.Combine(repoPath, "git-repo"), "");
-                runner.Run("add git-repo", TimeSpan.FromSeconds(5));
+                runner.Exec("git add git-repo", TimeSpan.FromSeconds(5));
                 NUnit.Framework.Assert.That(runner.WasSuccessful,
                     "git add failed\n\tstdout: {0}\n\tstderr: {1}", runner.StandardOutput, runner.StandardError);
 
-                runner.Run("commit -a -m 'init'", TimeSpan.FromSeconds(5));
+                runner.Exec("git commit -a -m 'init'", TimeSpan.FromSeconds(5));
                 NUnit.Framework.Assert.That(runner.WasSuccessful,
                     "git commit failed\n\tstdout: {0}\n\tstderr: {1}", runner.StandardOutput, runner.StandardError);
 

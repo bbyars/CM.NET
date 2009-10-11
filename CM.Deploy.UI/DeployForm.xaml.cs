@@ -13,7 +13,7 @@ namespace CM.Deploy.UI
         public DeployForm()
         {
             InitializeComponent();
-            presenter = new DeployFormPresenter(this, new FileSystem(), new ProcessRunner(@"C:\Windows\Microsoft.NET\Framework\v3.5\msbuild.exe"));
+            presenter = new DeployFormPresenter(this, new FileSystem(), new ProcessRunner());
             presenter.Initialize();
         }
 

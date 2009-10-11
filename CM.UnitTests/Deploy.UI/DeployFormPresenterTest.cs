@@ -87,10 +87,9 @@ namespace CM.UnitTests.Deploy.UI
 
             presenter.Deploy();
 
-            var expectedCommand = string.Format(Settings.Default.MSBuildFilename + 
-                @" /t:Deploy /p:""ConfigPath={0}\Environments\prod.properties"" /p:""PackageDirectory=.""",
-                Environment.CurrentDirectory);
-            mockProcessRunner.Verify(pr => pr.Run(expectedCommand, TimeSpan.MaxValue));
+            var expectedCommand = string.Format(@"C:\Windows\Microsoft.NET\Framework\v3.5\msbuild.exe {0} /t:Deploy /p:""ConfigPath={1}\Environments\prod.properties"" /p:""PackageDirectory=.""",
+                Settings.Default.MSBuildFilename, Environment.CurrentDirectory);
+            mockProcessRunner.Verify(pr => pr.Exec(expectedCommand, TimeSpan.MaxValue));
         }
 
         [Test]
@@ -105,8 +104,7 @@ namespace CM.UnitTests.Deploy.UI
 
             presenter.Deploy();
 
-            var properties = Settings.Default.MSBuildFilename + " /t:Deploy /p:\"ConfigPath=prod.properties\" /p:\"PackageDirectory=.\"";
-            mockProcessRunner.Verify(pr => pr.Run(properties, TimeSpan.MaxValue));
+            mockProcessRunner.Verify(pr => pr.Exec(It.Is<string>(cmd => cmd.Contains("/p:\"ConfigPath=prod.properties\"")), TimeSpan.MaxValue));
         }
 
         [Test]

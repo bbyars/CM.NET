@@ -1,5 +1,6 @@
 using System;
 using System.Diagnostics;
+using System.Text.RegularExpressions;
 
 namespace CM.Common
 {
@@ -9,6 +10,10 @@ namespace CM.Common
 
         public event UpdatedHandler OutputUpdated;
         public event UpdatedHandler ErrorUpdated;
+
+        public ProcessRunner()
+        {
+        }
 
         public ProcessRunner(string command)
         {
@@ -29,7 +34,7 @@ namespace CM.Common
         {
             get { return ExitCode == 0; }
         }
-        
+
         public virtual Process Start(string args)
         {
             CommandLine = string.Format("{0} {1}", Command, args);
@@ -54,15 +59,23 @@ namespace CM.Common
             return process;
         }
 
-        public virtual void Run(string args, TimeSpan timeout)
+        public virtual CMProcess Exec(string command, TimeSpan timeout)
         {
-            var process = Start(args);
+            var match = Regex.Match(command, @"^([^ ]+)(.*)$");
+            Command = match.Groups[1].Value;
+            var process = Start(match.Groups[2].Value);
             process.WaitForExit(GetMillisecondsToWait(timeout));
 
             if (process.HasExited)
                 ExitCode = process.ExitCode;
             else
                 KillTree();
+
+            var cmProcess = new CMProcess();
+            cmProcess.ExitCode = ExitCode;
+            cmProcess.WasSuccessful = WasSuccessful;
+            cmProcess.StandardOutput = StandardOutput;
+            return cmProcess;
         }
 
         public virtual void KillTree()
@@ -118,6 +131,13 @@ namespace CM.Common
 
             StandardError += e.Data;
             OnErrorUpdated();
+        }
+
+        public class CMProcess
+        {
+            public virtual int ExitCode { get; set; }
+            public virtual bool WasSuccessful { get; set; }
+            public virtual string StandardOutput { get; set; }
         }
     }
 }

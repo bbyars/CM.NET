@@ -12,28 +12,22 @@ namespace CM.FunctionalTests.Common
     public class ProcessRunnerTest
     {
         [Test]
-        public void ShouldNotReportSuccessBeforeRunning()
-        {
-            Assert.That(new ProcessRunner("cmd").WasSuccessful, Is.False);
-        }
-
-        [Test]
         public void ShouldRunGivenProcessAndSaveStandardOutput()
         {
-            var runner = new ProcessRunner("cmd");
-            runner.Run("/c echo test", TimeSpan.MaxValue);
-            Assert.That(runner.WasSuccessful);
-            Assert.That(runner.ExitCode, Is.EqualTo(0));
-            Assert.That(runner.StandardOutput, Is.EqualTo("test"));
+            var runner = new ProcessRunner();
+            var process = runner.Exec("cmd /c echo test", TimeSpan.MaxValue);
+            Assert.That(process.WasSuccessful);
+            Assert.That(process.ExitCode, Is.EqualTo(0));
+            Assert.That(process.StandardOutput, Is.EqualTo("test"));
         }
 
         [Test]
         public void ShouldAllowAsynchronousReadingOfStandardOutput()
         {
-            var runner = new ProcessRunner("cmd");
+            var runner = new ProcessRunner();
             var output = "";
             runner.OutputUpdated += () => output = runner.StandardOutput;
-            runner.Run("/c echo test", TimeSpan.MaxValue);
+            runner.Exec("cmd /c echo test", TimeSpan.MaxValue);
             Assert.That(output, Is.EqualTo("test"));
         }
 
@@ -42,9 +36,8 @@ namespace CM.FunctionalTests.Common
         {
             // I had trouble finding a simple Windows exe (in system32) that 
             // behaves correctly with regards to stderr
-            var runner = new ProcessRunner("svn");
-            runner.Run("", TimeSpan.MaxValue);
-            Console.WriteLine(runner.StandardOutput);
+            var runner = new ProcessRunner();
+            runner.Exec("svn", TimeSpan.MaxValue);
             Assert.That(!runner.WasSuccessful);
             Assert.That(runner.StandardError, Is.EqualTo("Type 'svn help' for usage."));
         }
@@ -52,10 +45,10 @@ namespace CM.FunctionalTests.Common
         [Test]
         public void ShouldAllowAsynchronousReadingOfStandardError()
         {
-            var runner = new ProcessRunner("svn");
+            var runner = new ProcessRunner();
             var error = "";
             runner.ErrorUpdated += () => error = runner.StandardError;
-            runner.Run("", TimeSpan.MaxValue);
+            runner.Exec("svn", TimeSpan.MaxValue);
             Assert.That(error, Is.EqualTo("Type 'svn help' for usage."));
         }
 
@@ -66,8 +59,8 @@ namespace CM.FunctionalTests.Common
             {
                 var lines = new StringBuilder().AppendLine("first line").Append("second line");
                 File.WriteAllText("multiline.txt", lines.ToString());
-                var runner = new ProcessRunner("cmd");
-                runner.Run("/c type multiline.txt", TimeSpan.MaxValue);
+                var runner = new ProcessRunner();
+                runner.Exec("cmd /c type multiline.txt", TimeSpan.MaxValue);
                 Assert.That(runner.StandardOutput, Is.EqualTo(lines.ToString()));
             });
         }
@@ -75,32 +68,42 @@ namespace CM.FunctionalTests.Common
         [Test]
         public void ShouldKillProcessAfterTimeout()
         {
-            var runner = new ProcessRunner("ping");
-            var start = DateTime.Now;
-            runner.Run("127.0.0.1 -n 20", TimeSpan.FromMilliseconds(100));
-            Assert.That(DateTime.Now - start, Is.LessThan(TimeSpan.FromSeconds(3)));
-
-            var orphanedProcesses = Process.GetProcessesByName("ping");
-            Assert.That(orphanedProcesses.Length, Is.EqualTo(0), "did not kill process");
+            AssertProcessKilled("ping", () =>
+            {
+                var runner = new ProcessRunner();
+                var start = DateTime.Now;
+                runner.Exec("ping 127.0.0.1 -n 20", TimeSpan.FromMilliseconds(100));
+                Assert.That(DateTime.Now - start, Is.LessThan(TimeSpan.FromSeconds(5)));
+            });
         }
 
         [Test]
         public void ShouldKillEntireProcessTreeAfterTimeout()
         {
-            var runner = new ProcessRunner("cmd");
-            runner.Run("/c cmd /c ping 127.0.0.1 -n 20", TimeSpan.FromSeconds(1));
-            var orphanedProcesses = Process.GetProcessesByName("ping");
-            Assert.That(orphanedProcesses.Length, Is.EqualTo(0));
+            AssertProcessKilled("ping", () =>
+            {
+                var runner = new ProcessRunner();
+                runner.Exec("cmd /c cmd /c ping 127.0.0.1 -n 20", TimeSpan.FromMilliseconds(100));
+            });
         }
 
         [Test]
         public void ShouldAllowKillingTreeWhenRunInBackground()
         {
-            var runner = new ProcessRunner("cmd");
-            runner.Start("/c cmd /c ping 127.0.0.1 -n 20");
-            runner.KillTree();
-            var orphanedProcesses = Process.GetProcessesByName("ping");
-            Assert.That(orphanedProcesses.Length, Is.EqualTo(0));
+            AssertProcessKilled("ping", () =>
+            {
+                var runner = new ProcessRunner("cmd");
+                runner.Start("/c cmd /c ping 127.0.0.1 -n 20");
+                runner.KillTree();
+            });
+        }
+
+        private static void AssertProcessKilled(string processName, Action test)
+        {
+            var processesBeforeTest = Process.GetProcessesByName(processName).Length;
+            test();
+            var processesAfterTest = Process.GetProcessesByName(processName).Length;
+            Assert.That(processesAfterTest, Is.EqualTo(processesBeforeTest));
         }
     }
 }
