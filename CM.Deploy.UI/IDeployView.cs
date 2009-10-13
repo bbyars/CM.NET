@@ -15,6 +15,6 @@ namespace CM.Deploy.UI
 
         void ShowProperties(IDictionary<string, string> properties);
 
-        void ShowLogView(ProcessRunner processRunner);
+        void ShowLogView(SystemProcess process);
     }
 }

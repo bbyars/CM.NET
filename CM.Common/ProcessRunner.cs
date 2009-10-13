@@ -6,138 +6,55 @@ namespace CM.Common
 {
     public class ProcessRunner
     {
-        public delegate void UpdatedHandler();
+        private readonly Regex pattern = new Regex(@"^([^ ]+)(.*)$");
 
-        public event UpdatedHandler OutputUpdated;
-        public event UpdatedHandler ErrorUpdated;
+        private readonly string workingDirectory;
 
-        public ProcessRunner()
+        public ProcessRunner() : this(Environment.CurrentDirectory)
         {
         }
 
-        public ProcessRunner(string command)
+        public ProcessRunner(string workingDirectory)
         {
-            Command = command;
-            WorkingDirectory = Environment.CurrentDirectory;
-            ExitCode = -1;
+            this.workingDirectory = workingDirectory;
         }
 
-        public virtual string Command { get; private set; }
-        public virtual string CommandLine { get; private set; }
-        public virtual string WorkingDirectory { get; set; }
-        public virtual int Pid { get; private set; }
-        public virtual string StandardOutput { get; private set; }
-        public virtual string StandardError { get; private set; }
-        public virtual int ExitCode { get; private set; }
-
-        public virtual bool WasSuccessful
+        public virtual SystemProcess Start(string commandLine)
         {
-            get { return ExitCode == 0; }
-        }
-
-        public virtual Process Start(string args)
-        {
-            CommandLine = string.Format("{0} {1}", Command, args);
             var startInfo = new ProcessStartInfo
             {
-                FileName = Command,
-                Arguments = args,
+                FileName = FileName(commandLine),
+                Arguments = Arguments(commandLine),
                 RedirectStandardOutput = true,
                 RedirectStandardError = true,
                 UseShellExecute = false,
                 CreateNoWindow = true,
-                WorkingDirectory = WorkingDirectory
+                WorkingDirectory = workingDirectory
             };
 
-            var process = Process.Start(startInfo);
-            Pid = process.Id;
-            process.OutputDataReceived += OnStandardOutputUpdated;
-            process.BeginOutputReadLine();
-            process.ErrorDataReceived += OnStandardErrorUpdated;
-            process.BeginErrorReadLine();
+            var process = System.Diagnostics.Process.Start(startInfo);
+            return new SystemProcess(process);
+        }
+
+        public virtual SystemProcess Exec(string commandLine, TimeSpan timeout)
+        {
+            var process = Start(commandLine);
+            process.WaitForExit(timeout);
+
+            if (!process.HasExited)
+                process.KillTree();
 
             return process;
         }
 
-        public virtual CMProcess Exec(string command, TimeSpan timeout)
+        private string FileName(string commandLine)
         {
-            var match = Regex.Match(command, @"^([^ ]+)(.*)$");
-            Command = match.Groups[1].Value;
-            var process = Start(match.Groups[2].Value);
-            process.WaitForExit(GetMillisecondsToWait(timeout));
-
-            if (process.HasExited)
-                ExitCode = process.ExitCode;
-            else
-                KillTree();
-
-            var cmProcess = new CMProcess();
-            cmProcess.ExitCode = ExitCode;
-            cmProcess.WasSuccessful = WasSuccessful;
-            cmProcess.StandardOutput = StandardOutput;
-            return cmProcess;
+            return pattern.Match(commandLine).Groups[1].Value;
         }
 
-        public virtual void KillTree()
+        private string Arguments(string commandLine)
         {
-            var startInfo = new ProcessStartInfo
-            {
-                FileName = "taskkill",
-                Arguments = string.Format("/PID {0} /T /F", Pid),
-                UseShellExecute = false,
-                CreateNoWindow = true
-            };
-            var killProcess = Process.Start(startInfo);
-            killProcess.WaitForExit(5000);
-        }
-
-        protected virtual void OnOutputUpdated()
-        {
-            var handler = OutputUpdated;
-            if (handler != null) handler();
-        }
-
-        protected virtual void OnErrorUpdated()
-        {
-            var handler = ErrorUpdated;
-            if (handler != null) handler();
-        }
-
-        private static int GetMillisecondsToWait(TimeSpan timeout)
-        {
-            var milliseconds = Convert.ToInt64(timeout.TotalMilliseconds);
-            return milliseconds > int.MaxValue ? int.MaxValue : Convert.ToInt32(milliseconds);
-        }
-
-        private void OnStandardOutputUpdated(object sender, DataReceivedEventArgs e)
-        {
-            if (e.Data == null)
-                return;
-
-            if (!string.IsNullOrEmpty(StandardOutput))
-                StandardOutput += Environment.NewLine;
-
-            StandardOutput += e.Data;
-            OnOutputUpdated();
-        }
-
-        private void OnStandardErrorUpdated(object sender, DataReceivedEventArgs e)
-        {
-            if (e.Data == null)
-                return;
-
-            if (!string.IsNullOrEmpty(StandardError))
-                StandardError += Environment.NewLine;
-
-            StandardError += e.Data;
-            OnErrorUpdated();
-        }
-
-        public class CMProcess
-        {
-            public virtual int ExitCode { get; set; }
-            public virtual bool WasSuccessful { get; set; }
-            public virtual string StandardOutput { get; set; }
+            return pattern.Match(commandLine).Groups[2].Value;
         }
     }
 }

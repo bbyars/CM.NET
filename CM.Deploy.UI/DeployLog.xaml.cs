@@ -8,17 +8,17 @@ namespace CM.Deploy.UI
 {
     public partial class DeployLog
     {
-        public DeployLog(ProcessRunner processRunner)
+        public DeployLog(SystemProcess process)
         {
             InitializeComponent();
-            processRunner.OutputUpdated += (() => Dispatcher.BeginInvoke(
-                (Action)(() => uxLog.Text = Header(processRunner) + processRunner.StandardOutput)));
+            process.OutputUpdated += (() => Dispatcher.BeginInvoke(
+                (Action)(() => uxLog.Text = Header(process) + process.StandardOutput)));
         }
 
-        private static string Header(ProcessRunner processRunner)
+        private static string Header(SystemProcess process)
         {
-            return "Working Directory: " + processRunner.WorkingDirectory + Environment.NewLine
-                + "Command: " + processRunner.CommandLine + Environment.NewLine + Environment.NewLine;
+            return "Working Directory: " + process.WorkingDirectory + Environment.NewLine
+                + "Command: " + process.CommandLine + Environment.NewLine + Environment.NewLine;
         }
 
         private void Save(object sender, RoutedEventArgs e)

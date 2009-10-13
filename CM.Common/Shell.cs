@@ -6,11 +6,11 @@ namespace CM.Common
     {
         public static string MSBuild(string projectFile, TimeSpan timeout)
         {
-            var runner = new ProcessRunner();
-            runner.Exec(string.Format(@"C:\Windows\Microsoft.NET\Framework\v3.5\MSBuild.exe {0}", projectFile), timeout);
-            ThrowIfFailed(runner);
+            var commandLine = string.Format(@"C:\Windows\Microsoft.NET\Framework\v3.5\MSBuild.exe {0}", projectFile);
+            var process = new ProcessRunner().Exec(commandLine, timeout);
+            ThrowIfFailed(process);
 
-            return runner.StandardOutput;
+            return process.StandardOutput;
         }
 
         public static void RmDir(string directoryName)
@@ -18,22 +18,22 @@ namespace CM.Common
             // I can't figure out why we can't delete the directory using Directory.Delete, but we can in the shell.
             // Neither Process Explorer nor Unlocker find any locks on the directory.
             // It only happens with svn files.
-            var runner = new ProcessRunner();
-            runner.Exec(string.Format("cmd /c rmdir /S /Q \"{0}\"", directoryName), TimeSpan.FromSeconds(10));
-            ThrowIfFailed(runner);
+            var commandLine = string.Format("cmd /c rmdir /S /Q \"{0}\"", directoryName);
+            var process = new ProcessRunner().Exec(commandLine, TimeSpan.FromSeconds(10));
+            ThrowIfFailed(process);
         }
 
-        private static void ThrowIfFailed(ProcessRunner runner)
+        private static void ThrowIfFailed(SystemProcess process)
         {
-            if (runner.WasSuccessful)
+            if (process.WasSuccessful)
                 return;
 
-            if (runner.ExitCode == -1)
-                throw new ApplicationException(string.Format("{0} timed out", runner.CommandLine));
+            if (process.ExitCode == -1)
+                throw new ApplicationException(string.Format("{0} timed out", process.CommandLine));
 
             throw new ApplicationException(string.Format(
                 "{0} failed with exit code {1}:\nstdout: {2}\nstderr: {3}", 
-                runner.Command, runner.ExitCode, runner.StandardOutput, runner.StandardError));
+                process.CommandLine, process.ExitCode, process.StandardOutput, process.StandardError));
         }
     }
 }

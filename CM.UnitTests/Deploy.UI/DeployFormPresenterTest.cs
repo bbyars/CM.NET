@@ -89,7 +89,7 @@ namespace CM.UnitTests.Deploy.UI
 
             var expectedCommand = string.Format(@"C:\Windows\Microsoft.NET\Framework\v3.5\msbuild.exe {0} /t:Deploy /p:""ConfigPath={1}\Environments\prod.properties"" /p:""PackageDirectory=.""",
                 Settings.Default.MSBuildFilename, Environment.CurrentDirectory);
-            mockProcessRunner.Verify(pr => pr.Exec(expectedCommand, TimeSpan.MaxValue));
+            mockProcessRunner.Verify(pr => pr.Start(expectedCommand));
         }
 
         [Test]
@@ -104,21 +104,23 @@ namespace CM.UnitTests.Deploy.UI
 
             presenter.Deploy();
 
-            mockProcessRunner.Verify(pr => pr.Exec(It.Is<string>(cmd => cmd.Contains("/p:\"ConfigPath=prod.properties\"")), TimeSpan.MaxValue));
+            mockProcessRunner.Verify(pr => pr.Start(It.Is<string>(cmd => cmd.Contains("/p:\"ConfigPath=prod.properties\""))));
         }
 
         [Test]
-        public void ShouldTellTheViewToOpenLogViewOnDeploy()
+        public void ShouldTellTheViewToOpenLogViewOnDeployWithTheDeployProcess()
         {
             var mockView = new Mock<IDeployView>();
             var stubFileSystem = new Mock<FileSystem>();
             stubFileSystem.Setup(fs => fs.ListAllFilesIn(It.IsAny<string>(), It.IsAny<string>())).Returns(new[] {"prod.properties"});
-            var stubProcessRunner = new Mock<ProcessRunner>("");
+            var stubProcess = new Mock<SystemProcess>(null);
+            var stubProcessRunner = new Mock<ProcessRunner>();
+            stubProcessRunner.Setup(pr => pr.Start(It.IsAny<string>())).Returns(stubProcess.Object);
             var presenter = new DeployFormPresenter(mockView.Object, stubFileSystem.Object, stubProcessRunner.Object);
 
             presenter.Deploy();
 
-            mockView.Verify(v => v.ShowLogView(stubProcessRunner.Object));
+            mockView.Verify(v => v.ShowLogView(stubProcess.Object));
         }
 
         private static bool ValueEquals(IDictionary<string, string> expected, IDictionary<string, string> actual)

@@ -14,10 +14,10 @@ namespace CM.Common
             var localPath = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
             Directory.CreateDirectory(localPath);
 
-            var runner = new ProcessRunner() {WorkingDirectory = localPath};
-            runner.Exec(string.Format("git clone \"{0}\"", url), TimeSpan.FromMinutes(5));
-            if (!runner.WasSuccessful)
-                throw new ArgumentException(runner.StandardError);
+            var runner = new ProcessRunner(localPath);
+            var process = runner.Exec(string.Format("git clone \"{0}\"", url), TimeSpan.FromMinutes(5));
+            if (!process.WasSuccessful)
+                throw new ArgumentException(process.StandardError);
 
             return new GitProvider(log, localPath);
         }

@@ -51,9 +51,8 @@ namespace CM.FunctionalTests.scripts
 
         private static string ArchiveContents(string archivePath)
         {
-            var runner = new ProcessRunner();
-            runner.Exec(@"..\CM.NET\7z l " + archivePath, TimeSpan.FromSeconds(10));
-            return runner.StandardOutput;
+            var process = new ProcessRunner().Exec(@"..\CM.NET\7z l " + archivePath, TimeSpan.FromSeconds(10));
+            return process.StandardOutput;
         }
     }
 }

@@ -59,9 +59,9 @@ namespace CM.Deploy.UI
                 uxProperties.Items.Add(property);
         }
 
-        public void ShowLogView(ProcessRunner processRunner)
+        public void ShowLogView(SystemProcess process)
         {
-            var logForm = new DeployLog(processRunner);
+            var logForm = new DeployLog(process);
             logForm.Show();
         }
 

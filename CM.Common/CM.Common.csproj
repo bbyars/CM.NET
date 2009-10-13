@@ -47,6 +47,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="SystemProcess.cs" />
     <Compile Include="FileSystem.cs" />
     <Compile Include="GitProvider.cs" />
     <Compile Include="ILogger.cs" />

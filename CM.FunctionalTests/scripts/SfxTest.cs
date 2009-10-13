@@ -93,15 +93,15 @@ namespace CM.FunctionalTests.scripts
                 var output = Shell.MSBuild("test.proj", TimeSpan.FromSeconds(5));
                 Assert.That(File.Exists(@"build\sfx\SfxTest.exe"), output);
 
-                var sfxProcess = new ProcessRunner(@"build\sfx\SfxTest.exe");
-                sfxProcess.Start("");
+                var processRunner = new ProcessRunner();
+                var process = processRunner.Start(@"build\sfx\SfxTest.exe");
                 try
                 {
                     Assert.That(WaitForProcess("deployer"), Is.Not.Null, "no deployer process is running");
                 }
                 finally
                 {
-                    sfxProcess.KillTree();
+                    process.KillTree();
                 }
             });
         }
