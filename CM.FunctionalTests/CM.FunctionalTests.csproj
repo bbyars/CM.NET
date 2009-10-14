@@ -41,6 +41,7 @@
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
+    <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
@@ -51,6 +52,8 @@
     <Compile Include="Common\ProcessRunnerTest.cs" />
     <Compile Include="Common\PublishToSvnTest.cs" />
     <Compile Include="Common\SvnProviderTest.cs" />
+    <Compile Include="Common\SystemAssert.cs" />
+    <Compile Include="Common\SystemProcessTest.cs" />
     <Compile Include="MSBuild.Tasks\ChangeDirectoryPrefixTest.cs" />
     <Compile Include="MSBuild.Tasks\CopyToPhysicalDirectoryTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
