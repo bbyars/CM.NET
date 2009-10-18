@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using CM.Common;
 using NUnit.Framework;
@@ -16,7 +17,7 @@ namespace CM.FunctionalTests.Common
                 File.WriteAllText("test.txt", "");
 
                 var log = new TestLogger();
-                var sourceControl = new SvnProvider(log);
+                var sourceControl = new SvnProvider(log, TimeSpan.FromMinutes(10));
                 var publish = new PublishToSourceControl(sourceControl);
                 publish.FromWorkingDirectory(".")
                     .WithMainline(url + "/trunk")
@@ -35,7 +36,7 @@ namespace CM.FunctionalTests.Common
             Using.SvnRepo(url =>
             {
                 var log = new TestLogger();
-                var sourceControl = new SvnProvider(log);
+                var sourceControl = new SvnProvider(log, TimeSpan.FromMinutes(10));
                 Directory.CreateDirectory("import");
                 sourceControl.Import("import", url + "/trunk", "");
 
@@ -60,7 +61,7 @@ namespace CM.FunctionalTests.Common
             Using.SvnRepo(url =>
             {
                 var log = new TestLogger();
-                var sourceControl = new SvnProvider(log);
+                var sourceControl = new SvnProvider(log, TimeSpan.FromMinutes(10));
                 Directory.CreateDirectory("import");
                 File.WriteAllText(@"import\test.txt", "");
                 sourceControl.Import("import", url + "/trunk", "");

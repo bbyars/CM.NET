@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.IO;
 
 namespace CM.Common
@@ -8,8 +7,9 @@ namespace CM.Common
     {
         private readonly ILogger log;
         private readonly string localPath;
+        private readonly TimeSpan commandTimeout;
 
-        public static GitProvider Clone(string url, ILogger log)
+        public static GitProvider Clone(string url, ILogger log, TimeSpan commandTimeout)
         {
             var localPath = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
             Directory.CreateDirectory(localPath);
@@ -17,15 +17,16 @@ namespace CM.Common
             var runner = new ProcessRunner(localPath);
             var process = runner.Exec(string.Format("git clone \"{0}\"", url), TimeSpan.FromMinutes(5));
             if (!process.WasSuccessful)
-                throw new ArgumentException(process.StandardError);
+                throw new ArgumentException(process.ToString());
 
-            return new GitProvider(log, localPath);
+            return new GitProvider(log, localPath, commandTimeout);
         }
 
-        private GitProvider(ILogger log, string localPath)
+        private GitProvider(ILogger log, string localPath, TimeSpan commandTimeout)
         {
             this.log = log;
             this.localPath = localPath;
+            this.commandTimeout = commandTimeout;
         }
 
         public virtual string[] MetadataDirectories
@@ -85,34 +86,19 @@ namespace CM.Common
             throw new NotImplementedException();
         }
 
-        private void RunCommand(string command, string workingDirectory, Action<Process> onFailure)
+        private void RunCommand(string command, string workingDirectory, Action<SystemProcess> onFailure)
         {
-            var startInfo = new ProcessStartInfo
-            {
-                FileName = "git",
-                Arguments = command,
-                CreateNoWindow = true,
-                UseShellExecute = false,
-                RedirectStandardOutput = true,
-                RedirectStandardError = true,
-                WorkingDirectory = workingDirectory
-            };
             log.Info("git {0}", command);
-            var process = Process.Start(startInfo);
-            process.WaitForExit();
-
-            if (process.ExitCode != 0)
+            var processRunner = new ProcessRunner(workingDirectory);
+            var process = processRunner.Exec("git " + command, commandTimeout);
+            if (!process.WasSuccessful)
                 onFailure(process);
         }
 
-        private void LogFailure(Process process)
+        private void LogFailure(SystemProcess process)
         {
-            var stdout = process.StandardOutput.ReadToEnd();
-            var stderr = process.StandardError.ReadToEnd();
-            if (!string.IsNullOrEmpty(stdout))
-                log.Error(stdout);
-            if (!string.IsNullOrEmpty(stderr))
-                log.Error(stderr);
+            log.Error(process.ToString());
+            throw new ApplicationException("git command failed");
         }
 
         public void Dispose()

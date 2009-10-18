@@ -24,7 +24,10 @@ namespace CM.FunctionalTests.Common
                 var runner = new ProcessRunner();
                 var start = DateTime.Now;
                 runner.Exec("ping 127.0.0.1 -n 20", TimeSpan.FromMilliseconds(100));
-                Assert.That(DateTime.Now - start, Is.LessThan(TimeSpan.FromSeconds(5)));
+
+                // Lots of buffer adding because of virtualization, etc
+                // Should take 20 seconds or so without being killed
+                Assert.That(DateTime.Now - start, Is.LessThan(TimeSpan.FromSeconds(8)));
             });
         }
 

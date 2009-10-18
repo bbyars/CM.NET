@@ -32,7 +32,7 @@ namespace CM.Common
                 WorkingDirectory = workingDirectory
             };
 
-            var process = System.Diagnostics.Process.Start(startInfo);
+            var process = Process.Start(startInfo);
             return new SystemProcess(process);
         }
 
@@ -49,12 +49,12 @@ namespace CM.Common
 
         private string FileName(string commandLine)
         {
-            return pattern.Match(commandLine).Groups[1].Value;
+            return pattern.Match(commandLine).Groups[1].Value.Trim();
         }
 
         private string Arguments(string commandLine)
         {
-            return pattern.Match(commandLine).Groups[2].Value;
+            return pattern.Match(commandLine).Groups[2].Value.Trim();
         }
     }
 }

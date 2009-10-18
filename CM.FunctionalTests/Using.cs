@@ -31,10 +31,8 @@ namespace CM.FunctionalTests
             var currentDirectory = Environment.CurrentDirectory;
             Using.Directory(repoPath, () =>
             {
-                var process = new ProcessRunner().Exec("svnadmin create .", TimeSpan.FromSeconds(20));
-                NUnit.Framework.Assert.That(process.WasSuccessful,
-                    "svnadmin failed\n\tstdout: {0}\n\tstderr: {1}", process.StandardOutput, process.StandardError);
-
+                var process = new ProcessRunner().Exec("svnadmin create .", TimeSpan.FromSeconds(30));
+                NUnit.Framework.Assert.That(process.WasSuccessful, process.ToString());
                 Using.Directory(Path.Combine(currentDirectory, "svn"), () => test(MakeFileUrl(repoPath)));
             });
         }
@@ -46,18 +44,15 @@ namespace CM.FunctionalTests
             Using.Directory(repoPath, () =>
             {
                 var runner = new ProcessRunner();
-                var process = runner.Exec("git init", TimeSpan.FromSeconds(20));
-                NUnit.Framework.Assert.That(process.WasSuccessful,
-                    "git init failed\n\tstdout: {0}\n\tstderr: {1}", process.StandardOutput, process.StandardError);
+                var initProcess = runner.Exec("git init", TimeSpan.FromSeconds(30));
+                NUnit.Framework.Assert.That(initProcess.WasSuccessful, initProcess.ToString());
 
                 File.WriteAllText(Path.Combine(repoPath, "git-repo"), "");
-                var addProcess = runner.Exec("git add git-repo", TimeSpan.FromSeconds(5));
-                NUnit.Framework.Assert.That(addProcess.WasSuccessful,
-                    "git add failed\n\tstdout: {0}\n\tstderr: {1}", addProcess.StandardOutput, addProcess.StandardError);
+                var addProcess = runner.Exec("git add git-repo", TimeSpan.FromSeconds(30));
+                NUnit.Framework.Assert.That(addProcess.WasSuccessful, initProcess.ToString());
 
-                var commitProcess = runner.Exec("git commit -a -m 'init'", TimeSpan.FromSeconds(5));
-                NUnit.Framework.Assert.That(commitProcess.WasSuccessful,
-                    "git commit failed\n\tstdout: {0}\n\tstderr: {1}", commitProcess.StandardOutput, commitProcess.StandardError);
+                var commitProcess = runner.Exec("git commit -a -m 'init'", TimeSpan.FromSeconds(30));
+                NUnit.Framework.Assert.That(commitProcess.WasSuccessful, commitProcess.ToString());
 
                 Using.Directory(Path.Combine(currentDirectory, "git"), () => test(repoPath));
             });

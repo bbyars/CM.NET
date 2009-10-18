@@ -71,7 +71,7 @@ namespace CM.MSBuild.Tasks
         {
             CreateNewWorkingDirectory(workingDirectory);
             var logAdapter = new MSBuildLogAdapter(Log);
-            var publish = new PublishToSourceControl(new SvnProvider(logAdapter));
+            var publish = new PublishToSourceControl(new SvnProvider(logAdapter, TimeSpan.FromMinutes(10)));
             publish.FromWorkingDirectory(workingDirectory)
                 .WithMainline(TrunkUrl)
                 .WithCommitMessage(CommitMessage)

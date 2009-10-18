@@ -22,7 +22,7 @@ namespace CM.FunctionalTests.Common
         [ExpectedException(typeof(ArgumentException))]
         public void ShouldThrowExceptionIfCannotClone()
         {
-            GitProvider.Clone("", log);
+            GitProvider.Clone("", log, TimeSpan.FromMinutes(5));
         }
 
         [Test]
@@ -30,7 +30,7 @@ namespace CM.FunctionalTests.Common
         {
             Using.GitRepo(url =>
             {
-                using (var provider = GitProvider.Clone(url, log))
+                using (var provider = GitProvider.Clone(url, log, TimeSpan.FromMinutes(5)))
                     Assert.That(provider.Exists("test.txt"), Is.False, log.Contents);
             });
         }
@@ -40,7 +40,7 @@ namespace CM.FunctionalTests.Common
         {
             Using.GitRepo(url =>
             {
-                using (var provider = GitProvider.Clone(url, log))
+                using (var provider = GitProvider.Clone(url, log, TimeSpan.FromMinutes(5)))
                 {
                     File.WriteAllText("test.txt", "");
                     provider.AddFile("test.txt", ".");

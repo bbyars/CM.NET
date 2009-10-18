@@ -28,12 +28,7 @@ namespace CM.Common
             if (process.WasSuccessful)
                 return;
 
-            if (process.ExitCode == -1)
-                throw new ApplicationException(string.Format("{0} timed out", process.CommandLine));
-
-            throw new ApplicationException(string.Format(
-                "{0} failed with exit code {1}:\nstdout: {2}\nstderr: {3}", 
-                process.CommandLine, process.ExitCode, process.StandardOutput, process.StandardError));
+            throw new ApplicationException(process.ToString());
         }
     }
 }

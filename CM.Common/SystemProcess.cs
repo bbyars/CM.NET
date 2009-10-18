@@ -26,7 +26,7 @@ namespace CM.Common
 
         public virtual string CommandLine
         {
-            get { return String.Format("{0} {1}", process.StartInfo.FileName, process.StartInfo.Arguments); }
+            get { return String.Format("{0} {1}", process.StartInfo.FileName, process.StartInfo.Arguments).Trim(); }
         }
 
         public virtual string WorkingDirectory
@@ -39,8 +39,8 @@ namespace CM.Common
             get { return process.Id; }
         }
 
-        public virtual string StandardOutput { get; set; }
-        public virtual string StandardError { get; set; }
+        public virtual string StandardOutput { get; private set; }
+        public virtual string StandardError { get; private set; }
 
         public virtual int ExitCode
         {
@@ -51,6 +51,8 @@ namespace CM.Common
         {
             get { return ExitCode == 0; }
         }
+
+        public virtual bool WasKilled { get; private set; }
 
         public virtual bool HasExited
         {
@@ -68,6 +70,7 @@ namespace CM.Common
             };
             var killProcess = Process.Start(startInfo);
             killProcess.WaitForExit(30000);
+            WasKilled = true;
         }
 
         public virtual void WaitForExit(TimeSpan timeout)
@@ -115,6 +118,21 @@ namespace CM.Common
 
             StandardError += e.Data;
             OnErrorUpdated();
+        }
+
+        public override string ToString()
+        {
+            if (!HasExited)
+                return string.Format("<{0}>", CommandLine);
+
+            if (WasKilled)
+                return string.Format("<{0}> timed out", CommandLine);
+
+            if (!WasSuccessful)
+                return string.Format("<{0}> failed with exit code {1}\n\tstdout: {2}\n\tstderr: {3}", 
+                    CommandLine, ExitCode, StandardOutput, StandardError);
+
+            return string.Format("<{0}> succeeded", CommandLine);
         }
     }
 }

@@ -58,10 +58,41 @@ namespace CM.FunctionalTests.Common
         {
             SystemAssert.AssertProcessKilled("ping", () =>
             {
-                var runner = new ProcessRunner();
-                var process = runner.Start("cmd /c cmd /c ping 127.0.0.1 -n 20");
+                var process = new ProcessRunner().Start("cmd /c cmd /c ping 127.0.0.1 -n 20");
+                Assert.That(process.WasKilled, Is.False);
                 process.KillTree();
+                Assert.That(process.WasKilled, Is.True);
             });
+        }
+
+        [Test]
+        public void ShouldReportCommandLineBeforeProcessExits()
+        {
+            var process = new ProcessRunner().Start("ping 127.0.0.1 -n 20");
+            Assert.That(process.ToString(), Is.EqualTo("<ping 127.0.0.1 -n 20>"));
+            process.KillTree();
+        }
+
+        [Test]
+        public void ShouldReportTimeoutWhenKilled()
+        {
+            var process = new ProcessRunner().Start("ping 127.0.0.1 -n 20");
+            process.KillTree();
+            Assert.That(process.ToString(), Is.EqualTo("<ping 127.0.0.1 -n 20> timed out"));
+        }
+
+        [Test]
+        public void ShouldReportFailureWithStandardOutputAndStandardError()
+        {
+            var process = new ProcessRunner().Exec("svn", TimeSpan.FromSeconds(30));
+            Assert.That(process.ToString(), Is.EqualTo("<svn> failed with exit code 1\n\tstdout: \n\tstderr: Type 'svn help' for usage."));
+        }
+
+        [Test]
+        public void ShouldReportSuccess()
+        {
+            var process = new ProcessRunner().Exec("cmd /c echo test", TimeSpan.FromSeconds(30));
+            Assert.That(process.ToString(), Is.EqualTo("<cmd /c echo test> succeeded"));
         }
     }
 }

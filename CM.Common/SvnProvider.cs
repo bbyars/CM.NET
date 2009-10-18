@@ -1,15 +1,16 @@
 using System;
-using System.Diagnostics;
 
 namespace CM.Common
 {
     public class SvnProvider : ISourceControlProvider
     {
         private readonly ILogger log;
+        private readonly TimeSpan commandTimeout;
 
-        public SvnProvider(ILogger log)
+        public SvnProvider(ILogger log, TimeSpan commandTimeout)
         {
             this.log = log;
+            this.commandTimeout = commandTimeout;
         }
 
         public string[] MetadataDirectories
@@ -70,34 +71,18 @@ namespace CM.Common
             RunCommand(string.Format("rm \"{0}\"", directory), workingDirectory, LogFailure);
         }
 
-        private void RunCommand(string command, string workingDirectory, Action<Process> onFailure)
+        private void RunCommand(string command, string workingDirectory, Action<SystemProcess> onFailure)
         {
-            var startInfo = new ProcessStartInfo
-            {
-                FileName = "svn",
-                Arguments = command,
-                CreateNoWindow = true,
-                UseShellExecute = false,
-                RedirectStandardOutput = true,
-                RedirectStandardError = true,
-                WorkingDirectory = workingDirectory
-            };
             log.Info("svn {0}", command);
-            var process = Process.Start(startInfo);
-            process.WaitForExit();
-
-            if (process.ExitCode != 0)
+            var processRunner = new ProcessRunner(workingDirectory);
+            var process = processRunner.Exec("svn " + command, commandTimeout);
+            if (!process.WasSuccessful)
                 onFailure(process);
         }
 
-        private void LogFailure(Process process)
+        private void LogFailure(SystemProcess process)
         {
-            var stdout = process.StandardOutput.ReadToEnd();
-            var stderr = process.StandardError.ReadToEnd();
-            if (!string.IsNullOrEmpty(stdout))
-                log.Error(stdout);
-            if (!string.IsNullOrEmpty(stderr))
-                log.Error(stderr);
+            log.Error(process.ToString());
             throw new Exception("svn command failed");
         }
 
