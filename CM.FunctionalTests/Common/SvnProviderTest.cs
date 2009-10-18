@@ -20,19 +20,19 @@ namespace CM.FunctionalTests.Common
         [Test]
         public void UncreatedUrlShouldNotExist()
         {
-            Assert.That(!new SvnProvider(log, TimeSpan.FromMinutes(10)).Exists(@"file:///missing/svn/repo"), log.Contents);
+            Assert.That(!new SvnProvider(log, TimeSpan.FromSeconds(30)).Exists(@"file:///missing/svn/repo"), log.Contents);
         }
 
         [Test]
         public void CreatedUrlShouldExist()
         {
-            Using.SvnRepo(url => Assert.That(new SvnProvider(log, TimeSpan.FromMinutes(10)).Exists(url), log.Contents));
+            Using.SvnRepo(url => Assert.That(new SvnProvider(log, TimeSpan.FromSeconds(30)).Exists(url), log.Contents));
         }
 
         [Test]
         public void ShouldNotExistIfEndpointDoesNotExist()
         {
-            Using.SvnRepo(url => Assert.That(!new SvnProvider(log, TimeSpan.FromMinutes(10)).Exists(url + "/test"), log.Contents));
+            Using.SvnRepo(url => Assert.That(!new SvnProvider(log, TimeSpan.FromSeconds(30)).Exists(url + "/test"), log.Contents));
         }
 
         [Test]
@@ -41,7 +41,7 @@ namespace CM.FunctionalTests.Common
             Using.SvnRepo(url =>
             {
                 Directory.CreateDirectory("trunk");
-                var provider = new SvnProvider(log, TimeSpan.FromMinutes(10));
+                var provider = new SvnProvider(log, TimeSpan.FromSeconds(30));
                 provider.Import(".", url + "/test", "");
                 Assert.That(provider.Exists(url + "/test/trunk"), log.Contents);
             });
@@ -52,7 +52,7 @@ namespace CM.FunctionalTests.Common
         {
             Using.SvnRepo(url =>
             {
-                var provider = new SvnProvider(log, TimeSpan.FromMinutes(10));
+                var provider = new SvnProvider(log, TimeSpan.FromSeconds(30));
                 Directory.CreateDirectory("trunk");
                 provider.Import(".", url + "/test", "");
 
@@ -66,7 +66,7 @@ namespace CM.FunctionalTests.Common
         {
             Using.SvnRepo(url =>
             {
-                var provider = new SvnProvider(log, TimeSpan.FromMinutes(10));
+                var provider = new SvnProvider(log, TimeSpan.FromSeconds(30));
                 provider.Import(".", url + "/test", "");
 
                 provider.CreateWorkingDirectory(url + "/test", "workingDir");
@@ -84,7 +84,7 @@ namespace CM.FunctionalTests.Common
             Using.SvnRepo(url =>
             {
                 Directory.CreateDirectory("test");
-                var provider = new SvnProvider(log, TimeSpan.FromMinutes(10));
+                var provider = new SvnProvider(log, TimeSpan.FromSeconds(30));
                 provider.Import(".", url + "/test", "");
 
                 provider.CreateWorkingDirectory(url + "/test", "workingDir");
@@ -100,7 +100,7 @@ namespace CM.FunctionalTests.Common
         {
             Using.SvnRepo(url =>
             {
-                var provider = new SvnProvider(log, TimeSpan.FromMinutes(10));
+                var provider = new SvnProvider(log, TimeSpan.FromSeconds(30));
                 provider.Import(".", url + "/test", "");
 
                 provider.CreateWorkingDirectory(url + "/test", "workingDir");
@@ -118,7 +118,7 @@ namespace CM.FunctionalTests.Common
             Using.SvnRepo(url =>
             {
                 File.WriteAllText("test.txt", "");
-                var provider = new SvnProvider(log, TimeSpan.FromMinutes(10));
+                var provider = new SvnProvider(log, TimeSpan.FromSeconds(30));
                 provider.Import(".", url + "/test", "");
 
                 provider.CreateWorkingDirectory(url + "/test", "workingDir");
@@ -135,7 +135,7 @@ namespace CM.FunctionalTests.Common
             Using.SvnRepo(url =>
             {
                 File.WriteAllText("test.txt", "");
-                var provider = new SvnProvider(log, TimeSpan.FromMinutes(10));
+                var provider = new SvnProvider(log, TimeSpan.FromSeconds(30));
                 provider.Import(".", url + "/test", "");
 
                 provider.CreateWorkingDirectory(url + "/test", "workingDir");
@@ -153,7 +153,7 @@ namespace CM.FunctionalTests.Common
             Using.SvnRepo(url =>
             {
                 File.WriteAllText("test.txt", "");
-                var provider = new SvnProvider(log, TimeSpan.FromMinutes(10));
+                var provider = new SvnProvider(log, TimeSpan.FromSeconds(30));
                 provider.Import(".", url + "/test", "");
 
                 provider.Branch(url + "/test", url + "/branch", "");
@@ -168,7 +168,7 @@ namespace CM.FunctionalTests.Common
             Using.SvnRepo(url =>
             {
                 File.WriteAllText("test.txt", "");
-                var provider = new SvnProvider(log, TimeSpan.FromMinutes(10));
+                var provider = new SvnProvider(log, TimeSpan.FromSeconds(30));
                 provider.Import(".", url + "/test", "");
 
                 provider.Branch(url + "/test", url + "/branch/v1", "");
@@ -182,7 +182,7 @@ namespace CM.FunctionalTests.Common
             Using.SvnRepo(url =>
             {
                 File.WriteAllText("test.txt", "");
-                var provider = new SvnProvider(log, TimeSpan.FromMinutes(10));
+                var provider = new SvnProvider(log, TimeSpan.FromSeconds(30));
                 provider.Import(".", url + "/test/trunk", "");
 
                 Assert.That(provider.Exists(url + "/test/trunk/test.txt"), log.Contents);

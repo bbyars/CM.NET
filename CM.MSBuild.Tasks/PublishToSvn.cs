@@ -24,6 +24,11 @@ namespace CM.MSBuild.Tasks
     /// </remarks>
     public class PublishToSvn : Task
     {
+        public PublishToSvn()
+        {
+            CommandTimeoutInSeconds = 600;
+        }
+
         /// <summary>
         /// The URL to merge the new files to.
         /// </summary>
@@ -48,6 +53,14 @@ namespace CM.MSBuild.Tasks
         [Required]
         public virtual string CommitMessage { get; set; }
 
+        /// <summary>
+        /// The maximum amount of time, in seconds, to wait before an
+        /// svn command finishes.  If the time is exceeded, the svn
+        /// process will be killed and the publishing aborted.
+        /// Defaults to 600 (10 minutes)
+        /// </summary>
+        public virtual int CommandTimeoutInSeconds { get; set; }
+
         public override bool Execute()
         {
             var workingDirectory = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
@@ -71,7 +84,7 @@ namespace CM.MSBuild.Tasks
         {
             CreateNewWorkingDirectory(workingDirectory);
             var logAdapter = new MSBuildLogAdapter(Log);
-            var publish = new PublishToSourceControl(new SvnProvider(logAdapter, TimeSpan.FromMinutes(10)));
+            var publish = new PublishToSourceControl(new SvnProvider(logAdapter, TimeSpan.FromSeconds(CommandTimeoutInSeconds)));
             publish.FromWorkingDirectory(workingDirectory)
                 .WithMainline(TrunkUrl)
                 .WithCommitMessage(CommitMessage)

@@ -29,7 +29,7 @@ namespace CM.FunctionalTests.scripts
                       <Import Project='$(CMDirectory)\Sfx.targets' />
                     </Project>");
 
-                var output = Shell.MSBuild("test.proj", TimeSpan.FromSeconds(5));
+                var output = Shell.MSBuild("test.proj", TimeSpan.FromSeconds(30));
                 var config = File.ReadAllText(@"build\package\deployer.exe.config");
                 Assert.That(config, Text.Contains("<value>test.proj</value>"), output);
                 Assert.That(config, Text.Contains("<value>env</value>"), output);
@@ -90,7 +90,7 @@ namespace CM.FunctionalTests.scripts
                       <Import Project='$(CMDirectory)\Sfx.targets' />
                     </Project>");
 
-                var output = Shell.MSBuild("test.proj", TimeSpan.FromSeconds(5));
+                var output = Shell.MSBuild("test.proj", TimeSpan.FromSeconds(30));
                 Assert.That(File.Exists(@"build\sfx\SfxTest.exe"), output);
 
                 var processRunner = new ProcessRunner();
