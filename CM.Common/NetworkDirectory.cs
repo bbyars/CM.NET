@@ -39,7 +39,7 @@ namespace CM.Common
         
         public virtual string ParentDirectoryName
         {
-            get { return NetworkPath.Replace("\\" + BaseDirectoryName, ""); }
+            get { return new NetworkDirectory(Machine, new DirectoryInfo(LocalDirectory).Parent.FullName).NetworkPath; }
         }
 
         public virtual void EnsureExistsAndIsEmpty()
