@@ -60,7 +60,7 @@
   </Target>
 
   <Target Name="RunUnitTests" DependsOnTargets="CompileSolution">
-    <Error Message="Missing or invalid value specified for the NUnitDirectory property"
+    <Error Text="Missing or invalid value specified for the NUnitDirectory property"
       Condition="$(UnitTestProject) != '' And !Exists('$(NUnitDirectory)')" />
     <NUnit Assemblies="$(MSBuildProjectDirectory)\$(UnitTestProject)\bin\$(Configuration)\$(UnitTestProject).dll"
       ToolPath="$(NUnitDirectory)"
@@ -69,7 +69,7 @@
   </Target>
 
   <Target Name="RunFunctionalTests" DependsOnTargets="CompileSolution">
-    <Error Message="Missing or invalid value specified for the NUnitDirectory property"
+    <Error Text="Missing or invalid value specified for the NUnitDirectory property"
       Condition="$(FunctionalTestProject) != '' And !Exists('$(NUnitDirectory)')" />
     <NUnit Assemblies="$(MSBuildProjectDirectory)\$(FunctionalTestProject)\bin\$(Configuration)\$(FunctionalTestProject).dll"
       ToolPath="$(NUnitDirectory)"
