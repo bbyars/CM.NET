@@ -78,6 +78,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="..\Dependencies\7-zip\7z.dll">
+      <Link>CM.NET\7z.dll</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="..\Dependencies\7-zip\7z.exe">
       <Link>CM.NET\7z.exe</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
