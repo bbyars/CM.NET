@@ -7,7 +7,6 @@
     <BuildDirectory Condition="$(BuildDirectory) == ''">$(MSBuildProjectDirectory)\build</BuildDirectory>
     <Version Condition="$(Version) == ''">0.0.0.0</Version>
     <CMDirectory Condition="$(CMDirectory) == ''">$(MSBuildProjectDirectory)\Dependencies\CM.NET</CMDirectory>
-    <MSBuildCommunityTasksPath Condition="$(MSBuildCommunityTasksPath) == ''">$(CMDirectory)</MSBuildCommunityTasksPath>
     <SdcTasksDirectory Condition="$(SdcTasksDirectory) == ''">$(CMDirectory)</SdcTasksDirectory>
   </PropertyGroup>
 
@@ -49,7 +48,6 @@
     <Message Text="  BuildDirectory: $(BuildDirectory)" />
     <Message Text="  Version: $(Version)" />
     <Message Text="  CMDirectory: $(CMDirectory)" />
-    <Message Text="  MSBuildCommunityTasksPath: $(MSBuildCommunityTasksPath)" />
     <Message Text="  SdcTasksDirectory: $(SdcTasksDirectory)" />
   </Target>
 </Project>

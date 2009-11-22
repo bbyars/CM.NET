@@ -7,11 +7,13 @@
     <MSBuildCommunityTasksPath>$(MSBuildProjectDirectory)\Dependencies\msbuild-community-tasks</MSBuildCommunityTasksPath>
     <SdcTasksDirectory>$(MSBuildProjectDirectory)\Dependencies\sdc-tasks</SdcTasksDirectory>
     <SevenZipDirectory>$(MSBuildProjectDirectory)\Dependencies\7-zip</SevenZipDirectory>
+    <AcmeDirectory>$(MSBuildProjectDirectory)\Acme Example</AcmeDirectory>
   </PropertyGroup>
 
   <PropertyGroup>
     <PackageTargets>CopyPackageFiles</PackageTargets>
-    <PostBuildTargets>Publish</PostBuildTargets>
+    <PostFunctionalTestTargets>RunAcmeBuild</PostFunctionalTestTargets>
+    <PostBuildTargets>Publish;ZipAcme</PostBuildTargets>
   </PropertyGroup>
 
   <Import Project="$(CMDirectory)\TeamCity.targets" />
@@ -37,6 +39,22 @@
       DestinationFiles="@(PackageFiles->'$(PackageDirectory)\%(RecursiveDir)%(Filename)%(Extension)')" />
   </Target>
 
+  <Target Name="RunAcmeBuild">
+    <PropertyGroup>
+      <AcmeCMFiles>$(PackageDirectory)\**\*</AcmeCMFiles>
+    </PropertyGroup>
+
+    <RemoveDir Directories="$(AcmeDirectory)\Dependencies\CM.NET" Condition="Exists('$(AcmeDirectory)\Dependencies\CM.NET')" />
+    <Exec Command="xcopy &quot;$(PackageDirectory)&quot; &quot;$(AcmeDirectory)\Dependencies\CM.NET\&quot;" />
+    <RemoveDir Directories="$(AcmeDirectory)\Dependencies\nunit" Condition="Exists('$(AcmeDirectory)\Dependencies\nunit')" />
+    <Exec Command="xcopy &quot;$(MSBuildProjectDirectory)\Dependencies\nunit&quot; &quot;$(AcmeDirectory)\Dependencies\nunit\&quot;" />
+
+    <!-- We're doing two things here.  First, we're verifying that everything works -->
+    <!-- with embedded spaces in the path.  Second, we're verifying that it works -->
+    <!-- even if the current directory isn't the .proj directory -->
+    <Exec Command="%windir%\Microsoft.NET\Framework\v3.5\MSBuild.exe &quot;$(AcmeDirectory)\Acme.Web.proj&quot;" />
+  </Target>
+  
   <UsingTask TaskName="PublishToSvn" AssemblyFile="$(PackageDirectory)\CM.MSBuild.Tasks.dll" />
 
   <Target Name="Publish" Condition="$(IsInContinuousIntegration) == 'true'">
@@ -49,5 +67,22 @@
       PublishedUrl="file:///svn/published/CM.NET/tags/$(Version)"
       FilesToPublish="@(FilesToPublish)"
       CommitMessage="auto-publishing successful build" />
+  </Target>
+
+  <UsingTask AssemblyFile="$(MSBuildCommunityTasksPath)\MSBuild.Community.Tasks.dll" TaskName="MSBuild.Community.Tasks.Zip" />
+
+  <Target Name="ZipAcme">
+    <ItemGroup>
+      <AcmeFiles Include="$(AcmeDirectory)\*.sln;$(AcmeDirectory)\*.proj;$(AcmeDirectory)\*.bat" />
+      <AcmeFiles Include="$(AcmeDirectory)\Acme.Web\*;$(AcmeDirectory)\Acme.Web\Properties\*;$(AcmeDirectory)\Acme.Web\App_Data" />
+      <AcmeFiles Include="$(AcmeDirectory)\Acme.Web.FunctionalTests\*;$(AcmeDirectory)\Acme.Web.FunctionalTests\Properties\*" />
+      <AcmeFiles Include="$(AcmeDirectory)\Database\**\*" />
+      <AcmeFiles Include="$(AcmeDirectory)\environments\**\*" />
+      <AcmeFiles Include="$(AcmeDirectory)\Dependencies\**\*" />
+    </ItemGroup>
+
+    <Zip Files="@(AcmeFiles)"
+      WorkingDirectory="$(AcmeDirectory)"
+      ZipFileName="$(BuildDirectory)\Acme.zip" />
   </Target>
 </Project>
