@@ -1,0 +1,98 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <PackageTargets>CopyPackageFiles</PackageTargets>
+    <DeployTargets>DeployDatabase;DeployWebSite</DeployTargets>
+    <PreFunctionalTestTargets>SpliceFunctionalTestConfig</PreFunctionalTestTargets>
+
+    <CMDirectory>$(MSBuildProjectDirectory)\Dependencies\CM.NET</CMDirectory>
+  </PropertyGroup>
+
+  <Import Project="$(MSBuildProjectDirectory)\Dependencies\CM.NET\Default.targets" />
+  <Import Project="$(MSBuildProjectDirectory)\Dependencies\CM.NET\TeamCity.targets" />
+  <Import Project="$(MSBuildProjectDirectory)\Dependencies\CM.NET\Sfx.targets" />
+
+  <UsingTask TaskName="MSBuild.Community.Tasks.SqlServer.ExecuteDDL" AssemblyFile="$(CMDirectory)\MSBuild.Community.Tasks.dll" />
+  <UsingTask TaskName="MSBuild.Community.Tasks.SqlExecute" AssemblyFile="$(CMDirectory)\MSBuild.Community.Tasks.dll" />
+  <UsingTask TaskName="MSBuild.Community.Tasks.IIS.WebDirectorySetting" AssemblyFile="$(CMDirectory)\MSBuild.Community.Tasks.dll" />
+  <UsingTask TaskName="Microsoft.Sdc.Tasks.Web.WebSite.CreateVirtualDirectory" AssemblyFile="$(CMDirectory)\Microsoft.Sdc.Tasks.dll" />
+  <UsingTask TaskName="Microsoft.Sdc.Tasks.Web.WebSite.DeleteVirtualDirectory" AssemblyFile="$(CMDirectory)\Microsoft.Sdc.Tasks.dll" />
+  <UsingTask TaskName="Microsoft.Sdc.Tasks.XmlFile.SetValue" AssemblyFile="$(CMDirectory)\Microsoft.Sdc.Tasks.dll" />
+  <UsingTask TaskName="Microsoft.Sdc.Tasks.File.Replace" AssemblyFile="$(CMDirectory)\Microsoft.Sdc.Tasks.dll" />
+  <UsingTask TaskName="Microsoft.Sdc.Tasks.Sql.DisconnectUsers" AssemblyFile="$(CMDirectory)\Microsoft.Sdc.Tasks.dll" />
+  <UsingTask TaskName="CM.MSBuild.Tasks.CopyToPhysicalDirectory" AssemblyFile="$(CMDirectory)\CM.MSBuild.Tasks.dll" />
+  <UsingTask TaskName="MSBuild.Dbdeploy.Task.Dbdeploy" AssemblyFile="$(MSBuildProjectDirectory)\Dependencies\dbdeploy.net\MSBuild.Dbdeploy.Task.dll" />
+
+  <Target Name="CopyPackageFiles">
+    <ItemGroup>
+      <PackageFiles Include="$(MSBuildProjectDirectory)\Acme.Web\*.aspx" />
+      <PackageFiles Include="$(MSBuildProjectDirectory)\Acme.Web\*.config" />
+      <PackageFiles Include="$(MSBuildProjectDirectory)\Acme.Web\bin\*.dll" />
+      <PackageFiles Include="$(MSBuildProjectDirectory)\Database\**\*.sql" />
+      <PackageFiles Include="$(MSBuildProjectDirectory)\Dependencies\dbdeploy.net\*" />
+    </ItemGroup>
+
+    <ChangeDirectoryPrefix Files="@(PackageFiles)" FromPrefix="$(MSBuildProjectDirectory)" ToPrefix="$(PackageDirectory)">
+      <Output TaskParameter="TransformedFiles" ItemName="DestinationPackageFiles" />
+    </ChangeDirectoryPrefix>
+    <Copy SourceFiles="@(PackageFiles)" DestinationFiles="@(DestinationPackageFiles)" />
+  </Target>
+
+  <Target Name="CreateDatabase" Condition="$(env-DBApplyBaseline) == 'true'">
+    <File.Replace Path="$(PackageDirectory)\Database\baseline.sql" OldValue="$DBUSER" NewValue="$(env-DBUser)" />
+    <File.Replace Path="$(PackageDirectory)\Database\baseline.sql" OldValue="$DBPASSWORD" NewValue="$(env-DBPassword)" />
+
+    <Sql.DisconnectUsers ServerName="$(env-DBServer)" DatabaseName="$(env-DBName)" CommandTimeout="60" />
+    <SqlExecute ConnectionString="Server=$(env-DBServer);Database=master;Integrated Security=SSPI"
+      Command="if exists(select * from sysdatabases where name = '$(env-DBName)') drop database $(env-DBName)" />
+    <SqlExecute ConnectionString="Server=$(env-DBServer);Database=master;Integrated Security=SSPI"
+      Command="create database $(env-DBName)" />
+    <ExecuteDDL ConnectionString="Server=$(env-DBServer);Database=$(env-DBName);Integrated Security=SSPI"
+      Files="$(PackageDirectory)\Database\baseline.sql" />
+  </Target>
+
+  <Target Name="DeployDatabase" DependsOnTargets="CreateDatabase">
+    <Dbdeploy
+      DbType="mssql"
+      DbConnection="Server=$(env-DBServer);Database=$(env-DBName);Integrated Security=SSPI"
+      Dir="$(PackageDirectory)\Database\Migrations"
+      OutputFile="$(BuildDirectory)\delta.sql" />
+    <File.Replace Path="$(BuildDirectory)\delta.sql" OldValue="$DBUSER" NewValue="$(env-DBUser)" />
+    <ExecuteDDL ConnectionString="Server=$(env-DBServer);Database=$(env-DBName);Integrated Security=SSPI"
+      Files="$(BuildDirectory)\delta.sql" />
+  </Target>
+
+  <Target Name="SpliceWebConfig">
+    <XmlFile.SetValue
+      Path="$(PackageDirectory)\Acme.Web\Web.Config"
+      XPath="//setting[@name='DBConnectionString']/value"
+      Value="$(env-DBConnection)" />
+  </Target>
+
+  <Target Name="DeployWebSite" DependsOnTargets="SpliceWebConfig">
+    <CopyToPhysicalDirectory
+        Server="$(env-WebServer)"
+        SourceDirectory="$(PackageDirectory)\Acme.Web"
+        DestinationDirectory="$(env-PhysicalDirectory)"
+        NumberOfOldDeploysToKeep="3">
+      <Output TaskParameter="LocalPhysicalDirectory" PropertyName="PhysicalDirectory" />
+    </CopyToPhysicalDirectory>
+
+    <WebSite.CreateVirtualDirectory
+      VirtualDirectoryName="$(env-VirtualDirectoryName)"
+      Path="$(PhysicalDirectory)"
+      MachineName="$(env-WebServer)" />
+
+    <WebDirectorySetting
+      ServerName="$(env-WebServer)"
+      VirtualDirectoryName="$(env-VirtualDirectoryName)"
+      SettingName="Path"
+      SettingValue="$(PhysicalDirectory)" />
+  </Target>
+
+  <Target Name="SpliceFunctionalTestConfig">
+    <XmlFile.SetValue
+      Path="$(MSBuildProjectDirectory)\$(FunctionalTestProject)\bin\$(Configuration)\$(FunctionalTestProject).dll.config"
+      XPath="//setting[@name='AcmeUrl']/value"
+      Value="http://$(env-WebServer)/$(env-VirtualDirectoryName)" />
+  </Target>
+</Project>

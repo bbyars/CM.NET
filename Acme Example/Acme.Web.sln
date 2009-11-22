@@ -1,0 +1,40 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Acme.Web", "Acme.Web\Acme.Web.csproj", "{C643D502-2BC4-47BF-BE2E-3AA5D60900B7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Acme.Web.FunctionalTests", "Acme.Web.FunctionalTests\Acme.Web.FunctionalTests.csproj", "{89A2538E-6CDF-4FE3-849F-91E1B229F84F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{9C8D53DC-90A6-416E-BA23-2E382A8598B8}"
+	ProjectSection(SolutionItems) = preProject
+		Acme.Web.proj = Acme.Web.proj
+		build.bat = build.bat
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "environments", "environments", "{ADC02A54-75CF-4C34-BC9F-64E7263DF002}"
+	ProjectSection(SolutionItems) = preProject
+		environments\ci.properties = environments\ci.properties
+		environments\dev.properties = environments\dev.properties
+		environments\ide.properties = environments\ide.properties
+		environments\remote.properties = environments\remote.properties
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C643D502-2BC4-47BF-BE2E-3AA5D60900B7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C643D502-2BC4-47BF-BE2E-3AA5D60900B7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C643D502-2BC4-47BF-BE2E-3AA5D60900B7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C643D502-2BC4-47BF-BE2E-3AA5D60900B7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{89A2538E-6CDF-4FE3-849F-91E1B229F84F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{89A2538E-6CDF-4FE3-849F-91E1B229F84F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{89A2538E-6CDF-4FE3-849F-91E1B229F84F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{89A2538E-6CDF-4FE3-849F-91E1B229F84F}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
