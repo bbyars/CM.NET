@@ -13,7 +13,6 @@
   <PropertyGroup>
     <CleanTargets>$(CleanTargets);CleanBuildDirectory</CleanTargets>
     <PostCleanTargets>$(PostCleanTargets);MakeBuildDirectory</PostCleanTargets>
-    <PreCompileTargets>$(PreCompileTargets);GetVersionParts</PreCompileTargets>
     <TraceDataTargets>$(TraceDataTargets);TraceDefaultData</TraceDataTargets>
   </PropertyGroup>
 
@@ -21,23 +20,12 @@
   <Import Project="$(CMDirectory)\MasterWorkflow.targets" />
   <Import Project="$(CMDirectory)\DotNet.targets" />
 
-  <UsingTask TaskName="Microsoft.Sdc.Tasks.VersionNumber.Parse" AssemblyFile="$(SdcTasksDirectory)\Microsoft.Sdc.Tasks.dll" />
-
   <Target Name="CleanBuildDirectory">
     <RemoveDir Directories="$(BuildDirectory)" Condition="Exists('$(BuildDirectory)')" />
   </Target>
 
   <Target Name="MakeBuildDirectory">
     <MakeDir Directories="$(BuildDirectory)" Condition="!Exists('$(BuildDirectory)')" />
-  </Target>
-
-  <Target Name="GetVersionParts">
-    <VersionNumber.Parse Text="$(Version)">
-      <Output TaskParameter="MajorNumber" PropertyName="Version-Major" />
-      <Output TaskParameter="MinorNumber" PropertyName="Version-Minor" />
-      <Output TaskParameter="BuildNumber" PropertyName="Version-Build" />
-      <Output TaskParameter="RevisionNumber" PropertyName="Version-Revision" />
-    </VersionNumber.Parse>
   </Target>
 
   <Target Name="TraceDefaultData">
