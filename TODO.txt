@@ -1,0 +1,2 @@
+* document command line way of deloying using sfx
+* clean for web projects
