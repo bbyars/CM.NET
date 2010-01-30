@@ -1,1 +1,1 @@
-insert into Names (Id, Name) values (1, 'world')
+insert into names (id, name) values (1, 'world');

@@ -1,7 +1,1 @@
-create table Names
-(
-  Id int NOT NULL,
-  Name varchar(50)
-)
-
-grant select on Names to $DBUSER
+create table names (id int, name varchar(50));

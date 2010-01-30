@@ -1,4 +1,3 @@
-using System;
 using System.IO;
 using System.Net;
 using Acme.Web.FunctionalTests.Properties;
@@ -11,11 +10,10 @@ namespace Acme.Web.FunctionalTests
     public class AcmeTest
     {
         [Test]
-        public void DefaultShouldShowName()
+        public void SiteShouldRespond()
         {
             var response = GetResponse(Settings.Default.AcmeUrl);
-            Assert.That(response, Text.Contains("Hello, world!"));
-                
+            Assert.That(response, Text.Contains("Hello, World!"));
         }
 
         private static string GetResponse(string url)
