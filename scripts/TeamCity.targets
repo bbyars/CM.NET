@@ -3,22 +3,22 @@
   <PropertyGroup>
     <Version Condition="$(BUILD_NUMBER) != ''">$(BUILD_NUMBER)</Version>
     <IsInContinuousIntegration Condition="$(BUILD_NUMBER) != ''">true</IsInContinuousIntegration>
-    <SdcTasksDirectory Condition="$(SdcTasksDirectory) == ''">$(MSBuildProjectDirectory)\Dependencies\CM.NET</SdcTasksDirectory>
+    <MSBuildCommunityTasksPath Condition="$(MSBuildCommunityTasksPath) == ''">$(MSBuildProjectDirectory)\Dependencies\CM.NET</MSBuildCommunityTasksPath>
   </PropertyGroup>
 
   <PropertyGroup>
-    <PreCleanTargets>$(PreCleanTargets);FixInferredProperties</PreCleanTargets>
+    <PreCleanTargets>$(PreBuildTargets);FixInferredProperties</PreCleanTargets>
     <TraceDataTargets>$(TraceDataTargets);TraceTeamCityData</TraceDataTargets>
   </PropertyGroup>
 
-  <UsingTask TaskName="StringReplace" AssemblyFile="$(SdcTasksDirectory)\Microsoft.Sdc.Tasks.dll" />
+  <UsingTask TaskName="RegexReplace" AssemblyFile="$(MSBuildCommunityTasksPath)\MSBuild.Community.Tasks.dll" />
 
   <Target Name="FixInferredProperties">
     <!-- Team City patches our build script, which changes $(MSBuildProjectName). -->
     <!-- Properties previously inferred from that property may no longer be set -->
-    <StringReplace Input="$(MSBuildProjectName)" OldValue=".proj.teamcity.patch" NewValue="">
+    <RegexReplace Input="$(MSBuildProjectFile)" Expression="\.\w+\.teamcity\.patch" Replacement="">
       <Output TaskParameter="Output" PropertyName="ProjectName" />
-    </StringReplace>
+    </RegexReplace>
 
     <PropertyGroup>
       <Solution Condition="$(Solution) == '' And Exists('$(ProjectName).sln')">$(ProjectName).sln</Solution>
@@ -32,7 +32,7 @@
     <Message Text="TeamCity.targets" />
     <Message Text="  Version: $(Version)" />
     <Message Text="  IsInContinuousIntegration: $(IsInContinuousIntegration)" />
-    <Message Text="  SdcTasksDirectory: $(SdcTasksDirectory)" />
+    <Message Text="  MSBuildCommunityTasksPath: $(MSBuildCommunityTasksPath)" />
     
     <!-- Dynamic properties -->
     <Message Text="  ProjectName: $(ProjectName)" Condition="$(ProjectName) != ''" />

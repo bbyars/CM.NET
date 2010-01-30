@@ -4,9 +4,9 @@ namespace CM.Common
 {
     public static class Shell
     {
-        public static string MSBuild(string projectFile, TimeSpan timeout)
+        public static string MSBuild(string projectFileAndArgs, TimeSpan timeout)
         {
-            var commandLine = string.Format(@"C:\Windows\Microsoft.NET\Framework\v3.5\MSBuild.exe {0}", projectFile);
+            var commandLine = string.Format(@"C:\Windows\Microsoft.NET\Framework\v3.5\MSBuild.exe {0}", projectFileAndArgs);
             var process = new ProcessRunner().Exec(commandLine, timeout);
             ThrowIfFailed(process);
 
