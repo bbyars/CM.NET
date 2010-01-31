@@ -1,2 +1,4 @@
 * document command line way of deloying using sfx
 * clean for web projects
+* Make the defaults smart enough to not care about the file extension (should be able to parse from built in properties)
+* TeamCity.targets is ugly - needs to know too much about other properties.  Perhaps use ProjectName throughout?
