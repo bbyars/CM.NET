@@ -2,3 +2,12 @@
 * clean for web projects
 * Make the defaults smart enough to not care about the file extension (should be able to parse from built in properties)
 * TeamCity.targets is ugly - needs to know too much about other properties.  Perhaps use ProjectName throughout?
+* Allow for an environments file that exists purely for documentation - load at start.
+* Allow loading environments to be more pluggable
+  * Include EnvironmentFiles.targets for the current way
+  * Include EnvironmentsWebService.targets for another way...
+* Deployer
+  * Icon
+  * Toolbar Icons, fonts
+  * editable grid
+  * Show ProjectName in the title bar

@@ -31,7 +31,7 @@
             this.uxConfigurationGroup = new System.Windows.Forms.GroupBox();
             this.uxLoadExternalFile = new System.Windows.Forms.Button();
             this.uxExternalFile = new System.Windows.Forms.TextBox();
-            this.uxEnvironment = new System.Windows.Forms.ComboBox();
+            this.uxEnvironments = new System.Windows.Forms.ComboBox();
             this.uxUseExternalFile = new System.Windows.Forms.RadioButton();
             this.uxUsePackagedFile = new System.Windows.Forms.RadioButton();
             this.uxConfigurationPropertiesGroup = new System.Windows.Forms.GroupBox();
@@ -50,7 +50,7 @@
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.uxConfigurationGroup.Controls.Add(this.uxLoadExternalFile);
             this.uxConfigurationGroup.Controls.Add(this.uxExternalFile);
-            this.uxConfigurationGroup.Controls.Add(this.uxEnvironment);
+            this.uxConfigurationGroup.Controls.Add(this.uxEnvironments);
             this.uxConfigurationGroup.Controls.Add(this.uxUseExternalFile);
             this.uxConfigurationGroup.Controls.Add(this.uxUsePackagedFile);
             this.uxConfigurationGroup.Location = new System.Drawing.Point(12, 12);
@@ -77,16 +77,16 @@
             this.uxExternalFile.Size = new System.Drawing.Size(460, 20);
             this.uxExternalFile.TabIndex = 3;
             // 
-            // uxEnvironment
+            // uxEnvironments
             // 
-            this.uxEnvironment.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            this.uxEnvironments.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
-            this.uxEnvironment.FormattingEnabled = true;
-            this.uxEnvironment.Location = new System.Drawing.Point(155, 31);
-            this.uxEnvironment.Name = "uxEnvironment";
-            this.uxEnvironment.Size = new System.Drawing.Size(494, 21);
-            this.uxEnvironment.TabIndex = 2;
-            this.uxEnvironment.SelectedValueChanged += new System.EventHandler(this.EnvironmentSelected);
+            this.uxEnvironments.FormattingEnabled = true;
+            this.uxEnvironments.Location = new System.Drawing.Point(155, 31);
+            this.uxEnvironments.Name = "uxEnvironments";
+            this.uxEnvironments.Size = new System.Drawing.Size(494, 21);
+            this.uxEnvironments.TabIndex = 2;
+            this.uxEnvironments.SelectedValueChanged += new System.EventHandler(this.EnvironmentSelected);
             // 
             // uxUseExternalFile
             // 
@@ -110,6 +110,7 @@
             this.uxUsePackagedFile.TabStop = true;
             this.uxUsePackagedFile.Text = "Use Packaged File:";
             this.uxUsePackagedFile.UseVisualStyleBackColor = true;
+            this.uxUsePackagedFile.CheckedChanged += new System.EventHandler(this.ClickRadio);
             // 
             // uxConfigurationPropertiesGroup
             // 
@@ -186,7 +187,7 @@
         private System.Windows.Forms.GroupBox uxConfigurationGroup;
         private System.Windows.Forms.RadioButton uxUseExternalFile;
         private System.Windows.Forms.RadioButton uxUsePackagedFile;
-        private System.Windows.Forms.ComboBox uxEnvironment;
+        private System.Windows.Forms.ComboBox uxEnvironments;
         private System.Windows.Forms.Button uxLoadExternalFile;
         private System.Windows.Forms.TextBox uxExternalFile;
         private System.Windows.Forms.GroupBox uxConfigurationPropertiesGroup;

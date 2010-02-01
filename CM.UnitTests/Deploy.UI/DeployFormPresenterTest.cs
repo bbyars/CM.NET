@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
 using CM.Common;
-using CM.Deploy.UI;
-using CM.Deploy.UI.Properties;
+using CM.Deployer;
+using CM.Deployer.Properties;
 using Moq;
 using NUnit.Framework;
 

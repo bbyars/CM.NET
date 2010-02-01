@@ -54,9 +54,9 @@
       <Project>{6E8E07C5-DD72-43B1-AC58-20D9896C481B}</Project>
       <Name>CM.Common</Name>
     </ProjectReference>
-    <ProjectReference Include="..\CM.Deploy.UI\CM.Deploy.UI.csproj">
-      <Project>{CDF8201C-74CD-4DA3-8BD5-B8EDCCA5D124}</Project>
-      <Name>CM.Deploy.UI</Name>
+    <ProjectReference Include="..\CM.Deployer\CM.Deployer.csproj">
+      <Project>{E556EAA3-5BA6-4836-AF63-FE6CEABCF675}</Project>
+      <Name>CM.Deployer</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

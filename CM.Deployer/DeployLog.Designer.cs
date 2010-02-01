@@ -29,24 +29,15 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(DeployLog));
-            this.uxLog = new System.Windows.Forms.RichTextBox();
             this.uxToolStrip = new System.Windows.Forms.ToolStrip();
             this.uxSave = new System.Windows.Forms.ToolStripButton();
             this.uxShowWorkingDirectory = new System.Windows.Forms.ToolStripButton();
             this.uxKill = new System.Windows.Forms.ToolStripButton();
+            this.uxPanel = new System.Windows.Forms.Panel();
+            this.uxLog = new System.Windows.Forms.RichTextBox();
             this.uxToolStrip.SuspendLayout();
+            this.uxPanel.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // uxLog
-            // 
-            this.uxLog.BackColor = System.Drawing.Color.Black;
-            this.uxLog.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.uxLog.ForeColor = System.Drawing.Color.White;
-            this.uxLog.Location = new System.Drawing.Point(0, 0);
-            this.uxLog.Name = "uxLog";
-            this.uxLog.Size = new System.Drawing.Size(700, 476);
-            this.uxLog.TabIndex = 0;
-            this.uxLog.Text = "";
             // 
             // uxToolStrip
             // 
@@ -90,18 +81,43 @@
             this.uxKill.Text = "Kill";
             this.uxKill.Click += new System.EventHandler(this.Kill);
             // 
+            // uxPanel
+            // 
+            this.uxPanel.Controls.Add(this.uxLog);
+            this.uxPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.uxPanel.Location = new System.Drawing.Point(0, 25);
+            this.uxPanel.Name = "uxPanel";
+            this.uxPanel.Size = new System.Drawing.Size(700, 451);
+            this.uxPanel.TabIndex = 2;
+            // 
+            // uxLog
+            // 
+            this.uxLog.BackColor = System.Drawing.Color.Black;
+            this.uxLog.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.uxLog.ForeColor = System.Drawing.Color.White;
+            this.uxLog.Location = new System.Drawing.Point(0, 0);
+            this.uxLog.Name = "uxLog";
+            this.uxLog.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.ForcedBoth;
+            this.uxLog.Size = new System.Drawing.Size(700, 451);
+            this.uxLog.TabIndex = 1;
+            this.uxLog.Text = "";
+            // 
             // DeployLog
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(700, 476);
+            this.Controls.Add(this.uxPanel);
             this.Controls.Add(this.uxToolStrip);
-            this.Controls.Add(this.uxLog);
+            this.MinimumSize = new System.Drawing.Size(500, 350);
             this.Name = "DeployLog";
+            this.Opacity = 0.9;
+            this.ShowIcon = false;
             this.Text = "Deploy Log";
             this.uxToolStrip.ResumeLayout(false);
             this.uxToolStrip.PerformLayout();
+            this.uxPanel.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -109,10 +125,11 @@
 
         #endregion
 
-        private System.Windows.Forms.RichTextBox uxLog;
         private System.Windows.Forms.ToolStrip uxToolStrip;
         private System.Windows.Forms.ToolStripButton uxSave;
         private System.Windows.Forms.ToolStripButton uxShowWorkingDirectory;
         private System.Windows.Forms.ToolStripButton uxKill;
+        private System.Windows.Forms.Panel uxPanel;
+        private System.Windows.Forms.RichTextBox uxLog;
     }
 }
