@@ -53,13 +53,9 @@ namespace CM.Deployer
 
         public void ShowProperties(IDictionary<string, string> properties)
         {
-            uxProperties.Items.Clear();
+            uxProperties.Rows.Clear();
             foreach (var property in properties)
-            {
-                var item = new ListViewItem(property.Key);
-                item.SubItems.Add(property.Value);
-                uxProperties.Items.Add(item);
-            }
+                uxProperties.Rows.Add(property.Key, property.Value);
         }
 
         public void ShowLogView(SystemProcess process)

@@ -35,13 +35,14 @@
             this.uxUseExternalFile = new System.Windows.Forms.RadioButton();
             this.uxUsePackagedFile = new System.Windows.Forms.RadioButton();
             this.uxConfigurationPropertiesGroup = new System.Windows.Forms.GroupBox();
-            this.uxProperties = new System.Windows.Forms.ListView();
-            this.uxKeyHeader = new System.Windows.Forms.ColumnHeader();
-            this.uxValueHeader = new System.Windows.Forms.ColumnHeader();
+            this.uxProperties = new System.Windows.Forms.DataGridView();
             this.uxDeploy = new System.Windows.Forms.Button();
             this.uxSave = new System.Windows.Forms.Button();
+            this.uxKeyColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.uxValueColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.uxConfigurationGroup.SuspendLayout();
             this.uxConfigurationPropertiesGroup.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.uxProperties)).BeginInit();
             this.SuspendLayout();
             // 
             // uxConfigurationGroup
@@ -62,6 +63,7 @@
             // 
             // uxLoadExternalFile
             // 
+            this.uxLoadExternalFile.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.uxLoadExternalFile.Location = new System.Drawing.Point(620, 68);
             this.uxLoadExternalFile.Name = "uxLoadExternalFile";
             this.uxLoadExternalFile.Size = new System.Drawing.Size(30, 23);
@@ -72,6 +74,8 @@
             // 
             // uxExternalFile
             // 
+            this.uxExternalFile.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.uxExternalFile.Location = new System.Drawing.Point(155, 68);
             this.uxExternalFile.Name = "uxExternalFile";
             this.uxExternalFile.Size = new System.Drawing.Size(460, 20);
@@ -114,6 +118,9 @@
             // 
             // uxConfigurationPropertiesGroup
             // 
+            this.uxConfigurationPropertiesGroup.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.uxConfigurationPropertiesGroup.Controls.Add(this.uxProperties);
             this.uxConfigurationPropertiesGroup.Location = new System.Drawing.Point(13, 120);
             this.uxConfigurationPropertiesGroup.Name = "uxConfigurationPropertiesGroup";
@@ -124,28 +131,24 @@
             // 
             // uxProperties
             // 
-            this.uxProperties.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.uxKeyHeader,
-            this.uxValueHeader});
-            this.uxProperties.Location = new System.Drawing.Point(7, 31);
+            this.uxProperties.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.uxProperties.ClipboardCopyMode = System.Windows.Forms.DataGridViewClipboardCopyMode.EnableWithoutHeaderText;
+            this.uxProperties.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.uxProperties.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.uxKeyColumn,
+            this.uxValueColumn});
+            this.uxProperties.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.uxProperties.Location = new System.Drawing.Point(3, 16);
+            this.uxProperties.MultiSelect = false;
             this.uxProperties.Name = "uxProperties";
-            this.uxProperties.Size = new System.Drawing.Size(654, 258);
+            this.uxProperties.RowHeadersVisible = false;
+            this.uxProperties.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
+            this.uxProperties.Size = new System.Drawing.Size(661, 297);
             this.uxProperties.TabIndex = 0;
-            this.uxProperties.UseCompatibleStateImageBehavior = false;
-            this.uxProperties.View = System.Windows.Forms.View.Details;
-            // 
-            // uxKeyHeader
-            // 
-            this.uxKeyHeader.Text = "Key";
-            this.uxKeyHeader.Width = 208;
-            // 
-            // uxValueHeader
-            // 
-            this.uxValueHeader.Text = "Value";
-            this.uxValueHeader.Width = 440;
             // 
             // uxDeploy
             // 
+            this.uxDeploy.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.uxDeploy.Location = new System.Drawing.Point(604, 442);
             this.uxDeploy.Name = "uxDeploy";
             this.uxDeploy.Size = new System.Drawing.Size(75, 23);
@@ -156,6 +159,7 @@
             // 
             // uxSave
             // 
+            this.uxSave.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.uxSave.Location = new System.Drawing.Point(484, 441);
             this.uxSave.Name = "uxSave";
             this.uxSave.Size = new System.Drawing.Size(75, 23);
@@ -164,8 +168,24 @@
             this.uxSave.UseVisualStyleBackColor = true;
             this.uxSave.Click += new System.EventHandler(this.Save);
             // 
+            // uxKeyColumn
+            // 
+            this.uxKeyColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.uxKeyColumn.FillWeight = 200F;
+            this.uxKeyColumn.HeaderText = "Key";
+            this.uxKeyColumn.MinimumWidth = 200;
+            this.uxKeyColumn.Name = "uxKeyColumn";
+            this.uxKeyColumn.Width = 200;
+            // 
+            // uxValueColumn
+            // 
+            this.uxValueColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.uxValueColumn.HeaderText = "Value";
+            this.uxValueColumn.Name = "uxValueColumn";
+            // 
             // DeployForm
             // 
+            this.AcceptButton = this.uxDeploy;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(691, 472);
@@ -173,11 +193,13 @@
             this.Controls.Add(this.uxDeploy);
             this.Controls.Add(this.uxConfigurationPropertiesGroup);
             this.Controls.Add(this.uxConfigurationGroup);
+            this.MinimumSize = new System.Drawing.Size(500, 300);
             this.Name = "DeployForm";
             this.Text = "DeployForm";
             this.uxConfigurationGroup.ResumeLayout(false);
             this.uxConfigurationGroup.PerformLayout();
             this.uxConfigurationPropertiesGroup.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.uxProperties)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -191,10 +213,10 @@
         private System.Windows.Forms.Button uxLoadExternalFile;
         private System.Windows.Forms.TextBox uxExternalFile;
         private System.Windows.Forms.GroupBox uxConfigurationPropertiesGroup;
-        private System.Windows.Forms.ListView uxProperties;
-        private System.Windows.Forms.ColumnHeader uxKeyHeader;
-        private System.Windows.Forms.ColumnHeader uxValueHeader;
         private System.Windows.Forms.Button uxDeploy;
         private System.Windows.Forms.Button uxSave;
+        private System.Windows.Forms.DataGridView uxProperties;
+        private System.Windows.Forms.DataGridViewTextBoxColumn uxKeyColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn uxValueColumn;
     }
 }

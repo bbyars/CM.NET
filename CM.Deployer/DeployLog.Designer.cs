@@ -47,7 +47,7 @@
             this.uxKill});
             this.uxToolStrip.Location = new System.Drawing.Point(0, 0);
             this.uxToolStrip.Name = "uxToolStrip";
-            this.uxToolStrip.Size = new System.Drawing.Size(700, 25);
+            this.uxToolStrip.Size = new System.Drawing.Size(706, 25);
             this.uxToolStrip.TabIndex = 1;
             this.uxToolStrip.Text = "toolStrip1";
             // 
@@ -87,7 +87,7 @@
             this.uxPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.uxPanel.Location = new System.Drawing.Point(0, 25);
             this.uxPanel.Name = "uxPanel";
-            this.uxPanel.Size = new System.Drawing.Size(700, 451);
+            this.uxPanel.Size = new System.Drawing.Size(706, 355);
             this.uxPanel.TabIndex = 2;
             // 
             // uxLog
@@ -98,7 +98,7 @@
             this.uxLog.Location = new System.Drawing.Point(0, 0);
             this.uxLog.Name = "uxLog";
             this.uxLog.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.ForcedBoth;
-            this.uxLog.Size = new System.Drawing.Size(700, 451);
+            this.uxLog.Size = new System.Drawing.Size(706, 355);
             this.uxLog.TabIndex = 1;
             this.uxLog.Text = "";
             // 
@@ -107,7 +107,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(700, 476);
+            this.ClientSize = new System.Drawing.Size(706, 380);
             this.Controls.Add(this.uxPanel);
             this.Controls.Add(this.uxToolStrip);
             this.MinimumSize = new System.Drawing.Size(500, 350);
