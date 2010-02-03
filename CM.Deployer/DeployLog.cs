@@ -46,7 +46,7 @@ namespace CM.Deployer
 
         private void ShowWorkingDirectory(object sender, EventArgs e)
         {
-            new ProcessRunner().Start(string.Format("explorer '{0}'", process.WorkingDirectory));
+            new ProcessRunner().Start(string.Format("cmd /c explorer \"{0}\"", process.WorkingDirectory));
         }
 
         private void Kill(object sender, EventArgs e)

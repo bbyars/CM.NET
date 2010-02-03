@@ -11,3 +11,4 @@
   * Toolbar Icons, fonts
   * editable grid
   * Show ProjectName in the title bar
+  * disable kill icon when process is dead (nead event on SystemProcess)
