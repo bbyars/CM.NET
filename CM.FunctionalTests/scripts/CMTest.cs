@@ -12,7 +12,7 @@ namespace CM.FunctionalTests.scripts
             foreach (var file in cmFiles)
                 File.Copy(file, Path.Combine("CM.NET", file), true);
 
-            File.Copy(@"..\..\..\CM.Deploy.UI\App.config", @"CM.NET\deployer.exe.config", true);
+            File.Copy(@"..\..\..\CM.Deployer\App.config", @"CM.NET\deployer.exe.config", true);
         }
     }
 }
