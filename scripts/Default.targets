@@ -3,7 +3,8 @@
   <PropertyGroup>
     <Environment Condition="$(Environment) == ''">dev</Environment>
     <EnvironmentsDirectory Condition="$(EnvironmentsDirectory) == ''">$(MSBuildProjectDirectory)\environments</EnvironmentsDirectory>
-    <ConfigPath Condition="$(ConfigPath) == ''">$(EnvironmentsDirectory)\$(Environment).properties</ConfigPath>
+    <ConfigFileExtension Condition="$(ConfigFileExtension) == ''">properties</ConfigFileExtension>
+    <ConfigPath Condition="$(ConfigPath) == ''">$(EnvironmentsDirectory)\$(Environment).$(ConfigFileExtension)</ConfigPath>
     <BuildDirectory Condition="$(BuildDirectory) == ''">$(MSBuildProjectDirectory)\build</BuildDirectory>
     <Version Condition="$(Version) == ''">0.0.0.0</Version>
     <CMDirectory Condition="$(CMDirectory) == ''">$(MSBuildProjectDirectory)\Dependencies\CM.NET</CMDirectory>
@@ -32,6 +33,7 @@
     <Message Text="Default.targets" />
     <Message Text="  Environment: $(Environment)" />
     <Message Text="  EnvironmentsDirectory: $(EnvironmentsDirectory)" />
+    <Message Text="  ConfigFileExtension: $(ConfigFileExtension)"  />
     <Message Text="  ConfigPath: $(ConfigPath)" />
     <Message Text="  BuildDirectory: $(BuildDirectory)" />
     <Message Text="  Version: $(Version)" />

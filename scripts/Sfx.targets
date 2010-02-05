@@ -6,6 +6,7 @@
   <PropertyGroup>
     <PackageName Condition="$(PackageName) == ''">$(MSBuildProjectName)-$(Version)</PackageName>
     <EnvironmentsDirectory Condition="$(EnvironmentsDirectory) == ''">$(MSBuildProjectDirectory)\environments</EnvironmentsDirectory>
+    <ConfigFileExtension Condition="$(ConfigFileExtension) == ''">properties</ConfigFileExtension>
     <SfxDirectory Condition="$(SfxDirectory) == ''">$(BuildDirectory)\sfx</SfxDirectory>
     <CMDirectory Condition="$(CMDirectory) == ''">$(MSBuildProjectDirectory)\Dependencies\CM.NET</CMDirectory>
     <SevenZipDirectory Condition="$(SevenZipDirectory) == ''">$(CMDirectory)</SevenZipDirectory>
@@ -51,7 +52,7 @@
     </StringReplace>
 
     <XmlFile.SetValue Path="$(DeployExeConfigPath)" XPath="//setting[@name='EnvironmentsDirectory']/value" Value="$(RelativeEnvironmentsDirectory)" />
-    <XmlFile.SetValue Path="$(DeployExeConfigPath)" XPath="//setting[@name='ConfigurationFileExtension']/value" Value=".properties" />
+    <XmlFile.SetValue Path="$(DeployExeConfigPath)" XPath="//setting[@name='ConfigurationFileExtension']/value" Value="$(ConfigFileExtension)" />
     <XmlFile.SetValue Path="$(DeployExeConfigPath)" XPath="//setting[@name='MSBuildFilename']/value" Value="$(MSBuildProjectFile)" />
 
     <PropertyGroup>
@@ -73,6 +74,8 @@ RunProgram="%(DeployExe.Filename).exe"
   <Target Name="TraceSfxData">
     <Message Text="Sfx.targets" />
     <Message Text="  PackageName: $(PackageName)" />
+    <Message Text="  EnvironmentsDirectory: $(EnvironmentsDirectory)" />
+    <Message Text="  ConfigFileExtension: $(ConfigFileExtension)"  />
     <Message Text="  SevenZipDirectory: $(SevenZipDirectory)" />
     <Message Text="  SfxDirectory: $(SfxDirectory)" />
     <Message Text="  CMDirectory: $(CMDirectory)" />

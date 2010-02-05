@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Windows.Forms;
 using CM.Common;
+using CM.Deployer.Properties;
 
 namespace CM.Deployer
 {
@@ -76,7 +77,7 @@ namespace CM.Deployer
 
         private void LoadExternalFile(object sender, EventArgs e)
         {
-            var dialog = new OpenFileDialog { Filter = "Config Files|*.properties", Title = "Open config file" };
+            var dialog = new OpenFileDialog { Filter = "Config Files|*" + Settings.Default.ConfigurationFileExtension, Title = "Open config file" };
             if (dialog.ShowDialog() == DialogResult.OK)
                 ExternalFile = dialog.FileName;
         }

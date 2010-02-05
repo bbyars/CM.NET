@@ -7,8 +7,8 @@
   * Include EnvironmentFiles.targets for the current way
   * Include EnvironmentsWebService.targets for another way...
 * Deployer
-  * Icon
-  * Toolbar Icons, fonts
-  * editable grid
   * Show ProjectName in the title bar
   * disable kill icon when process is dead (nead event on SystemProcess)
+  * Consider removing dependency on system.xml for boot-up speed
+  * Have option to show entire file to prevent security hole (also always save only properties to prevent any additional code from executing)
+* Fix templates!
