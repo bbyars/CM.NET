@@ -12,3 +12,15 @@
   * Consider removing dependency on system.xml for boot-up speed
   * Have option to show entire file to prevent security hole (also always save only properties to prevent any additional code from executing)
 * Fix templates!
+* Just have clients add to @PackageFiles, with metadata to store root dir
+
+For deployer:
+
+Import EnvironmentFiles.targets
+- copy environment files
+- set IEnvironmentReader = correct class in deployer
+Import Deployer.targets
+- Import Sfx
+-- Import Package
+- Splice config file, using IEnvironmentsReader
+- Set @DeployerFiles for sfx

@@ -56,8 +56,7 @@
     <Compile Include="MSBuild.Tasks\CopyToPhysicalDirectoryTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="scripts\CMTest.cs" />
-    <Compile Include="scripts\SfxTest.cs" />
-    <Compile Include="scripts\TeamCityTest.cs" />
+    <Compile Include="scripts\DeployerTest.cs" />
     <Compile Include="scripts\ZipTest.cs" />
     <Compile Include="TestLogger.cs" />
     <Compile Include="Using.cs" />
@@ -107,12 +106,12 @@
       <Link>CM.NET\Default.targets</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="..\scripts\DotNet.targets">
-      <Link>CM.NET\DotNet.targets</Link>
+    <None Include="..\scripts\Deployer.targets">
+      <Link>CM.NET\Deployer.targets</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="..\scripts\MasterWorkflow.targets">
-      <Link>CM.NET\MasterWorkflow.targets</Link>
+    <None Include="..\scripts\DotNet.targets">
+      <Link>CM.NET\DotNet.targets</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="..\scripts\Package.targets">

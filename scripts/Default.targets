@@ -1,43 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-    <Environment Condition="$(Environment) == ''">dev</Environment>
-    <EnvironmentsDirectory Condition="$(EnvironmentsDirectory) == ''">$(MSBuildProjectDirectory)\environments</EnvironmentsDirectory>
-    <ConfigFileExtension Condition="$(ConfigFileExtension) == ''">properties</ConfigFileExtension>
-    <ConfigPath Condition="$(ConfigPath) == ''">$(EnvironmentsDirectory)\$(Environment).$(ConfigFileExtension)</ConfigPath>
     <BuildDirectory Condition="$(BuildDirectory) == ''">$(MSBuildProjectDirectory)\build</BuildDirectory>
-    <Version Condition="$(Version) == ''">0.0.0.0</Version>
-    <CMDirectory Condition="$(CMDirectory) == ''">$(MSBuildProjectDirectory)\Dependencies\CM.NET</CMDirectory>
-    <SdcTasksDirectory Condition="$(SdcTasksDirectory) == ''">$(CMDirectory)</SdcTasksDirectory>
   </PropertyGroup>
 
-  <PropertyGroup>
-    <CleanTargets>$(CleanTargets);CleanBuildDirectory</CleanTargets>
-    <PostCleanTargets>$(PostCleanTargets);MakeBuildDirectory</PostCleanTargets>
-    <TraceDataTargets>$(TraceDataTargets);TraceDefaultData</TraceDataTargets>
-  </PropertyGroup>
+  <Target Name="Build" DependsOnTargets="
+      $(PreBuildTargets);
+      Clean;
+      Compile;
+      UnitTest;
+      Package;
+      Deploy;
+      FunctionalTest;
+      $(PostBuildTargets)" />
 
-  <Import Project="$(ConfigPath)" Condition="Exists('$(ConfigPath)')" />
-  <Import Project="$(CMDirectory)\MasterWorkflow.targets" />
-  <Import Project="$(CMDirectory)\DotNet.targets" />
-
-  <Target Name="CleanBuildDirectory">
+  <Target Name="Clean" DependsOnTargets="$(PreCleanTargets)">
+    <!-- Reset build directory -->
     <RemoveDir Directories="$(BuildDirectory)" Condition="Exists('$(BuildDirectory)')" />
-  </Target>
-
-  <Target Name="MakeBuildDirectory">
     <MakeDir Directories="$(BuildDirectory)" Condition="!Exists('$(BuildDirectory)')" />
+    <CallTarget Targets="$(CleanTargets);$(PostCleanTargets)" />
   </Target>
 
-  <Target Name="TraceDefaultData">
-    <Message Text="Default.targets" />
-    <Message Text="  Environment: $(Environment)" />
-    <Message Text="  EnvironmentsDirectory: $(EnvironmentsDirectory)" />
-    <Message Text="  ConfigFileExtension: $(ConfigFileExtension)"  />
-    <Message Text="  ConfigPath: $(ConfigPath)" />
-    <Message Text="  BuildDirectory: $(BuildDirectory)" />
-    <Message Text="  Version: $(Version)" />
-    <Message Text="  CMDirectory: $(CMDirectory)" />
-    <Message Text="  SdcTasksDirectory: $(SdcTasksDirectory)" />
+  <Target Name="Compile" DependsOnTargets="Clean;$(PreCompileTargets);$(CompileTargets);$(PostCompileTargets)" />
+  <Target Name="UnitTest" DependsOnTargets="Compile;$(PreUnitTestTargets);$(UnitTestTargets);$(PostUnitTestTargets)" />
+  <Target Name="Package" DependsOnTargets="$(PrePackageTargets);$(PackageTargets);$(PostPackageTargets)" />
+  <Target Name="Deploy" DependsOnTargets="$(PreDeployTargets);$(DeployTargets);$(PostDeployTargets)" />
+  <Target Name="FunctionalTest" DependsOnTargets="$(PreFunctionalTestTargets);$(FunctionalTestTargets);$(PostFunctionalTestTargets)" />
+
+  <Target Name="Trace">
+    <Message Text="PreBuildTargets: $(PreBuildTargets)" Condition="$(PreBuildTargets) != ''" />
+    <Message Text="PreCleanTargets: $(PreCleanTargets)" Condition="$(PreCleanTargets) != ''" />
+    <Message Text="CleanTargets: $(CleanTargets)" Condition="$(CleanTargets) != ''" />
+    <Message Text="PostBuildTargets: $(PostBuildTargets)" Condition="$(PostBuildTargets) != ''" />
+    <Message Text="PreCompileTargets: $(PreCompileTargets)" Condition="$(PreCompileTargets) != ''" />
+    <Message Text="CompileTargets: $(CompileTargets)" Condition="$(CompileTargets) != ''" />
+    <Message Text="PostCompileTargets: $(PostCompleTargets)" Condition="$(PostCompleTargets) != ''" />
+    <Message Text="PreUnitTestTargets: $(PreUnitTestTargets)" Condition="$(PreUnitTestTargets) != ''" />
+    <Message Text="UnitTestTargets: $(UnitTestTargets)" Condition="$(UnitTestTargets) != ''" />
+    <Message Text="PostUnitTestTargets: $(PostUnitTestTargets)" Condition="$(PostUnitTestTargets) != ''" />
+    <Message Text="PrePackageTargets: $(PrePackageTargets)" Condition="$(PrePackageTargets) != ''" />
+    <Message Text="PackageTargets: $(PackageTargets)" Condition="$(PackageTargets) != ''" />
+    <Message Text="PostPackageTargets: $(PostPackageTargets)" Condition="$(PostPackageTargets) != ''" />
+    <Message Text="PreDeployTargets: $(PreDeployTargets)" Condition="$(PreDeployTargets) != ''" />
+    <Message Text="DeployTargets: $(DeployTargets)" Condition="$(DeployTargets) != ''" />
+    <Message Text="PostDeployTargets: $(PostDeployTargets)" Condition="$(PostDeployTargets) != ''" />
+    <Message Text="PreFunctionalTestTargets: $(PreFunctionalTestTargets)" Condition="$(PreFunctionalTestTargets) != ''" />
+    <Message Text="FunctionalTestTargets: $(FunctionalTestTargets)" Condition="$(FunctionalTestTargets) != ''" />
+    <Message Text="PostFunctionalTestTargets: $(PostFunctionalTestTargets)" Condition="$(PostFunctionalTestTargets) != ''" />
+    <Message Text="PostBuildTargets: $(PostBuildTargets)" Condition="$(PostBuildTargets) != ''" />
   </Target>
 </Project>

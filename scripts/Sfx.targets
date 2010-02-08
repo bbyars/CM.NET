@@ -1,65 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<!--
+This file forms the basis of soutions which want a self-extracting executable (sfx)
+for a deployer.  Rather than acting as an application-facing file, this is meant
+as a "superclass" (by importing) of the actual deployer targets (e.g. Deployer.targets).
+Splitting it out this way allows you to use a custom deployer user interface.
+
+The application-facing targets file is expected to provide a property called SfxExe,
+which contains the path to the executable (which needs to be copied to the PackageDirectory)
+that will run when the sfx file is unzipped.
+-->
+  <PropertyGroup>
+    <SfxDirectory Condition="$(SfxDirectory) == ''">$(BuildDirectory)\sfx</SfxDirectory>
+    <SevenZipDirectory Condition="$(SevenZipDirectory) == ''">$(CMDirectory)</SevenZipDirectory>
+  </PropertyGroup>
+
   <Import Project="Package.targets" />
 
-  <!-- Properties expected to be provided, unless these defaults are OK -->
-  <PropertyGroup>
-    <PackageName Condition="$(PackageName) == ''">$(MSBuildProjectName)-$(Version)</PackageName>
-    <EnvironmentsDirectory Condition="$(EnvironmentsDirectory) == ''">$(MSBuildProjectDirectory)\environments</EnvironmentsDirectory>
-    <ConfigFileExtension Condition="$(ConfigFileExtension) == ''">properties</ConfigFileExtension>
-    <SfxDirectory Condition="$(SfxDirectory) == ''">$(BuildDirectory)\sfx</SfxDirectory>
-    <CMDirectory Condition="$(CMDirectory) == ''">$(MSBuildProjectDirectory)\Dependencies\CM.NET</CMDirectory>
-    <SevenZipDirectory Condition="$(SevenZipDirectory) == ''">$(CMDirectory)</SevenZipDirectory>
-    <SdcTasksDirectory Condition="$(SdcTasksDirectory) == ''">$(CMDirectory)</SdcTasksDirectory>
-  </PropertyGroup>
-
-  <ItemGroup>
-    <DeployExe Condition="@(DeployExe) == ''" Include="$(CMDirectory)\deployer.exe;$(CMDirectory)\CM.Common.dll;$(CMDirectory)\deployer.exe.config" />
-  </ItemGroup>
-
-  <PropertyGroup>
-    <PrePackageTargets>$(PrePackageTargets);CopyCMFiles</PrePackageTargets>
-    <TraceDataTargets>$(TraceDataTargets);TraceSfxData</TraceDataTargets>
-  </PropertyGroup>
-
-  <UsingTask TaskName="ChangeDirectoryPrefix" AssemblyFile="$(CMDirectory)\CM.MSBuild.Tasks.dll" />
-  <UsingTask TaskName="StringReplace" AssemblyFile="$(SdcTasksDirectory)\Microsoft.Sdc.Tasks.dll" />
-  <UsingTask TaskName="Microsoft.Sdc.Tasks.XmlFile.SetValue" AssemblyFile="$(SdcTasksDirectory)\Microsoft.Sdc.Tasks.dll" />
-
-  <Target Name="CopyCMFiles">
-    <ItemGroup>
-      <CMFiles Include="$(CMDirectory)\**\*" />
-      <CMFiles Include="$(EnvironmentsDirectory)\*" />
-      <CMFiles Include="$(MSBuildProjectFullPath)" />
-    </ItemGroup>
-    <ChangeDirectoryPrefix Files="@(CMFiles)" FromPrefix="$(MSBuildProjectDirectory)" ToPrefix="$(PackageDirectory)">
-      <Output TaskParameter="TransformedFiles" ItemName="CMPackageFiles" />
-    </ChangeDirectoryPrefix>
-    <Copy SourceFiles="@(CMFiles)" DestinationFiles="@(CMPackageFiles)" />
-  </Target>
-
   <Target Name="CreatePackage">
-    <Copy SourceFiles="@(DeployExe)"
-      DestinationFiles="@(DeployExe->'$(PackageDirectory)\%(Filename)%(Extension)')" />
+    <Error Text="No SfxExe set!" Condition="$(SfxExe) == ''" />
+
     <Copy SourceFiles="$(SevenZipDirectory)\7zS.sfx" DestinationFolder="$(SfxDirectory)" />
 
     <PropertyGroup>
-      <DeployExeConfigPath Condition="%(DeployExe.Extension) == '.exe'">$(PackageDirectory)\%(DeployExe.Filename).exe.config</DeployExeConfigPath>
-    </PropertyGroup>
-
-    <StringReplace Input="$(EnvironmentsDirectory)" OldValue="$(MSBuildProjectDirectory)\" NewValue="">
-      <Output TaskParameter="Output" PropertyName="RelativeEnvironmentsDirectory" />
-    </StringReplace>
-
-    <XmlFile.SetValue Path="$(DeployExeConfigPath)" XPath="//setting[@name='EnvironmentsDirectory']/value" Value="$(RelativeEnvironmentsDirectory)" />
-    <XmlFile.SetValue Path="$(DeployExeConfigPath)" XPath="//setting[@name='ConfigurationFileExtension']/value" Value="$(ConfigFileExtension)" />
-    <XmlFile.SetValue Path="$(DeployExeConfigPath)" XPath="//setting[@name='MSBuildFilename']/value" Value="$(MSBuildProjectFile)" />
-
-    <PropertyGroup>
-      <SevenZipConfig Condition="%(DeployExe.Extension) == '.exe'">
+      <SevenZipConfig>
 %3B!@Install@!UTF-8!
 Title="Deploy"
-RunProgram="%(DeployExe.Filename).exe"
+RunProgram="$(SfxExe)"
 %3B!@InstallEnd@!
       </SevenZipConfig>
     </PropertyGroup>
@@ -69,17 +36,5 @@ RunProgram="%(DeployExe.Filename).exe"
     <WriteLinesToFile File="$(SfxDirectory)\config.txt" Lines="$(SevenZipConfig)" />
     <Exec Command="copy /b 7zS.sfx + config.txt + package.7z $(PackageName).exe" 
       WorkingDirectory="$(SfxDirectory)" />
-  </Target>
-
-  <Target Name="TraceSfxData">
-    <Message Text="Sfx.targets" />
-    <Message Text="  PackageName: $(PackageName)" />
-    <Message Text="  EnvironmentsDirectory: $(EnvironmentsDirectory)" />
-    <Message Text="  ConfigFileExtension: $(ConfigFileExtension)"  />
-    <Message Text="  SevenZipDirectory: $(SevenZipDirectory)" />
-    <Message Text="  SfxDirectory: $(SfxDirectory)" />
-    <Message Text="  CMDirectory: $(CMDirectory)" />
-    <Message Text="  SdcTasksDirectory: $(SdcTasksDirectory)" />
-    <Message Text="  DeployExe: @(DeployExe)" />
   </Target>
 </Project>

@@ -21,6 +21,11 @@ namespace CM.MSBuild.Tasks
     /// </example>
     /// <remarks>
     /// If the TrunkUrl does not exist, it will automatically be imported.
+    /// Typically, you would only publish on a successful build in continuous
+    /// integration.  Before this will work, however, you will need to open a
+    /// command prompt on the build agent machine, logged in as the build
+    /// agent user, and do an svn command line operation, caching the 
+    /// authentication.
     /// </remarks>
     public class PublishToSvn : Task
     {

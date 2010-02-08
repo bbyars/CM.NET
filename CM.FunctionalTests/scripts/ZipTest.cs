@@ -27,7 +27,7 @@ namespace CM.FunctionalTests.scripts
                         <PackageTargets>CopyPackageFiles</PackageTargets>
                       </PropertyGroup>
 
-                      <Import Project='..\CM.NET\MasterWorkflow.targets' />
+                      <Import Project='..\CM.NET\Default.targets' />
                       <Import Project='..\CM.NET\Zip.targets' />
 
                       <Target Name='CopyPackageFiles'>

@@ -18,6 +18,7 @@
 
   <Import Project="$(CMDirectory)\TeamCity.targets" />
   <Import Project="$(CMDirectory)\Default.targets" />
+  <Import Project="$(CMDirectory)\DotNet.targets" />
   <Import Project="$(CMDirectory)\Zip.targets" />
 
   <Target Name="CopyPackageFiles">

@@ -8,7 +8,6 @@
 
   <PropertyGroup>
     <PreCleanTargets>$(PreBuildTargets);FixInferredProperties</PreCleanTargets>
-    <TraceDataTargets>$(TraceDataTargets);TraceTeamCityData</TraceDataTargets>
   </PropertyGroup>
 
   <UsingTask TaskName="RegexReplace" AssemblyFile="$(MSBuildCommunityTasksPath)\MSBuild.Community.Tasks.dll" />
@@ -26,24 +25,5 @@
       <FunctionalTestProject Condition="$(FunctionalTestProject) == '' And Exists('$(ProjectName).FunctionalTests')">$(ProjectName).FunctionalTests</FunctionalTestProject>
       <PackageName Condition="$(PackageName) == '' Or $(PackageName) == '$(MSBuildProjectName)-$(Version)'">$(ProjectName)-$(Version)</PackageName>
     </PropertyGroup>
-  </Target>
-
-  <Target Name="TraceTeamCityData">
-    <Message Text="TeamCity.targets" />
-    <Message Text="  Version: $(Version)" />
-    <Message Text="  IsInContinuousIntegration: $(IsInContinuousIntegration)" />
-    <Message Text="  MSBuildCommunityTasksPath: $(MSBuildCommunityTasksPath)" />
-    
-    <!-- Dynamic properties -->
-    <Message Text="  ProjectName: $(ProjectName)" Condition="$(ProjectName) != ''" />
-    <Message Text="  ProjectName won't be initialized until the Clean target is run" Condition="$(ProjectName) == ''" />
-    <Message Text="  Solution: $(Solution)" Condition="$(Solution) != ''" />
-    <Message Text="  Solution won't be initialized until the Clean target is run" Condition="$(Solution) == ''" />
-    <Message Text="  UnitTestProject: $(UnitTestProject)" Condition="$(UnitTestProject) != ''" />
-    <Message Text="  UnitTestProject won't be initialized until the Clean target is run" Condition="$(UnitTestProject) == ''" />
-    <Message Text="  FunctionalTestProject: $(FunctionalTestProject)" Condition="$(FunctionalTestProject) != ''" />
-    <Message Text="  FunctionalTestProject won't be initialized until the Clean target is run" Condition="$(FunctionalTestProject) == ''" />
-    <Message Text="  PackageName: $(PackageName)" Condition="$(PackageName) != ''" />
-    <Message Text="  PackageName won't be initialized until the Clean target is run" Condition="$(PackageName) == ''" />
   </Target>
 </Project>
