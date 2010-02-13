@@ -14,6 +14,9 @@ Running your functional tests against a local instance of the deployed applicati
 is a great way to test both your packaging and your deployment.
 -->
   <PropertyGroup>
+    <!-- Ignore unless you're using TeamCity -->
+    <ProjectFile Condition="$(ProjectFile) == ''">$(MSBuildProjectFile)</ProjectFile>
+
     <Environment Condition="$(Environment) == ''">dev</Environment>
     <EnvironmentsDirectory Condition="$(EnvironmentsDirectory) == ''">$(MSBuildProjectDirectory)\environments</EnvironmentsDirectory>
     <ConfigFileExtension Condition="$(ConfigFileExtension) == ''">properties</ConfigFileExtension>
@@ -37,7 +40,7 @@ is a great way to test both your packaging and your deployment.
   <Target Name="CopyDeployerFiles">
     <ItemGroup>
       <CoreFiles Include="$(CMDirectory)\**\*" />
-      <CoreFiles Include="$(MSBuildProjectFullPath)" />
+      <CoreFiles Include="$(MSBuildProjectDirectory)\$(ProjectFile)" />
       <CoreFiles Include="$(EnvironmentsDirectory)\*" />
     </ItemGroup>
     <ChangeDirectoryPrefix Files="@(CoreFiles)" FromPrefix="$(MSBuildProjectDirectory)" ToPrefix="$(PackageDirectory)">
@@ -63,6 +66,6 @@ is a great way to test both your packaging and your deployment.
 
     <XmlFile.SetValue Path="$(DeployerFilesConfigPath)" XPath="//setting[@name='EnvironmentsDirectory']/value" Value="$(RelativeEnvironmentsDirectory)" />
     <XmlFile.SetValue Path="$(DeployerFilesConfigPath)" XPath="//setting[@name='ConfigurationFileExtension']/value" Value="$(ConfigFileExtension)" />
-    <XmlFile.SetValue Path="$(DeployerFilesConfigPath)" XPath="//setting[@name='MSBuildFilename']/value" Value="$(MSBuildProjectFile)" />
+    <XmlFile.SetValue Path="$(DeployerFilesConfigPath)" XPath="//setting[@name='MSBuildFilename']/value" Value="$(ProjectFile)" />
   </Target>
 </Project>

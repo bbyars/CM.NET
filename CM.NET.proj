@@ -2,12 +2,15 @@
   <PropertyGroup>
     <UnitTestProject>CM.UnitTests</UnitTestProject>
     <FunctionalTestProject>CM.FunctionalTests</FunctionalTestProject>
-
     <CMDirectory>$(MSBuildProjectDirectory)\scripts</CMDirectory>
     <MSBuildCommunityTasksPath>$(MSBuildProjectDirectory)\Dependencies\msbuild-community-tasks</MSBuildCommunityTasksPath>
     <SdcTasksDirectory>$(MSBuildProjectDirectory)\Dependencies\sdc-tasks</SdcTasksDirectory>
     <SevenZipDirectory>$(MSBuildProjectDirectory)\Dependencies\7-zip</SevenZipDirectory>
     <AcmeDirectory>$(MSBuildProjectDirectory)\Acme Example</AcmeDirectory>
+
+    <!--TeamCity fixes -->
+    <ProjectName>CM.NET</ProjectName>
+    <ProjectFile>CM.NET.proj</ProjectFile>
   </PropertyGroup>
 
   <PropertyGroup>

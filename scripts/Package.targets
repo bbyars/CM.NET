@@ -8,7 +8,8 @@ and implement the CreatePackage target.
   <PropertyGroup>
     <BuildDirectory Condition="$(BuildDirectory) == ''">$(MSBuildProjectDirectory)\build</BuildDirectory>
     <PackageDirectory Condition="$(PackageDirectory) == ''">$(BuildDirectory)\package</PackageDirectory>
-    <PackageName Condition="$(PackageName) == ''">$(MSBuildProjectName)-$(Version)</PackageName>
+    <ProjectName Condition="$(ProjectName) == ''">$(MSBuildProjectName)</ProjectName>
+    <PackageName Condition="$(PackageName) == ''">$(ProjectName)-$(Version)</PackageName>
   </PropertyGroup>
 
   <PropertyGroup>

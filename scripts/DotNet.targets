@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <!-- Properties expected to be provided, unless these defaults are OK -->
   <PropertyGroup>
-    <Solution Condition="$(Solution) == '' And Exists('$(MSBuildProjectName).sln')">$(MSBuildProjectName).sln</Solution>
-    <UnitTestProject Condition="$(UnitTestProject) == '' And Exists('$(MSBuildProjectName).UnitTests')">$(MSBuildProjectName).UnitTests</UnitTestProject>
-    <FunctionalTestProject Condition="$(FunctionalTestProject) == '' And Exists('$(MSBuildProjectName).FunctionalTests')">$(MSBuildProjectName).FunctionalTests</FunctionalTestProject>
+    <ProjectName Condition="$(ProjectName) == ''">$(MSBuildProjectName)</ProjectName>
+    <Solution Condition="$(Solution) == '' And Exists('$(ProjectName).sln')">$(ProjectName).sln</Solution>
+    <UnitTestProject Condition="$(UnitTestProject) == '' And Exists('$(ProjectName).UnitTests')">$(ProjectName).UnitTests</UnitTestProject>
+    <FunctionalTestProject Condition="$(FunctionalTestProject) == '' And Exists('$(ProjectName).FunctionalTests')">$(ProjectName).FunctionalTests</FunctionalTestProject>
     <Configuration Condition="$(Configuration) == ''">Release</Configuration>
     <Version Condition="$(Version) == ''">0.0.0.0</Version>
     <NUnitDirectory Condition="$(NUnitDirectory) == '' And Exists('$(MSBuildProjectDirectory)\Dependencies\nunit')">$(MSBuildProjectDirectory)\Dependencies\nunit</NUnitDirectory>
