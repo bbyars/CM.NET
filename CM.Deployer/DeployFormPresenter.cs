@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Xml.Linq;
 using CM.Common;
 using CM.Deployer.Properties;
 
@@ -11,24 +8,20 @@ namespace CM.Deployer
     public class DeployFormPresenter
     {
         private readonly IDeployView view;
-        private readonly FileSystem fileSystem;
         private readonly ProcessRunner processRunner;
+        private readonly IEnvironmentLoader environmentLoader;
         private readonly Settings settings = Settings.Default;
 
-        private const string MSBuildNamespace = "http://schemas.microsoft.com/developer/msbuild/2003";
-
-        public DeployFormPresenter(IDeployView view, FileSystem fileSystem, ProcessRunner processRunner)
+        public DeployFormPresenter(IDeployView view, ProcessRunner processRunner, IEnvironmentLoader environmentLoader)
         {
             this.view = view;
-            this.fileSystem = fileSystem;
             this.processRunner = processRunner;
+            this.environmentLoader = environmentLoader;
         }
 
         public virtual void Initialize()
         {
-            var files = fileSystem.ListAllFilesIn(settings.EnvironmentsDirectory, "*" + settings.ConfigurationFileExtension);
-            var environments = files.Select(file => Path.GetFileNameWithoutExtension(file)).ToArray();
-            view.ShowEnvironments(environments);
+            view.ShowEnvironments(environmentLoader.GetEnvironments());
             ToggleConfigSelection();
         }
 
@@ -40,16 +33,7 @@ namespace CM.Deployer
 
         public virtual void LoadEnvironment(string environment)
         {
-            var path = string.Format(@"{0}\{1}{2}", settings.EnvironmentsDirectory, environment, settings.ConfigurationFileExtension);
-            var xml = XElement.Parse(fileSystem.ReadAllText(path));
-            var keyValuePairs = xml.Descendants(ScopedName("PropertyGroup")).Descendants()
-                .Select(node => new KeyValuePair<string, string>(node.Name.LocalName, node.Value)).ToArray();
-
-            var properties = new Dictionary<string, string>();
-            foreach (var pair in keyValuePairs)
-                properties.Add(pair.Key, pair.Value);
-
-            view.ShowProperties(properties);
+            view.ShowProperties(environmentLoader.GetProperties(environment));
         }
 
         public virtual void Deploy()
@@ -70,11 +54,6 @@ namespace CM.Deployer
                 else
                     return view.ExternalFile;
             }
-        }
-
-        private static XName ScopedName(string localName)
-        {
-            return XNamespace.Get(MSBuildNamespace) + localName;
         }
     }
 }

@@ -27,7 +27,7 @@ namespace CM.FunctionalTests.scripts
                       </PropertyGroup>
 
                       <Import Project='$(CMDirectory)\Default.targets' />
-                      <Import Project='$(CMDirectory)\Deployer.targets' />
+                      <Import Project='$(CMDirectory)\Packagers\Deployer\Deployer.targets' />
                     </Project>");
 
                 var output = Shell.MSBuild("test.proj", TimeSpan.FromSeconds(30));
@@ -59,7 +59,7 @@ namespace CM.FunctionalTests.scripts
                       </PropertyGroup>
 
                       <Import Project='$(CMDirectory)\Default.targets' />
-                      <Import Project='$(CMDirectory)\Deployer.targets' />
+                      <Import Project='$(CMDirectory)\Packagers\Deployer\Deployer.targets' />
                     </Project>");
 
                 var output = Shell.MSBuild("test.proj", TimeSpan.FromSeconds(30));
@@ -91,7 +91,7 @@ namespace CM.FunctionalTests.scripts
                       </PropertyGroup>
 
                       <Import Project='$(CMDirectory)\Default.targets' />
-                      <Import Project='$(CMDirectory)\Deployer.targets' />
+                      <Import Project='$(CMDirectory)\Packagers\Deployer\Deployer.targets' />
                     </Project>");
 
                 var output = Shell.MSBuild("test.proj", TimeSpan.FromSeconds(30));
@@ -111,7 +111,7 @@ namespace CM.FunctionalTests.scripts
 
         private static void XCopyCMFiles()
         {
-            var startInfo = new ProcessStartInfo { FileName = "xcopy", Arguments = @"..\CM.NET CM.NET\", WindowStyle = ProcessWindowStyle.Hidden };
+            var startInfo = new ProcessStartInfo { FileName = "xcopy", Arguments = @"/S ..\CM.NET CM.NET\", WindowStyle = ProcessWindowStyle.Hidden };
             Process.Start(startInfo).WaitForExit();
         }
 

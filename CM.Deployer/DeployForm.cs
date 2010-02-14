@@ -13,7 +13,7 @@ namespace CM.Deployer
         public DeployForm()
         {
             InitializeComponent();
-            presenter = new DeployFormPresenter(this, new FileSystem(), new ProcessRunner());
+            presenter = new DeployFormPresenter(this, new ProcessRunner(), null);
             presenter.Initialize();
         }
 

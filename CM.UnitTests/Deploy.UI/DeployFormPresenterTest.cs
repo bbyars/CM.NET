@@ -15,10 +15,9 @@ namespace CM.UnitTests.Deploy.UI
         public void ShouldLoadEnvironmentsWhenInitialized()
         {
             var mockView = new Mock<IDeployView>();
-            var stubFileSystem = new Mock<FileSystem>();
-            stubFileSystem.Setup(fs => fs.ListAllFilesIn("Environments", "*.properties"))
-                .Returns(new[] {"prod.properties", "qa.properties", "dev.properties"});
-            var presenter = new DeployFormPresenter(mockView.Object, stubFileSystem.Object, new ProcessRunner(""));
+            var stubEnvironmentLoader = new Mock<IEnvironmentLoader>();
+            stubEnvironmentLoader.Setup(env => env.GetEnvironments()).Returns(new[] {"prod", "qa", "dev"});
+            var presenter = new DeployFormPresenter(mockView.Object, new ProcessRunner(""), stubEnvironmentLoader.Object);
 
             presenter.Initialize();
 
@@ -30,8 +29,7 @@ namespace CM.UnitTests.Deploy.UI
         {
             var mockView = new Mock<IDeployView>();
             mockView.SetupGet(v => v.UsePackagedEnvironment).Returns(true);
-            var stubFileSystem = new Mock<FileSystem>();
-            var presenter = new DeployFormPresenter(mockView.Object, stubFileSystem.Object, new ProcessRunner(""));
+            var presenter = new DeployFormPresenter(mockView.Object, new ProcessRunner(""), null);
 
             presenter.ToggleConfigSelection();
 
@@ -44,8 +42,7 @@ namespace CM.UnitTests.Deploy.UI
         {
             var mockView = new Mock<IDeployView>();
             mockView.SetupGet(v => v.UsePackagedEnvironment).Returns(false);
-            var stubFileSystem = new Mock<FileSystem>();
-            var presenter = new DeployFormPresenter(mockView.Object, stubFileSystem.Object, new ProcessRunner(""));
+            var presenter = new DeployFormPresenter(mockView.Object, new ProcessRunner(""), null);
 
             presenter.ToggleConfigSelection();
 
@@ -57,22 +54,14 @@ namespace CM.UnitTests.Deploy.UI
         public void ShouldLoadPropertiesFromEnvironmentFile()
         {
             var mockView = new Mock<IDeployView>();
-            var stubFileSystem = new Mock<FileSystem>();
-            stubFileSystem.Setup(fs => fs.ListAllFilesIn("Environments", "*.properties")).Returns(new[] {"prod.properties"});
-            stubFileSystem.Setup(fs => fs.ReadAllText(@"Environments\prod.properties"))
-                .Returns(@"<?xml version='1.0' encoding='utf-8'?>
-                    <Project xmlns='http://schemas.microsoft.com/developer/msbuild/2003'>
-                        <PropertyGroup>
-                            <key1>value1</key1>
-                            <key2>value2</key2>
-                        </PropertyGroup>
-                    </Project>");
-            var presenter = new DeployFormPresenter(mockView.Object, stubFileSystem.Object, new ProcessRunner(""));
+            var properties = new Dictionary<string, string> { { "key1", "value1" }, { "key2", "value2" } };
+            var stubEnvironmentLoader = new Mock<IEnvironmentLoader>();
+            stubEnvironmentLoader.Setup(env => env.GetProperties("prod")).Returns(properties);
+            var presenter = new DeployFormPresenter(mockView.Object, new ProcessRunner(""), stubEnvironmentLoader.Object);
 
             presenter.LoadEnvironment("prod");
 
-            var expected = new Dictionary<string, string> {{"key1", "value1"}, {"key2", "value2"}};
-            mockView.Verify(v => v.ShowProperties(It.Is<IDictionary<string, string>>(actual => ValueEquals(expected, actual))));
+            mockView.Verify(v => v.ShowProperties(properties));
         }
 
         [Test]
@@ -83,7 +72,7 @@ namespace CM.UnitTests.Deploy.UI
             stubView.SetupGet(v => v.SelectedEnvironment).Returns("prod");
             var stubFileSystem = new Mock<FileSystem>();
             var mockProcessRunner = new Mock<ProcessRunner>("");
-            var presenter = new DeployFormPresenter(stubView.Object, stubFileSystem.Object, mockProcessRunner.Object);
+            var presenter = new DeployFormPresenter(stubView.Object, mockProcessRunner.Object, null);
 
             presenter.Deploy();
 
@@ -100,7 +89,7 @@ namespace CM.UnitTests.Deploy.UI
             stubView.SetupGet(v => v.ExternalFile).Returns("prod.properties");
             var stubFileSystem = new Mock<FileSystem>();
             var mockProcessRunner = new Mock<ProcessRunner>("");
-            var presenter = new DeployFormPresenter(stubView.Object, stubFileSystem.Object, mockProcessRunner.Object);
+            var presenter = new DeployFormPresenter(stubView.Object, mockProcessRunner.Object, null);
 
             presenter.Deploy();
 
@@ -116,27 +105,11 @@ namespace CM.UnitTests.Deploy.UI
             var stubProcess = new Mock<SystemProcess>(null);
             var stubProcessRunner = new Mock<ProcessRunner>();
             stubProcessRunner.Setup(pr => pr.Start(It.IsAny<string>())).Returns(stubProcess.Object);
-            var presenter = new DeployFormPresenter(mockView.Object, stubFileSystem.Object, stubProcessRunner.Object);
+            var presenter = new DeployFormPresenter(mockView.Object, stubProcessRunner.Object, null);
 
             presenter.Deploy();
 
             mockView.Verify(v => v.ShowLogView(stubProcess.Object));
-        }
-
-        private static bool ValueEquals(IDictionary<string, string> expected, IDictionary<string, string> actual)
-        {
-            if (expected.Keys.Count != actual.Keys.Count)
-                return false;
-
-            foreach (var key in expected.Keys)
-            {
-                if (!actual.ContainsKey(key))
-                    return false;
-                if (!actual[key].Equals(expected[key]))
-                    return false;
-            }
-
-            return true;
         }
     }
 }

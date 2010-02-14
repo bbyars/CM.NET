@@ -22,13 +22,13 @@ namespace CM.FunctionalTests.scripts
                     <Project DefaultTargets='Build' xmlns='http://schemas.microsoft.com/developer/msbuild/2003'>
                       <PropertyGroup>
                         <Version>1.2.3.4</Version>
-                        <MSBuildCommunityTasksPath>..\CM.NET</MSBuildCommunityTasksPath>
+                        <MSBuildCommunityTasksPath>$(MSBuildProjectDirectory)\..\CM.NET</MSBuildCommunityTasksPath>
 
                         <PackageTargets>CopyPackageFiles</PackageTargets>
                       </PropertyGroup>
 
                       <Import Project='..\CM.NET\Default.targets' />
-                      <Import Project='..\CM.NET\Zip.targets' />
+                      <Import Project='..\CM.NET\Packagers\Zip.targets' />
 
                       <Target Name='CopyPackageFiles'>
                         <ItemGroup>

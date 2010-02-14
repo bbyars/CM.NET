@@ -22,7 +22,7 @@
   <Import Project="$(CMDirectory)\TeamCity.targets" />
   <Import Project="$(CMDirectory)\Default.targets" />
   <Import Project="$(CMDirectory)\DotNet.targets" />
-  <Import Project="$(CMDirectory)\Zip.targets" />
+  <Import Project="$(CMDirectory)\Packagers\Zip.targets" />
 
   <Target Name="CopyPackageFiles">
     <ItemGroup>
@@ -49,7 +49,7 @@
     </PropertyGroup>
 
     <RemoveDir Directories="$(AcmeDirectory)\Dependencies\CM.NET" Condition="Exists('$(AcmeDirectory)\Dependencies\CM.NET')" />
-    <Exec Command="xcopy &quot;$(PackageDirectory)&quot; &quot;$(AcmeDirectory)\Dependencies\CM.NET\&quot;" />
+    <Exec Command="xcopy /S &quot;$(PackageDirectory)&quot; &quot;$(AcmeDirectory)\Dependencies\CM.NET\&quot;" />
     <RemoveDir Directories="$(AcmeDirectory)\Dependencies\nunit" Condition="Exists('$(AcmeDirectory)\Dependencies\nunit')" />
     <Exec Command="xcopy &quot;$(MSBuildProjectDirectory)\Dependencies\nunit&quot; &quot;$(AcmeDirectory)\Dependencies\nunit\&quot;" />
 

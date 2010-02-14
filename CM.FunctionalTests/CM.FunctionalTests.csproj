@@ -106,20 +106,28 @@
       <Link>CM.NET\Default.targets</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="..\scripts\Deployer.targets">
-      <Link>CM.NET\Deployer.targets</Link>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <None Include="..\scripts\DotNet.targets">
       <Link>CM.NET\DotNet.targets</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="..\scripts\Package.targets">
-      <Link>CM.NET\Package.targets</Link>
+    <None Include="..\scripts\Packagers\Deployer\Deployer.targets">
+      <Link>CM.NET\Packagers\Deployer\Deployer.targets</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="..\scripts\Sfx.targets">
-      <Link>CM.NET\Sfx.targets</Link>
+    <None Include="..\scripts\Packagers\Deployer\EnvironmentFiles.targets">
+      <Link>CM.NET\Packagers\Deployer\EnvironmentFiles.targets</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="..\scripts\Packagers\Package.targets">
+      <Link>CM.NET\Packagers\Package.targets</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="..\scripts\Packagers\Sfx.targets">
+      <Link>CM.NET\Packagers\Sfx.targets</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="..\scripts\Packagers\Zip.targets">
+      <Link>CM.NET\Packagers\Zip.targets</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="..\scripts\Subversion.targets">
@@ -128,10 +136,6 @@
     </None>
     <None Include="..\scripts\TeamCity.targets">
       <Link>CM.NET\TeamCity.targets</Link>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="..\scripts\Zip.targets">
-      <Link>CM.NET\Zip.targets</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>

@@ -47,6 +47,7 @@
   <ItemGroup>
     <Compile Include="Common\NetworkDirectoryTest.cs" />
     <Compile Include="Deploy.UI\DeployFormPresenterTest.cs" />
+    <Compile Include="Deploy.UI\EnvironmentFilesLoaderTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -10,7 +10,7 @@
   <Import Project="$(CMDirectory)\Default.targets" />
   <Import Project="$(CMDirectory)\DotNet.targets" />
   <Import Project="$(CMDirectory)\TeamCity.targets" />
-  <Import Project="$(CMDirectory)\Deployer.targets" />
+  <Import Project="$(CMDirectory)\Packagers\Deployer\Deployer.targets" />
 
   <UsingTask TaskName="MSBuild.Community.Tasks.IIS.WebDirectorySetting" AssemblyFile="$(CMDirectory)\MSBuild.Community.Tasks.dll" />
   <UsingTask TaskName="Microsoft.Sdc.Tasks.Web.WebSite.CreateVirtualDirectory" AssemblyFile="$(CMDirectory)\Microsoft.Sdc.Tasks.dll" />

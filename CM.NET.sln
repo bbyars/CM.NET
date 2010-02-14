@@ -5,14 +5,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "scripts", "scripts", "{9F5A
 	ProjectSection(SolutionItems) = preProject
 		scripts\create-project.bat = scripts\create-project.bat
 		scripts\Default.targets = scripts\Default.targets
-		scripts\Deployer.targets = scripts\Deployer.targets
-		scripts\DeployerEnvironmentFiles.targets = scripts\DeployerEnvironmentFiles.targets
 		scripts\DotNet.targets = scripts\DotNet.targets
-		scripts\Package.targets = scripts\Package.targets
-		scripts\Sfx.targets = scripts\Sfx.targets
 		scripts\Subversion.targets = scripts\Subversion.targets
 		scripts\TeamCity.targets = scripts\TeamCity.targets
-		scripts\Zip.targets = scripts\Zip.targets
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{1A0E42CF-9EF1-474F-86AC-FA096F307C57}"
@@ -39,6 +34,19 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CM.Common", "CM.Common\CM.Common.csproj", "{6E8E07C5-DD72-43B1-AC58-20D9896C481B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CM.Deployer", "CM.Deployer\CM.Deployer.csproj", "{E556EAA3-5BA6-4836-AF63-FE6CEABCF675}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Packagers", "Packagers", "{93ECFC1A-D39F-4055-A524-83776247DC7D}"
+	ProjectSection(SolutionItems) = preProject
+		scripts\Packagers\Package.targets = scripts\Packagers\Package.targets
+		scripts\Packagers\Sfx.targets = scripts\Packagers\Sfx.targets
+		scripts\Packagers\Zip.targets = scripts\Packagers\Zip.targets
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Deployer", "Deployer", "{01DA7331-920D-4891-924B-A460C070C2F9}"
+	ProjectSection(SolutionItems) = preProject
+		scripts\Packagers\Deployer\Deployer.targets = scripts\Packagers\Deployer\Deployer.targets
+		scripts\Packagers\Deployer\EnvironmentFiles.targets = scripts\Packagers\Deployer\EnvironmentFiles.targets
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -76,5 +84,7 @@ Global
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{D04606EE-5075-4EDE-8118-76E15999FA86} = {9F5AF7E5-7B4B-4544-80C7-48E3F6D8322D}
+		{93ECFC1A-D39F-4055-A524-83776247DC7D} = {9F5AF7E5-7B4B-4544-80C7-48E3F6D8322D}
+		{01DA7331-920D-4891-924B-A460C070C2F9} = {93ECFC1A-D39F-4055-A524-83776247DC7D}
 	EndGlobalSection
 EndGlobal

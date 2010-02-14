@@ -30,7 +30,7 @@ is a great way to test both your packaging and your deployment.
     <PackageTargets>$(PackageTargets);CopyDeployerFiles;ConfigureDeployer</PackageTargets>
   </PropertyGroup>
 
-  <Import Project="Sfx.targets" />
+  <Import Project="..\Sfx.targets" />
   <Import Project="$(ConfigPath)" Condition="Exists('$(ConfigPath)')" />
 
   <UsingTask TaskName="ChangeDirectoryPrefix" AssemblyFile="$(CMDirectory)\CM.MSBuild.Tasks.dll" />

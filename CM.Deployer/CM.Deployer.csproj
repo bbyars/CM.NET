@@ -58,7 +58,9 @@
     <Compile Include="DeployLog.Designer.cs">
       <DependentUpon>DeployLog.cs</DependentUpon>
     </Compile>
+    <Compile Include="EnvironmentFilesLoader.cs" />
     <Compile Include="IDeployView.cs" />
+    <Compile Include="IEnvironmentLoader.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="DeployForm.resx">
