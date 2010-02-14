@@ -14,7 +14,12 @@
 * Fix templates!
 * Just have clients add to @PackageFiles, with metadata to store root dir
 * Remove absolute dir refs for scripts in CMDirectory
-* TeamCity
-  * Force client to provide ProjectName
-  * Error if not there
-  * Try using relative pathin 
+  * DotNet, Sfx
+* Add OnErrorTargets
+
+
+Environment Strategy:
+* move copying environments dir
+* move importing file
+* splice strategy class for deployer
+* move splicing environments dir
