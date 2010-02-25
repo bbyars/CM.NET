@@ -112,7 +112,7 @@ namespace CM.Deployer
             ExternalFileEnabled = !UsePackagedEnvironment;
         }
 
-        private void ShowEnvironments(string[] environments)
+        private void ShowEnvironments(IEnumerable<string> environments)
         {
             uxEnvironments.Items.Clear();
             foreach (var environment in environments)

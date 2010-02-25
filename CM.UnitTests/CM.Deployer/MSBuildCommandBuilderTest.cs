@@ -5,7 +5,7 @@ using Moq;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 
-namespace CM.UnitTests.Deploy.UI
+namespace CM.UnitTests.CM.Deployer
 {
     [TestFixture]
     public class MSBuildCommandBuilderTest
@@ -24,7 +24,7 @@ namespace CM.UnitTests.Deploy.UI
             var builder = new MSBuildCommandBuilder(mockFileSystem.Object, @"C:\dir\msbuild.exe", "test.proj", "deploy");
 
             builder.SetEnvironmentProperties(new List<KeyValuePair<string, string>>
-                {new KeyValuePair<string, string>("key1", "value1"), new KeyValuePair<string, string>("key2", "value2")} );
+            {new KeyValuePair<string, string>("key1", "value1"), new KeyValuePair<string, string>("key2", "value2")} );
 
             mockFileSystem.Verify(fs => fs.WriteAllText("DeployConfig.properties", @"<?xml version='1.0' encoding='utf-8'?>
 <Project xmlns='http://schemas.microsoft.com/developer/msbuild/2003'>

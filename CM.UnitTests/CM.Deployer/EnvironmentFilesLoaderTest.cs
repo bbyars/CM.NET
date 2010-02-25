@@ -5,7 +5,7 @@ using Moq;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 
-namespace CM.UnitTests.Deploy.UI
+namespace CM.UnitTests.CM.Deployer
 {
     [TestFixture]
     public class EnvironmentFilesLoaderTest
@@ -37,7 +37,7 @@ namespace CM.UnitTests.Deploy.UI
             var loader = new EnvironmentFilesLoader(stubFileSystem.Object, "Environments", ".properties");
 
             Assert.That(loader.GetProperties("prod"), Is.EqualTo(new List<KeyValuePair<string, string>>
-                {new KeyValuePair<string, string>("key1", "value1"), new KeyValuePair<string, string>("key2", "value2")}));
+            {new KeyValuePair<string, string>("key1", "value1"), new KeyValuePair<string, string>("key2", "value2")}));
         }
 
         [Test]
@@ -58,7 +58,7 @@ namespace CM.UnitTests.Deploy.UI
             var loader = new EnvironmentFilesLoader(stubFileSystem.Object, "Environments", ".properties");
 
             Assert.That(loader.GetProperties("prod"), Is.EqualTo(new List<KeyValuePair<string, string>>
-                { new KeyValuePair<string, string>("key1", "value1"), new KeyValuePair<string, string>("key2", "value2") }));
+            { new KeyValuePair<string, string>("key1", "value1"), new KeyValuePair<string, string>("key2", "value2") }));
         }
 
         [Test]
@@ -78,7 +78,7 @@ namespace CM.UnitTests.Deploy.UI
             var loader = new EnvironmentFilesLoader(stubFileSystem.Object, "Environments", ".properties");
 
             Assert.That(loader.GetProperties("prod"), Is.EqualTo(new List<KeyValuePair<string, string>>
-                { new KeyValuePair<string, string>("key1", "value1")}));
+            { new KeyValuePair<string, string>("key1", "value1")}));
         }
     }
 }
