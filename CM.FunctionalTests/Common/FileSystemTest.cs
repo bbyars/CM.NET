@@ -53,5 +53,16 @@ namespace CM.FunctionalTests.Common
                 Assert.That(fileSystem.ReadAllText("test.txt"), Is.EqualTo("This is a test"));
             });
         }
+
+        [Test]
+        public void ShouldWriteAllText()
+        {
+            Using.Directory("fileSystemTest", () =>
+            {
+                var fileSystem = new FileSystem();
+                fileSystem.WriteAllText("test.txt", "This is a test");
+                Assert.That(fileSystem.ReadAllText("test.txt"), Is.EqualTo("This is a test"));
+            });
+        }
     }
 }

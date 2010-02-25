@@ -17,9 +17,14 @@ namespace CM.Common
             }
         }
 
-        public virtual string ReadAllText(string filename)
+        public virtual string ReadAllText(string path)
         {
-            return File.ReadAllText(filename);
+            return File.ReadAllText(path);
+        }
+
+        public virtual void WriteAllText(string path, string contents)
+        {
+            File.WriteAllText(path, contents);
         }
     }
 }

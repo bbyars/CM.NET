@@ -65,12 +65,13 @@
     <ItemGroup>
       <FilesToPublish Include="$(PackageDirectory)\**\*" />
     </ItemGroup>
-
+<!--
     <PublishToSvn
       TrunkUrl="file:///svn/published/CM.NET/trunk"
       PublishedUrl="file:///svn/published/CM.NET/tags/$(Version)"
       FilesToPublish="@(FilesToPublish)"
       CommitMessage="auto-publishing successful build" />
+-->
   </Target>
 
   <UsingTask AssemblyFile="$(MSBuildCommunityTasksPath)\MSBuild.Community.Tasks.dll" TaskName="MSBuild.Community.Tasks.Zip" />

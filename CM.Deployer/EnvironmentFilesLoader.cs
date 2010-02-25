@@ -9,7 +9,7 @@ namespace CM.Deployer
     /// <summary>
     /// This environment-loading strategy expects you to place a series of MSBuild files
     /// inside an environments directory.  Each MSBuild file should contain a PropertyGroup
-    /// containing all environment-specific properties (with the same property names in 
+    /// containing all environment-specific properties (with the same property names in
     /// each file).  Anything not in a PropertyGroup will be ignored (it would be a security
     /// loophole otherwise, since we don't show it in the GUI).  You will have an opportunity
     /// to change any properties at deploy time.
@@ -35,18 +35,12 @@ namespace CM.Deployer
             return files.Select(file => Path.GetFileNameWithoutExtension(file)).ToArray();
         }
 
-        public IDictionary<string, string> GetProperties(string environment)
+        public IList<KeyValuePair<string, string>> GetProperties(string environment)
         {
             var path = string.Format(@"{0}\{1}{2}", environmentsDirectory, environment, configurationFileExtension);
             var xml = XElement.Parse(fileSystem.ReadAllText(path));
-            var keyValuePairs = xml.Descendants(ScopedName("PropertyGroup")).Descendants()
+            return xml.Descendants(ScopedName("PropertyGroup")).Descendants()
                 .Select(node => new KeyValuePair<string, string>(node.Name.LocalName, node.Value)).ToArray();
-
-            var properties = new Dictionary<string, string>();
-            foreach (var pair in keyValuePairs)
-                properties.Add(pair.Key, pair.Value);
-
-            return properties;
         }
 
         private static XName ScopedName(string localName)

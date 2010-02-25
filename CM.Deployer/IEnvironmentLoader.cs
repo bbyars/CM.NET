@@ -5,7 +5,6 @@ namespace CM.Deployer
     public interface IEnvironmentLoader
     {
         string[] GetEnvironments();
-        IDictionary<string, string> GetProperties(string environment);
-
+        IList<KeyValuePair<string, string>> GetProperties(string environment);
     }
 }

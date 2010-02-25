@@ -36,10 +36,10 @@
             this.uxUsePackagedFile = new System.Windows.Forms.RadioButton();
             this.uxConfigurationPropertiesGroup = new System.Windows.Forms.GroupBox();
             this.uxProperties = new System.Windows.Forms.DataGridView();
-            this.uxDeploy = new System.Windows.Forms.Button();
-            this.uxSave = new System.Windows.Forms.Button();
             this.uxKeyColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.uxValueColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.uxDeploy = new System.Windows.Forms.Button();
+            this.uxSave = new System.Windows.Forms.Button();
             this.uxConfigurationGroup.SuspendLayout();
             this.uxConfigurationPropertiesGroup.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.uxProperties)).BeginInit();
@@ -146,6 +146,21 @@
             this.uxProperties.Size = new System.Drawing.Size(661, 297);
             this.uxProperties.TabIndex = 0;
             // 
+            // uxKeyColumn
+            // 
+            this.uxKeyColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.uxKeyColumn.FillWeight = 200F;
+            this.uxKeyColumn.HeaderText = "Key";
+            this.uxKeyColumn.MinimumWidth = 200;
+            this.uxKeyColumn.Name = "uxKeyColumn";
+            this.uxKeyColumn.Width = 200;
+            // 
+            // uxValueColumn
+            // 
+            this.uxValueColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.uxValueColumn.HeaderText = "Value";
+            this.uxValueColumn.Name = "uxValueColumn";
+            // 
             // uxDeploy
             // 
             this.uxDeploy.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
@@ -168,21 +183,6 @@
             this.uxSave.UseVisualStyleBackColor = true;
             this.uxSave.Click += new System.EventHandler(this.Save);
             // 
-            // uxKeyColumn
-            // 
-            this.uxKeyColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.uxKeyColumn.FillWeight = 200F;
-            this.uxKeyColumn.HeaderText = "Key";
-            this.uxKeyColumn.MinimumWidth = 200;
-            this.uxKeyColumn.Name = "uxKeyColumn";
-            this.uxKeyColumn.Width = 200;
-            // 
-            // uxValueColumn
-            // 
-            this.uxValueColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.uxValueColumn.HeaderText = "Value";
-            this.uxValueColumn.Name = "uxValueColumn";
-            // 
             // DeployForm
             // 
             this.AcceptButton = this.uxDeploy;
@@ -196,6 +196,7 @@
             this.MinimumSize = new System.Drawing.Size(500, 300);
             this.Name = "DeployForm";
             this.Text = "DeployForm";
+            this.Load += new System.EventHandler(this.LoadForm);
             this.uxConfigurationGroup.ResumeLayout(false);
             this.uxConfigurationGroup.PerformLayout();
             this.uxConfigurationPropertiesGroup.ResumeLayout(false);

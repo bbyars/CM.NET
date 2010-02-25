@@ -51,7 +51,6 @@
     <Compile Include="DeployForm.Designer.cs">
       <DependentUpon>DeployForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="DeployFormPresenter.cs" />
     <Compile Include="DeployLog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -59,8 +58,10 @@
       <DependentUpon>DeployLog.cs</DependentUpon>
     </Compile>
     <Compile Include="EnvironmentFilesLoader.cs" />
+    <Compile Include="IDeployCommandBuilder.cs" />
     <Compile Include="IDeployView.cs" />
     <Compile Include="IEnvironmentLoader.cs" />
+    <Compile Include="MSBuildCommandBuilder.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="DeployForm.resx">

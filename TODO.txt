@@ -16,6 +16,7 @@
 * Remove absolute dir refs for scripts in CMDirectory
   * DotNet, Sfx
 * Add OnErrorTargets
+* MSBuildCommandBuilder - AddEnvironmentProperties; doesn't that make deploy's non-repeatable without closing and re-opening the deploy form?
 
 
 Environment Strategy:

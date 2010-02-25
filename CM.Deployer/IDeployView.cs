@@ -8,13 +8,10 @@ namespace CM.Deployer
         string SelectedEnvironment { get; }
         void ShowEnvironments(string[] environments);
         string ExternalFile { get; }
-
+        IList<KeyValuePair<string, string>> Properties { get; set; }
         bool UsePackagedEnvironment { get; }
         bool EnvironmentEnabled { get; set; }
         bool ExternalFileEnabled { get; set; }
-
-        void ShowProperties(IDictionary<string, string> properties);
-
         void ShowLogView(SystemProcess process);
     }
 }
