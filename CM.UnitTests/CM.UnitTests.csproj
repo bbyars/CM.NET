@@ -43,8 +43,11 @@
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
+    <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CM.Deployer\DeployFormTest.cs">
+    </Compile>
     <Compile Include="CM.Deployer\EnvironmentFilesLoaderTest.cs" />
     <Compile Include="CM.Deployer\MSBuildCommandBuilderTest.cs" />
     <Compile Include="Common\NetworkDirectoryTest.cs" />

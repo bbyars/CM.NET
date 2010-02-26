@@ -16,7 +16,7 @@
 * Remove absolute dir refs for scripts in CMDirectory
   * DotNet, Sfx
 * Add OnErrorTargets
-* MSBuildCommandBuilder - AddEnvironmentProperties; doesn't that make deploy's non-repeatable without closing and re-opening the deploy form?
+* Make IList<Keyvaluepair<string, string>> into a class - PropertyList - with fluent intf for adding
 
 
 Environment Strategy:

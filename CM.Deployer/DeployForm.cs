@@ -27,75 +27,79 @@ namespace CM.Deployer
             InitializeComponent();
         }
 
-        private void LoadForm(object sender, EventArgs e)
+        public void LoadForm(object sender, EventArgs e)
         {
-            ShowEnvironments(environmentLoader.GetEnvironments());
+            Environments = environmentLoader.GetEnvironments();
+            UsePackagedEnvironment = true;
             ToggleConfigSelection();
         }
 
-        private void ClickRadio(object sender, EventArgs e)
+        public void ClickRadio(object sender, EventArgs e)
         {
             ToggleConfigSelection();
         }
 
-        private void EnvironmentSelected(object sender, EventArgs e)
+        public void EnvironmentSelected(object sender, EventArgs e)
         {
             Properties = environmentLoader.GetProperties(SelectedEnvironment);
         }
 
-        private void LoadExternalFile(object sender, EventArgs e)
+        public void LoadExternalFile(object sender, EventArgs e)
         {
             var dialog = new OpenFileDialog { Filter = "Config Files|*" + Settings.Default.ConfigurationFileExtension, Title = "Open config file" };
             if (dialog.ShowDialog() == DialogResult.OK)
                 ExternalFile = dialog.FileName;
         }
 
-        private void Save(object sender, EventArgs e)
+        public void Save(object sender, EventArgs e)
         {
         }
 
-        private void Deploy(object sender, EventArgs e)
+        public void Deploy(object sender, EventArgs e)
         {
             commandBuilder.SetEnvironmentProperties(Properties);
             var logForm = new DeployLog(processRunner.Start(commandBuilder.CommandLine));
             logForm.Show();
         }
 
-        private string SelectedEnvironment
+        public string SelectedEnvironment
         {
             get { return uxEnvironments.SelectedItem.ToString(); }
+            set { uxEnvironments.SelectedItem = value; }
         }
 
-        private string ExternalFile
+        public string ExternalFile
         {
             get { return uxExternalFile.Text; }
             set { uxExternalFile.Text = value; }
         }
 
-        private bool UsePackagedEnvironment
+        public bool UsePackagedEnvironment
         {
             get { return uxUsePackagedFile.Checked; }
+            set { uxUsePackagedFile.Checked = value; }
         }
 
-        private bool EnvironmentEnabled
+        public bool EnvironmentEnabled
         {
             get { return uxEnvironments.Enabled; }
             set { uxEnvironments.Enabled = value; }
         }
 
-        private bool ExternalFileEnabled
+        public bool ExternalFileEnabled
         {
             get { return uxExternalFile.Enabled; }
             set { uxExternalFile.Enabled = uxLoadExternalFile.Enabled = value; }
         }
 
-        private IList<KeyValuePair<string, string>> Properties
+        public IList<KeyValuePair<string, string>> Properties
         {
             get
             {
                 var properties = new List<KeyValuePair<string, string>>();
                 foreach (DataGridViewRow row in uxProperties.Rows)
-                    properties.Add(new KeyValuePair<string, string>(row.Cells[0].ToString(), row.Cells[1].ToString()));
+                    if (row.Cells[0].Value != null)
+                        properties.Add(new KeyValuePair<string, string>(row.Cells[0].Value.ToString(), row.Cells[1].Value.ToString()));
                 return properties;
             }
             set
@@ -106,17 +110,27 @@ namespace CM.Deployer
             }
         }
 
+        public string[] Environments
+        {
+            get
+            {
+                var result = new List<string>();
+                foreach (var item in uxEnvironments.Items)
+                    result.Add(item.ToString());
+                return result.ToArray();
+            }
+            set
+            {
+                uxEnvironments.Items.Clear();
+                foreach (var environment in value)
+                    uxEnvironments.Items.Add(environment);
+            }
+        }
+
         private void ToggleConfigSelection()
         {
             EnvironmentEnabled = UsePackagedEnvironment;
             ExternalFileEnabled = !UsePackagedEnvironment;
-        }
-
-        private void ShowEnvironments(IEnumerable<string> environments)
-        {
-            uxEnvironments.Items.Clear();
-            foreach (var environment in environments)
-                uxEnvironments.Items.Add(environment);
         }
     }
 }
