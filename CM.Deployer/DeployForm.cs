@@ -31,8 +31,8 @@ namespace CM.Deployer
             uxUseExternalFile.CheckedChanged += (sender, e) => ToggleConfigSelection();
             uxUsePackagedFile.CheckedChanged += (sender, e) => ToggleConfigSelection();
             uxEnvironments.SelectedValueChanged += (sender, e) => ResetProperties();
-            uxLoadExternalFile.Click += (sender, e) => SelectFile("Open Config File", LoadExternalFile);
-            uxSave.Click += (sender, e) => SelectFile("Save Config File", Save);
+            uxLoadExternalFile.Click += (sender, e) => SelectFile(new OpenFileDialog(), LoadExternalFile);
+            uxSave.Click += (sender, e) => SelectFile(new SaveFileDialog(), Save);
             uxDeploy.Click += (sender, e) => ShowDeployLog(Deploy());
         }
 
@@ -136,9 +136,9 @@ namespace CM.Deployer
             }
         }
 
-        private static void SelectFile(string dialogTitle, Action<string> continuation)
+        private static void SelectFile(FileDialog dialog, Action<string> continuation)
         {
-            var dialog = new OpenFileDialog { Filter = "Config Files|*." + Settings.Default.ConfigurationFileExtension, Title = dialogTitle };
+            dialog.Filter = "Config Files|*." + Settings.Default.ConfigurationFileExtension;
             if (dialog.ShowDialog() == DialogResult.OK)
                 continuation(dialog.FileName);
         }

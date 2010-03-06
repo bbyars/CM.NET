@@ -18,6 +18,7 @@
 * Add OnErrorTargets
 * Duplication on saving b/t command builder/environment loader
 * Toggling config needs to clear/change props
+* Bug saving - file dialog doesn't allow creating new file
 
 Environment Strategy:
 * move copying environments dir
