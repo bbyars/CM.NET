@@ -18,7 +18,8 @@
 * Add OnErrorTargets
 * Duplication on saving b/t command builder/environment loader
 * Toggling config needs to clear/change props
-* Bug saving - file dialog doesn't allow creating new file
+* Allow entering into external file box
+* Toolbar (show in Explorer, Save, Load)
 
 Environment Strategy:
 * move copying environments dir

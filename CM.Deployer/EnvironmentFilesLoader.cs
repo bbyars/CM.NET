@@ -37,6 +37,9 @@ namespace CM.Deployer
 
         public virtual PropertyList GetProperties(string environment)
         {
+            if (string.IsNullOrEmpty(environment))
+                return new PropertyList();
+
             var filename = string.Format("{0}.{1}", environment, configurationFileExtension);
             var path = Path.Combine(environmentsDirectory, filename);
             return LoadProperties(path);

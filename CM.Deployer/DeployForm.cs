@@ -30,7 +30,7 @@ namespace CM.Deployer
             Load += (sender, e) => Initialize();
             uxUseExternalFile.CheckedChanged += (sender, e) => ToggleConfigSelection();
             uxUsePackagedFile.CheckedChanged += (sender, e) => ToggleConfigSelection();
-            uxEnvironments.SelectedValueChanged += (sender, e) => ResetProperties();
+            uxEnvironments.SelectedValueChanged += (sender, e) => LoadEnvironmentProperties();
             uxLoadExternalFile.Click += (sender, e) => SelectFile(new OpenFileDialog(), LoadExternalFile);
             uxSave.Click += (sender, e) => SelectFile(new SaveFileDialog(), Save);
             uxDeploy.Click += (sender, e) => ShowDeployLog(Deploy());
@@ -47,9 +47,14 @@ namespace CM.Deployer
         {
             EnvironmentEnabled = UsePackagedEnvironment;
             ExternalFileEnabled = !UsePackagedEnvironment;
+
+            if (UsePackagedEnvironment)
+                LoadEnvironmentProperties();
+            else
+                LoadExternalFile(ExternalFile);
         }
 
-        public virtual void ResetProperties()
+        public virtual void LoadEnvironmentProperties()
         {
             Properties = environmentLoader.GetProperties(SelectedEnvironment);
         }
@@ -73,14 +78,14 @@ namespace CM.Deployer
 
         public virtual string SelectedEnvironment
         {
-            get { return uxEnvironments.SelectedItem.ToString(); }
+            get { return uxEnvironments.SelectedItem == null ? "" : uxEnvironments.SelectedItem.ToString(); }
             set { uxEnvironments.SelectedItem = value; }
         }
 
         public virtual string ExternalFile
         {
             get { return uxExternalFile.Text; }
-            set { uxExternalFile.Text = value; }
+            private set { uxExternalFile.Text = value; }
         }
 
         public virtual bool UsePackagedEnvironment
@@ -92,13 +97,13 @@ namespace CM.Deployer
         public virtual bool EnvironmentEnabled
         {
             get { return uxEnvironments.Enabled; }
-            set { uxEnvironments.Enabled = value; }
+            private set { uxEnvironments.Enabled = value; }
         }
 
         public virtual bool ExternalFileEnabled
         {
             get { return uxExternalFile.Enabled; }
-            set { uxExternalFile.Enabled = uxLoadExternalFile.Enabled = value; }
+            private set { uxExternalFile.Enabled = uxLoadExternalFile.Enabled = value; }
         }
 
         public virtual PropertyList Properties
@@ -114,8 +119,9 @@ namespace CM.Deployer
             set
             {
                 uxProperties.Rows.Clear();
-                foreach (var property in value)
-                    uxProperties.Rows.Add(property.Key, property.Value);
+                if (value != null)
+                    foreach (var property in value)
+                        uxProperties.Rows.Add(property.Key, property.Value);
             }
         }
 

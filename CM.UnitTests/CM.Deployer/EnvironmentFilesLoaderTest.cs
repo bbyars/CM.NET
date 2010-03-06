@@ -21,6 +21,14 @@ namespace CM.UnitTests.CM.Deployer
         }
 
         [Test]
+        public void ShouldReturnEmptyPropertyListForEmptyEnvironment()
+        {
+            var loader = new EnvironmentFilesLoader(null, "Environments", "properties");
+            Assert.That(loader.GetProperties(""), Is.EqualTo(new PropertyList()));
+            Assert.That(loader.GetProperties(null), Is.EqualTo(new PropertyList()));
+        }
+
+        [Test]
         public void ShouldLoadPropertiesFromEnvironmentsFile()
         {
             var stubFileSystem = new Mock<FileSystem>();

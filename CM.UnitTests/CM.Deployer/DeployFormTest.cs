@@ -44,22 +44,61 @@ namespace CM.UnitTests.CM.Deployer
         public void TogglingConfigSelectionAllowsUsingExternalFile()
         {
             form.UsePackagedEnvironment = false;
+
             form.ToggleConfigSelection();
 
-            Assert.That(form.UsePackagedEnvironment, Is.False);
             Assert.That(form.EnvironmentEnabled, Is.False);
             Assert.That(form.ExternalFileEnabled, Is.True);
         }
 
         [Test]
-        public void ResettingPropertiesShowsPropertiesForCurrentEnvironment()
+        public void SwitchingToExternalFileShouldClearPropertiesIfNoExternalFileSet()
+        {
+            form.UsePackagedEnvironment = false;
+            form.Properties = new PropertyList().Add("key1", "value1");
+
+            form.ToggleConfigSelection();
+
+            Assert.That(form.Properties, Is.EqualTo(new PropertyList()));
+        }
+
+        [Test]
+        public void SwitchingToExternalFileShouldSetExternalFileProperties()
+        {
+            var properties = new PropertyList().Add("key1", "value1").Add("key2", "value2");
+            environmentLoader.Setup(loader => loader.LoadProperties(@"c:\ops\config.properties")).Returns(properties);
+            form.LoadExternalFile(@"c:\ops\config.properties");
+            form.Properties = new PropertyList();
+            form.UsePackagedEnvironment = false;
+
+            form.ToggleConfigSelection();
+
+            Assert.That(form.Properties, Is.EqualTo(properties));
+        }
+
+        [Test]
+        public void SwitchingToPackagedFileLoadsEnvironmentProperties()
+        {
+            var properties = new PropertyList().Add("key1", "value1").Add("key2", "value2");
+            environmentLoader.Setup(loader => loader.GetProperties("dev")).Returns(properties);
+            form.Environments = new[] { "dev" };
+            form.SelectedEnvironment = "dev";
+            form.UsePackagedEnvironment = true;
+
+            form.ToggleConfigSelection();
+
+            Assert.That(form.Properties, Is.EqualTo(properties));
+        }
+
+        [Test]
+        public void LoadingEnvironmenPropertiesShowsPropertiesForCurrentEnvironment()
         {
             var properties = new PropertyList().Add("key1", "value1").Add("key2", "value2");
             environmentLoader.Setup(loader => loader.GetProperties("dev")).Returns(properties);
             form.Environments = new[] {"dev"};
             form.SelectedEnvironment = "dev";
 
-            form.ResetProperties();
+            form.LoadEnvironmentProperties();
 
             Assert.That(form.Properties, Is.EqualTo(properties));
         }
