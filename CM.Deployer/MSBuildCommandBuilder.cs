@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using CM.Common;
 
@@ -20,7 +19,7 @@ namespace CM.Deployer
 
         public string CommandLine { get; private set; }
 
-        public virtual void SetEnvironmentProperties(IList<KeyValuePair<string, string>> properties)
+        public virtual void SetEnvironmentProperties(PropertyList properties)
         {
             var propertyLines = properties.Select(p => string.Format("<{0}>{1}</{0}>", p.Key, p.Value)).ToArray();
             fileSystem.WriteAllText(ConfigFile, string.Format(@"<?xml version='1.0' encoding='utf-8'?>

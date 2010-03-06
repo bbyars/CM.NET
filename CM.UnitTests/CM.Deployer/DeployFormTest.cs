@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using CM.Common;
 using CM.Deployer;
 using Moq;
@@ -55,8 +54,7 @@ namespace CM.UnitTests.CM.Deployer
         [Test]
         public void ResettingPropertiesShowsPropertiesForCurrentEnvironment()
         {
-            var properties = new List<KeyValuePair<string, string>>
-                {new KeyValuePair<string, string>("key1", "value1"), new KeyValuePair<string, string>("key2", "value2")};
+            var properties = new PropertyList().Add("key1", "value1").Add("key2", "value2");
             environmentLoader.Setup(loader => loader.GetProperties("dev")).Returns(properties);
             form.Environments = new[] {"dev"};
             form.SelectedEnvironment = "dev";
@@ -69,8 +67,7 @@ namespace CM.UnitTests.CM.Deployer
         [Test]
         public void LoadingShouldSetPropertiesAndExternalFile()
         {
-            var properties = new List<KeyValuePair<string, string>>
-                { new KeyValuePair<string, string>("key1", "value1"), new KeyValuePair<string, string>("key2", "value2") };
+            var properties = new PropertyList().Add("key1", "value1").Add("key2", "value2");
             environmentLoader.Setup(loader => loader.LoadProperties(@"c:\ops\config.properties")).Returns(properties);
 
             form.LoadExternalFile(@"c:\ops\config.properties");
@@ -82,12 +79,8 @@ namespace CM.UnitTests.CM.Deployer
         [Test]
         public void SavingShouldSaveAllProperties()
         {
-            var properties = new List<KeyValuePair<string, string>>
-                { new KeyValuePair<string, string>("key1", "value1"), new KeyValuePair<string, string>("key2", "value2") };
-            form.Properties = properties;
-
+            form.Properties = new PropertyList().Add("key1", "value1").Add("key2", "value2");
             form.Save(@"c:\ops\config.properties");
-
             environmentLoader.Verify(loader => loader.SaveProperties(form.Properties, @"c:\ops\config.properties"));
         }
     }

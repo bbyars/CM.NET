@@ -36,20 +36,23 @@ namespace CM.Deployer
             return files.Select(file => Path.GetFileNameWithoutExtension(file)).ToArray();
         }
 
-        public IList<KeyValuePair<string, string>> GetProperties(string environment)
+        public PropertyList GetProperties(string environment)
         {
             var path = string.Format(@"{0}\{1}{2}", environmentsDirectory, environment, configurationFileExtension);
             return LoadProperties(path);
         }
 
-        public IList<KeyValuePair<string, string>> LoadProperties(string path)
+        public PropertyList LoadProperties(string path)
         {
             var xml = XElement.Parse(fileSystem.ReadAllText(path));
-            return xml.Descendants(ScopedName("PropertyGroup")).Descendants()
-                .Select(node => new KeyValuePair<string, string>(node.Name.LocalName, node.Value)).ToArray();
+            var result = new PropertyList();
+            var propertyNodes = xml.Descendants(ScopedName("PropertyGroup")).Descendants();
+            foreach (var node in propertyNodes)
+                result.Add(node.Name.LocalName, node.Value);
+            return result;
         }
 
-        public void SaveProperties(IList<KeyValuePair<string, string>> properties, string path)
+        public void SaveProperties(PropertyList properties, string path)
         {
             var propertyLines = properties.Select(p => string.Format("<{0}>{1}</{0}>", p.Key, p.Value)).ToArray();
             fileSystem.WriteAllText(path, string.Format(@"<?xml version='1.0' encoding='utf-8'?>

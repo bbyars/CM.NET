@@ -89,6 +89,7 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Compile Include="PropertyList.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\CM.Common\CM.Common.csproj">

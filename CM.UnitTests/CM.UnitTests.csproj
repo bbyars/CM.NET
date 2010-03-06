@@ -50,6 +50,7 @@
     </Compile>
     <Compile Include="CM.Deployer\EnvironmentFilesLoaderTest.cs" />
     <Compile Include="CM.Deployer\MSBuildCommandBuilderTest.cs" />
+    <Compile Include="CM.Deployer\PropertyListTest.cs" />
     <Compile Include="Common\NetworkDirectoryTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

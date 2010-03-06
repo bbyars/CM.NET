@@ -23,8 +23,7 @@ namespace CM.UnitTests.CM.Deployer
             var mockFileSystem = new Mock<FileSystem>();
             var builder = new MSBuildCommandBuilder(mockFileSystem.Object, @"C:\dir\msbuild.exe", "test.proj", "deploy");
 
-            builder.SetEnvironmentProperties(new List<KeyValuePair<string, string>>
-            {new KeyValuePair<string, string>("key1", "value1"), new KeyValuePair<string, string>("key2", "value2")} );
+            builder.SetEnvironmentProperties(new PropertyList().Add("key1", "value1").Add("key2", "value2"));
 
             mockFileSystem.Verify(fs => fs.WriteAllText("DeployConfig.properties", @"<?xml version='1.0' encoding='utf-8'?>
 <Project xmlns='http://schemas.microsoft.com/developer/msbuild/2003'>

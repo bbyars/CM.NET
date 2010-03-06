@@ -36,8 +36,7 @@ namespace CM.UnitTests.CM.Deployer
                     </Project>");
             var loader = new EnvironmentFilesLoader(stubFileSystem.Object, "Environments", ".properties");
 
-            Assert.That(loader.GetProperties("prod"), Is.EqualTo(new List<KeyValuePair<string, string>>
-            {new KeyValuePair<string, string>("key1", "value1"), new KeyValuePair<string, string>("key2", "value2")}));
+            Assert.That(loader.GetProperties("prod"), Is.EqualTo(new PropertyList().Add("key1", "value1").Add("key2", "value2")));
         }
 
         [Test]
@@ -57,8 +56,7 @@ namespace CM.UnitTests.CM.Deployer
                     </Project>");
             var loader = new EnvironmentFilesLoader(stubFileSystem.Object, "Environments", ".properties");
 
-            Assert.That(loader.GetProperties("prod"), Is.EqualTo(new List<KeyValuePair<string, string>>
-            { new KeyValuePair<string, string>("key1", "value1"), new KeyValuePair<string, string>("key2", "value2") }));
+            Assert.That(loader.GetProperties("prod"), Is.EqualTo(new PropertyList().Add("key1", "value1").Add("key2", "value2")));
         }
 
         [Test]
@@ -77,8 +75,7 @@ namespace CM.UnitTests.CM.Deployer
                     </Project>");
             var loader = new EnvironmentFilesLoader(stubFileSystem.Object, "Environments", ".properties");
 
-            Assert.That(loader.GetProperties("prod"), Is.EqualTo(new List<KeyValuePair<string, string>>
-                { new KeyValuePair<string, string>("key1", "value1")}));
+            Assert.That(loader.GetProperties("prod"), Is.EqualTo(new PropertyList().Add("key1", "value1")));
         }
 
         [Test]
@@ -96,8 +93,7 @@ namespace CM.UnitTests.CM.Deployer
                     </Project>");
             var loader = new EnvironmentFilesLoader(stubFileSystem.Object, "Environments", ".properties");
 
-            Assert.That(loader.LoadProperties(@"c:\ops\config.properties"), Is.EqualTo(new List<KeyValuePair<string, string>>
-                { new KeyValuePair<string, string>("key1", "value1") }));
+            Assert.That(loader.LoadProperties(@"c:\ops\config.properties"), Is.EqualTo(new PropertyList().Add("key1", "value1")));
         }
 
         [Test]
@@ -105,8 +101,7 @@ namespace CM.UnitTests.CM.Deployer
         {
             var mockFileSystem = new Mock<FileSystem>();
             var loader = new EnvironmentFilesLoader(mockFileSystem.Object, "Environments", ".properties");
-            var properties = new List<KeyValuePair<string, string>>
-                {new KeyValuePair<string, string>("key1", "value1"), new KeyValuePair<string, string>("key2", "value2")};
+            var properties = new PropertyList().Add("key1", "value1").Add("key2", "value2");
 
             loader.SaveProperties(properties, @"c:\ops\config.properties");
 

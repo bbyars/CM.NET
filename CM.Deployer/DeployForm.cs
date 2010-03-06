@@ -101,14 +101,14 @@ namespace CM.Deployer
             set { uxExternalFile.Enabled = uxLoadExternalFile.Enabled = value; }
         }
 
-        public virtual IList<KeyValuePair<string, string>> Properties
+        public virtual PropertyList Properties
         {
             get
             {
-                var properties = new List<KeyValuePair<string, string>>();
+                var properties = new PropertyList();
                 foreach (DataGridViewRow row in uxProperties.Rows)
                     if (row.Cells[0].Value != null)
-                        properties.Add(new KeyValuePair<string, string>(row.Cells[0].Value.ToString(), row.Cells[1].Value.ToString()));
+                        properties.Add(row.Cells[0].Value.ToString(), row.Cells[1].Value.ToString());
                 return properties;
             }
             set
