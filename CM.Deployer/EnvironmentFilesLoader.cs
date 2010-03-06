@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -38,9 +39,25 @@ namespace CM.Deployer
         public IList<KeyValuePair<string, string>> GetProperties(string environment)
         {
             var path = string.Format(@"{0}\{1}{2}", environmentsDirectory, environment, configurationFileExtension);
+            return LoadProperties(path);
+        }
+
+        public IList<KeyValuePair<string, string>> LoadProperties(string path)
+        {
             var xml = XElement.Parse(fileSystem.ReadAllText(path));
             return xml.Descendants(ScopedName("PropertyGroup")).Descendants()
                 .Select(node => new KeyValuePair<string, string>(node.Name.LocalName, node.Value)).ToArray();
+        }
+
+        public void SaveProperties(IList<KeyValuePair<string, string>> properties, string path)
+        {
+            var propertyLines = properties.Select(p => string.Format("<{0}>{1}</{0}>", p.Key, p.Value)).ToArray();
+            fileSystem.WriteAllText(path, string.Format(@"<?xml version='1.0' encoding='utf-8'?>
+<Project xmlns='http://schemas.microsoft.com/developer/msbuild/2003'>
+    <PropertyGroup>
+        {0}
+    </PropertyGroup>
+</Project>", string.Join(Environment.NewLine + "        ", propertyLines)));
         }
 
         private static XName ScopedName(string localName)

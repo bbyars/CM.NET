@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using CM.Common;
 using CM.Deployer;
@@ -26,27 +25,27 @@ namespace CM.UnitTests.CM.Deployer
         }
 
         [Test]
-        public void LoadingFormShouldShowEnvironmentOptions()
+        public void InitializingShouldShowEnvironmentOptions()
         {
             environmentLoader.Setup(loader => loader.GetEnvironments()).Returns(new[] {"dev", "qa", "prod"});
-            form.LoadForm(this, EventArgs.Empty);
+            form.Initialize();
             Assert.That(form.Environments, Is.EqualTo(new[] {"dev", "qa", "prod"}));
         }
 
         [Test]
-        public void LoadingFormShouldDefaultToSelectingEnvironment()
+        public void InitializingShouldDefaultToSelectingEnvironment()
         {
-            form.LoadForm(this, EventArgs.Empty);
+            form.Initialize();
             Assert.That(form.UsePackagedEnvironment, Is.True);
             Assert.That(form.EnvironmentEnabled, Is.True);
             Assert.That(form.ExternalFileEnabled, Is.False);
         }
 
         [Test]
-        public void ChangingRadioAllowsUsingExternalFile()
+        public void TogglingConfigSelectionAllowsUsingExternalFile()
         {
             form.UsePackagedEnvironment = false;
-            form.ClickRadio(this, EventArgs.Empty);
+            form.ToggleConfigSelection();
 
             Assert.That(form.UsePackagedEnvironment, Is.False);
             Assert.That(form.EnvironmentEnabled, Is.False);
@@ -54,7 +53,7 @@ namespace CM.UnitTests.CM.Deployer
         }
 
         [Test]
-        public void SelectingEnvironmentLoadsProperties()
+        public void ResettingPropertiesShowsPropertiesForCurrentEnvironment()
         {
             var properties = new List<KeyValuePair<string, string>>
                 {new KeyValuePair<string, string>("key1", "value1"), new KeyValuePair<string, string>("key2", "value2")};
@@ -62,9 +61,29 @@ namespace CM.UnitTests.CM.Deployer
             form.Environments = new[] {"dev"};
             form.SelectedEnvironment = "dev";
 
-            form.EnvironmentSelected(this, EventArgs.Empty);
+            form.ResetProperties();
 
             Assert.That(form.Properties, Is.EqualTo(properties));
+        }
+
+        [Test]
+        public void LoadingShouldSetPropertiesAndExternalFile()
+        {
+            var properties = new List<KeyValuePair<string, string>>
+                { new KeyValuePair<string, string>("key1", "value1"), new KeyValuePair<string, string>("key2", "value2") };
+            environmentLoader.Setup(loader => loader.LoadProperties(@"c:\ops\config.properties")).Returns(properties);
+
+            form.LoadExternalFile(@"c:\ops\config.properties");
+
+            Assert.That(form.ExternalFile, Is.EqualTo(@"c:\ops\config.properties"));
+            Assert.That(form.Properties, Is.EqualTo(properties));
+        }
+
+        [Test]
+        public void SavingShouldSaveAllProperties()
+        {
+
+//            environmentLoader.Verify(loader => loader.Save(@"c:\ops\config.properties", form.Properties));
         }
     }
 }

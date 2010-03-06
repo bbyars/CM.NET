@@ -78,7 +78,45 @@ namespace CM.UnitTests.CM.Deployer
             var loader = new EnvironmentFilesLoader(stubFileSystem.Object, "Environments", ".properties");
 
             Assert.That(loader.GetProperties("prod"), Is.EqualTo(new List<KeyValuePair<string, string>>
-            { new KeyValuePair<string, string>("key1", "value1")}));
+                { new KeyValuePair<string, string>("key1", "value1")}));
+        }
+
+        [Test]
+        public void ShouldConvertExternalFileToProperties()
+        {
+            var stubFileSystem = new Mock<FileSystem>();
+            stubFileSystem.Setup(fs => fs.ReadAllText(@"c:\ops\config.properties"))
+                .Returns(@"<?xml version='1.0' encoding='utf-8'?>
+                    <Project xmlns='http://schemas.microsoft.com/developer/msbuild/2003' DefaultTargets='Build'>
+                        <Target Name='Build'>
+                            <PropertyGroup>
+                                <key1>value1</key1>
+                            </PropertyGroup>
+                        </Target>
+                    </Project>");
+            var loader = new EnvironmentFilesLoader(stubFileSystem.Object, "Environments", ".properties");
+
+            Assert.That(loader.LoadProperties(@"c:\ops\config.properties"), Is.EqualTo(new List<KeyValuePair<string, string>>
+                { new KeyValuePair<string, string>("key1", "value1") }));
+        }
+
+        [Test]
+        public void ShouldSaveInMSBuildFormat()
+        {
+            var mockFileSystem = new Mock<FileSystem>();
+            var loader = new EnvironmentFilesLoader(mockFileSystem.Object, "Environments", ".properties");
+            var properties = new List<KeyValuePair<string, string>>
+                {new KeyValuePair<string, string>("key1", "value1"), new KeyValuePair<string, string>("key2", "value2")};
+
+            loader.SaveProperties(properties, @"c:\ops\config.properties");
+
+            mockFileSystem.Verify(fs => fs.WriteAllText(@"c:\ops\config.properties", @"<?xml version='1.0' encoding='utf-8'?>
+<Project xmlns='http://schemas.microsoft.com/developer/msbuild/2003'>
+    <PropertyGroup>
+        <key1>value1</key1>
+        <key2>value2</key2>
+    </PropertyGroup>
+</Project>"));
         }
     }
 }

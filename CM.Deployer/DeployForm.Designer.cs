@@ -70,7 +70,6 @@
             this.uxLoadExternalFile.TabIndex = 4;
             this.uxLoadExternalFile.Text = "...";
             this.uxLoadExternalFile.UseVisualStyleBackColor = true;
-            this.uxLoadExternalFile.Click += new System.EventHandler(this.LoadExternalFile);
             // 
             // uxExternalFile
             // 
@@ -90,7 +89,6 @@
             this.uxEnvironments.Name = "uxEnvironments";
             this.uxEnvironments.Size = new System.Drawing.Size(494, 21);
             this.uxEnvironments.TabIndex = 2;
-            this.uxEnvironments.SelectedValueChanged += new System.EventHandler(this.EnvironmentSelected);
             // 
             // uxUseExternalFile
             // 
@@ -102,7 +100,6 @@
             this.uxUseExternalFile.TabStop = true;
             this.uxUseExternalFile.Text = "Use External File:";
             this.uxUseExternalFile.UseVisualStyleBackColor = true;
-            this.uxUseExternalFile.Click += new System.EventHandler(this.ClickRadio);
             // 
             // uxUsePackagedFile
             // 
@@ -114,7 +111,6 @@
             this.uxUsePackagedFile.TabStop = true;
             this.uxUsePackagedFile.Text = "Use Packaged File:";
             this.uxUsePackagedFile.UseVisualStyleBackColor = true;
-            this.uxUsePackagedFile.CheckedChanged += new System.EventHandler(this.ClickRadio);
             // 
             // uxConfigurationPropertiesGroup
             // 
@@ -170,7 +166,6 @@
             this.uxDeploy.TabIndex = 2;
             this.uxDeploy.Text = "Deploy";
             this.uxDeploy.UseVisualStyleBackColor = true;
-            this.uxDeploy.Click += new System.EventHandler(this.Deploy);
             // 
             // uxSave
             // 
@@ -181,7 +176,6 @@
             this.uxSave.TabIndex = 3;
             this.uxSave.Text = "Save";
             this.uxSave.UseVisualStyleBackColor = true;
-            this.uxSave.Click += new System.EventHandler(this.Save);
             // 
             // DeployForm
             // 
@@ -196,7 +190,6 @@
             this.MinimumSize = new System.Drawing.Size(500, 300);
             this.Name = "DeployForm";
             this.Text = "DeployForm";
-            this.Load += new System.EventHandler(this.LoadForm);
             this.uxConfigurationGroup.ResumeLayout(false);
             this.uxConfigurationGroup.PerformLayout();
             this.uxConfigurationPropertiesGroup.ResumeLayout(false);

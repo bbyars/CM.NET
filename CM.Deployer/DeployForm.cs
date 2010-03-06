@@ -24,75 +24,84 @@ namespace CM.Deployer
             this.environmentLoader = environmentLoader;
             this.commandBuilder = commandBuilder;
             this.processRunner = processRunner;
+
             InitializeComponent();
+
+            Load += (sender, e) => Initialize();
+            uxUseExternalFile.CheckedChanged += (sender, e) => ToggleConfigSelection();
+            uxUsePackagedFile.CheckedChanged += (sender, e) => ToggleConfigSelection();
+            uxEnvironments.SelectedValueChanged += (sender, e) => ResetProperties();
+            uxLoadExternalFile.Click += (sender, e) => SelectFile("Open Config File", LoadExternalFile);
+            uxSave.Click += (sender, e) => SelectFile("Save Config File", Save);
+            uxDeploy.Click += (sender, e) => Deploy();
         }
 
-        public void LoadForm(object sender, EventArgs e)
+        public virtual void Initialize()
         {
             Environments = environmentLoader.GetEnvironments();
             UsePackagedEnvironment = true;
             ToggleConfigSelection();
         }
 
-        public void ClickRadio(object sender, EventArgs e)
+        public virtual void ToggleConfigSelection()
         {
-            ToggleConfigSelection();
+            EnvironmentEnabled = UsePackagedEnvironment;
+            ExternalFileEnabled = !UsePackagedEnvironment;
         }
 
-        public void EnvironmentSelected(object sender, EventArgs e)
+        public virtual void ResetProperties()
         {
             Properties = environmentLoader.GetProperties(SelectedEnvironment);
         }
 
-        public void LoadExternalFile(object sender, EventArgs e)
+        public virtual void LoadExternalFile(string path)
         {
-            var dialog = new OpenFileDialog { Filter = "Config Files|*" + Settings.Default.ConfigurationFileExtension, Title = "Open config file" };
-            if (dialog.ShowDialog() == DialogResult.OK)
-                ExternalFile = dialog.FileName;
+            ExternalFile = path;
+            Properties = environmentLoader.LoadProperties(path);
         }
 
-        public void Save(object sender, EventArgs e)
+        public virtual void Save(string path)
         {
         }
 
-        public void Deploy(object sender, EventArgs e)
+        public virtual void Deploy()
         {
             commandBuilder.SetEnvironmentProperties(Properties);
             var logForm = new DeployLog(processRunner.Start(commandBuilder.CommandLine));
             logForm.Show();
         }
 
-        public string SelectedEnvironment
+        public virtual string SelectedEnvironment
         {
             get { return uxEnvironments.SelectedItem.ToString(); }
             set { uxEnvironments.SelectedItem = value; }
         }
 
-        public string ExternalFile
+        public virtual string ExternalFile
         {
             get { return uxExternalFile.Text; }
             set { uxExternalFile.Text = value; }
         }
 
-        public bool UsePackagedEnvironment
+        public virtual bool UsePackagedEnvironment
         {
             get { return uxUsePackagedFile.Checked; }
             set { uxUsePackagedFile.Checked = value; }
         }
 
-        public bool EnvironmentEnabled
+        public virtual bool EnvironmentEnabled
         {
             get { return uxEnvironments.Enabled; }
             set { uxEnvironments.Enabled = value; }
         }
 
-        public bool ExternalFileEnabled
+        public virtual bool ExternalFileEnabled
         {
             get { return uxExternalFile.Enabled; }
             set { uxExternalFile.Enabled = uxLoadExternalFile.Enabled = value; }
         }
 
-        public IList<KeyValuePair<string, string>> Properties
+        public virtual IList<KeyValuePair<string, string>> Properties
         {
             get
             {
@@ -110,7 +119,7 @@ namespace CM.Deployer
             }
         }
 
-        public string[] Environments
+        public virtual string[] Environments
         {
             get
             {
@@ -127,10 +136,11 @@ namespace CM.Deployer
             }
         }
 
-        private void ToggleConfigSelection()
+        private void SelectFile(string dialogTitle, Action<string> continuation)
         {
-            EnvironmentEnabled = UsePackagedEnvironment;
-            ExternalFileEnabled = !UsePackagedEnvironment;
+            var dialog = new OpenFileDialog { Filter = "Config Files|*" + Settings.Default.ConfigurationFileExtension, Title = dialogTitle };
+            if (dialog.ShowDialog() == DialogResult.OK)
+                continuation(dialog.FileName);
         }
     }
 }
