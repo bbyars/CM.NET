@@ -34,7 +34,7 @@ namespace CM.Deployer.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute(".properties")]
+        [global::System.Configuration.DefaultSettingValueAttribute("properties")]
         public string ConfigurationFileExtension {
             get {
                 return ((string)(this["ConfigurationFileExtension"]));

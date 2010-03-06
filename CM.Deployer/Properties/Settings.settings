@@ -6,7 +6,7 @@
       <Value Profile="(Default)">Environments</Value>
     </Setting>
     <Setting Name="ConfigurationFileExtension" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">.properties</Value>
+      <Value Profile="(Default)">properties</Value>
     </Setting>
     <Setting Name="MSBuildFilename" Type="System.String" Scope="Application">
       <Value Profile="(Default)">missing</Value>

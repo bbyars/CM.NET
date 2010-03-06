@@ -29,19 +29,20 @@ namespace CM.Deployer
             this.configurationFileExtension = configurationFileExtension;
         }
 
-        public string[] GetEnvironments()
+        public virtual string[] GetEnvironments()
         {
-            var files = fileSystem.ListAllFilesIn(environmentsDirectory, "*" + configurationFileExtension);
+            var files = fileSystem.ListAllFilesIn(environmentsDirectory, "*." + configurationFileExtension);
             return files.Select(file => Path.GetFileNameWithoutExtension(file)).ToArray();
         }
 
-        public PropertyList GetProperties(string environment)
+        public virtual PropertyList GetProperties(string environment)
         {
-            var path = string.Format(@"{0}\{1}{2}", environmentsDirectory, environment, configurationFileExtension);
+            var filename = string.Format("{0}.{1}", environment, configurationFileExtension);
+            var path = Path.Combine(environmentsDirectory, filename);
             return LoadProperties(path);
         }
 
-        public PropertyList LoadProperties(string path)
+        public virtual PropertyList LoadProperties(string path)
         {
             var xml = XElement.Parse(fileSystem.ReadAllText(path));
             var result = new PropertyList();
@@ -51,7 +52,7 @@ namespace CM.Deployer
             return result;
         }
 
-        public void SaveProperties(PropertyList properties, string path)
+        public virtual void SaveProperties(PropertyList properties, string path)
         {
             var propertyLines = properties.Select(p => string.Format("<{0}>{1}</{0}>", p.Key, p.Value)).ToArray();
             fileSystem.WriteAllText(path, string.Format(@"<?xml version='1.0' encoding='utf-8'?>

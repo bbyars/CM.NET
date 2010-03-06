@@ -138,7 +138,7 @@ namespace CM.Deployer
 
         private static void SelectFile(string dialogTitle, Action<string> continuation)
         {
-            var dialog = new OpenFileDialog { Filter = "Config Files|*" + Settings.Default.ConfigurationFileExtension, Title = dialogTitle };
+            var dialog = new OpenFileDialog { Filter = "Config Files|*." + Settings.Default.ConfigurationFileExtension, Title = dialogTitle };
             if (dialog.ShowDialog() == DialogResult.OK)
                 continuation(dialog.FileName);
         }

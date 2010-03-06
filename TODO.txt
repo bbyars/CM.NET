@@ -17,8 +17,7 @@
   * DotNet, Sfx
 * Add OnErrorTargets
 * Duplication on saving b/t command builder/environment loader
-* Make IList<Keyvaluepair<string, string>> into a class - PropertyList - with fluent intf for adding
-
+* Toggling config needs to clear/change props
 
 Environment Strategy:
 * move copying environments dir

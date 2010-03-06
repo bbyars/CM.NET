@@ -59,7 +59,6 @@
     </Compile>
     <Compile Include="EnvironmentFilesLoader.cs" />
     <Compile Include="IDeployCommandBuilder.cs" />
-    <Compile Include="IDeployView.cs" />
     <Compile Include="IEnvironmentLoader.cs" />
     <Compile Include="MSBuildCommandBuilder.cs" />
     <Compile Include="Program.cs" />

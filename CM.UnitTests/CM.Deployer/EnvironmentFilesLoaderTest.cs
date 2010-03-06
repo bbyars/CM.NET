@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using CM.Common;
 using CM.Deployer;
 using Moq;
@@ -16,7 +15,7 @@ namespace CM.UnitTests.CM.Deployer
             var stubFileSystem = new Mock<FileSystem>();
             stubFileSystem.Setup(fs => fs.ListAllFilesIn("env", "*.properties")).Returns(
                 new[] {"test.properties", "prod.properties"});
-            var loader = new EnvironmentFilesLoader(stubFileSystem.Object, "env", ".properties");
+            var loader = new EnvironmentFilesLoader(stubFileSystem.Object, "env", "properties");
 
             Assert.That(loader.GetEnvironments(), Is.EqualTo(new[] {"test", "prod"}));
         }
@@ -34,7 +33,7 @@ namespace CM.UnitTests.CM.Deployer
                             <key2>value2</key2>
                         </PropertyGroup>
                     </Project>");
-            var loader = new EnvironmentFilesLoader(stubFileSystem.Object, "Environments", ".properties");
+            var loader = new EnvironmentFilesLoader(stubFileSystem.Object, "Environments", "properties");
 
             Assert.That(loader.GetProperties("prod"), Is.EqualTo(new PropertyList().Add("key1", "value1").Add("key2", "value2")));
         }
@@ -54,7 +53,7 @@ namespace CM.UnitTests.CM.Deployer
                             <key2>value2</key2>
                         </PropertyGroup>
                     </Project>");
-            var loader = new EnvironmentFilesLoader(stubFileSystem.Object, "Environments", ".properties");
+            var loader = new EnvironmentFilesLoader(stubFileSystem.Object, "Environments", "properties");
 
             Assert.That(loader.GetProperties("prod"), Is.EqualTo(new PropertyList().Add("key1", "value1").Add("key2", "value2")));
         }
@@ -73,7 +72,7 @@ namespace CM.UnitTests.CM.Deployer
                             </PropertyGroup>
                         </Target>
                     </Project>");
-            var loader = new EnvironmentFilesLoader(stubFileSystem.Object, "Environments", ".properties");
+            var loader = new EnvironmentFilesLoader(stubFileSystem.Object, "Environments", "properties");
 
             Assert.That(loader.GetProperties("prod"), Is.EqualTo(new PropertyList().Add("key1", "value1")));
         }
@@ -91,7 +90,7 @@ namespace CM.UnitTests.CM.Deployer
                             </PropertyGroup>
                         </Target>
                     </Project>");
-            var loader = new EnvironmentFilesLoader(stubFileSystem.Object, "Environments", ".properties");
+            var loader = new EnvironmentFilesLoader(stubFileSystem.Object, "Environments", "properties");
 
             Assert.That(loader.LoadProperties(@"c:\ops\config.properties"), Is.EqualTo(new PropertyList().Add("key1", "value1")));
         }
@@ -100,7 +99,7 @@ namespace CM.UnitTests.CM.Deployer
         public void ShouldSaveInMSBuildFormat()
         {
             var mockFileSystem = new Mock<FileSystem>();
-            var loader = new EnvironmentFilesLoader(mockFileSystem.Object, "Environments", ".properties");
+            var loader = new EnvironmentFilesLoader(mockFileSystem.Object, "Environments", "properties");
             var properties = new PropertyList().Add("key1", "value1").Add("key2", "value2");
 
             loader.SaveProperties(properties, @"c:\ops\config.properties");
