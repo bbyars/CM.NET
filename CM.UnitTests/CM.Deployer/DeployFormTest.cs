@@ -82,8 +82,13 @@ namespace CM.UnitTests.CM.Deployer
         [Test]
         public void SavingShouldSaveAllProperties()
         {
+            var properties = new List<KeyValuePair<string, string>>
+                { new KeyValuePair<string, string>("key1", "value1"), new KeyValuePair<string, string>("key2", "value2") };
+            form.Properties = properties;
 
-//            environmentLoader.Verify(loader => loader.Save(@"c:\ops\config.properties", form.Properties));
+            form.Save(@"c:\ops\config.properties");
+
+            environmentLoader.Verify(loader => loader.SaveProperties(form.Properties, @"c:\ops\config.properties"));
         }
     }
 }

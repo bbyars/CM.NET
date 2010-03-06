@@ -33,7 +33,7 @@ namespace CM.Deployer
             uxEnvironments.SelectedValueChanged += (sender, e) => ResetProperties();
             uxLoadExternalFile.Click += (sender, e) => SelectFile("Open Config File", LoadExternalFile);
             uxSave.Click += (sender, e) => SelectFile("Save Config File", Save);
-            uxDeploy.Click += (sender, e) => Deploy();
+            uxDeploy.Click += (sender, e) => ShowDeployLog(Deploy());
         }
 
         public virtual void Initialize()
@@ -62,13 +62,13 @@ namespace CM.Deployer
 
         public virtual void Save(string path)
         {
+            environmentLoader.SaveProperties(Properties, path);
         }
 
-        public virtual void Deploy()
+        public virtual SystemProcess Deploy()
         {
             commandBuilder.SetEnvironmentProperties(Properties);
-            var logForm = new DeployLog(processRunner.Start(commandBuilder.CommandLine));
-            logForm.Show();
+            return processRunner.Start(commandBuilder.CommandLine);
         }
 
         public virtual string SelectedEnvironment
@@ -136,11 +136,17 @@ namespace CM.Deployer
             }
         }
 
-        private void SelectFile(string dialogTitle, Action<string> continuation)
+        private static void SelectFile(string dialogTitle, Action<string> continuation)
         {
             var dialog = new OpenFileDialog { Filter = "Config Files|*" + Settings.Default.ConfigurationFileExtension, Title = dialogTitle };
             if (dialog.ShowDialog() == DialogResult.OK)
                 continuation(dialog.FileName);
+        }
+
+        private static void ShowDeployLog(SystemProcess process)
+        {
+            var logForm = new DeployLog(process);
+            logForm.Show();
         }
     }
 }
