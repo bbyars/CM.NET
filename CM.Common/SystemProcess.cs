@@ -5,23 +5,18 @@ namespace CM.Common
 {
     public class SystemProcess
     {
-        public delegate void UpdatedHandler();
-
-        public event UpdatedHandler OutputUpdated;
-        public event UpdatedHandler ErrorUpdated;
+        public event DataReceivedEventHandler OutputUpdated;
+        public event DataReceivedEventHandler ErrorUpdated;
 
         private readonly Process process;
 
         public SystemProcess(Process process)
         {
             this.process = process;
-            if (process != null)
-            {
-                process.OutputDataReceived += OnStandardOutputUpdated;
-                process.BeginOutputReadLine();
-                process.ErrorDataReceived += OnStandardErrorUpdated;
-                process.BeginErrorReadLine();
-            }
+            process.OutputDataReceived += (sender, e) => Receive(e, () => StandardOutput, s => StandardOutput += s, OutputUpdated);
+            process.BeginOutputReadLine();
+            process.ErrorDataReceived += (sender, e) => Receive(e, () => StandardError, s => StandardError += s, ErrorUpdated);
+            process.BeginErrorReadLine();
         }
 
         public virtual string CommandLine
@@ -78,48 +73,6 @@ namespace CM.Common
             process.WaitForExit(GetMillisecondsToWait(timeout));
         }
 
-        private static int GetMillisecondsToWait(TimeSpan timeout)
-        {
-            var milliseconds = Convert.ToInt64(timeout.TotalMilliseconds);
-            return milliseconds > Int32.MaxValue ? Int32.MaxValue : Convert.ToInt32(milliseconds);
-        }
-
-        protected virtual void OnOutputUpdated()
-        {
-            var handler = OutputUpdated;
-            if (handler != null) handler();
-        }
-
-        protected virtual void OnErrorUpdated()
-        {
-            var handler = ErrorUpdated;
-            if (handler != null) handler();
-        }
-
-        private void OnStandardOutputUpdated(object sender, DataReceivedEventArgs e)
-        {
-            if (e.Data == null)
-                return;
-
-            if (!String.IsNullOrEmpty(StandardOutput))
-                StandardOutput += Environment.NewLine;
-
-            StandardOutput += e.Data;
-            OnOutputUpdated();
-        }
-
-        private void OnStandardErrorUpdated(object sender, DataReceivedEventArgs e)
-        {
-            if (e.Data == null)
-                return;
-
-            if (!String.IsNullOrEmpty(StandardError))
-                StandardError += Environment.NewLine;
-
-            StandardError += e.Data;
-            OnErrorUpdated();
-        }
-
         public override string ToString()
         {
             if (!HasExited)
@@ -129,10 +82,30 @@ namespace CM.Common
                 return string.Format("<{0}> timed out", CommandLine);
 
             if (!WasSuccessful)
-                return string.Format("<{0}> failed with exit code {1}\n\tstdout: {2}\n\tstderr: {3}", 
+                return string.Format("<{0}> failed with exit code {1}\n\tstdout: {2}\n\tstderr: {3}",
                     CommandLine, ExitCode, StandardOutput, StandardError);
 
             return string.Format("<{0}> succeeded", CommandLine);
+        }
+
+        private static int GetMillisecondsToWait(TimeSpan timeout)
+        {
+            var milliseconds = Convert.ToInt64(timeout.TotalMilliseconds);
+            return milliseconds > Int32.MaxValue ? Int32.MaxValue : Convert.ToInt32(milliseconds);
+        }
+
+        private void Receive(DataReceivedEventArgs e, Func<string> current, Action<string> append, DataReceivedEventHandler eventHandler)
+        {
+            if (e.Data == null)
+                return;
+
+            if (!string.IsNullOrEmpty(current()))
+                append(Environment.NewLine);
+
+            append(e.Data);
+
+            var handler = eventHandler;
+            if (handler != null) handler(this, e);
         }
     }
 }

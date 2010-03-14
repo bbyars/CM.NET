@@ -62,7 +62,10 @@ namespace CM.Deployer
         public virtual void LoadExternalFile(string path)
         {
             ExternalFile = path;
-            Properties = environmentLoader.LoadProperties(path);
+            if (string.IsNullOrEmpty(path))
+                Properties = new PropertyList();
+            else
+                Properties = environmentLoader.LoadProperties(path);
         }
 
         public virtual void Save(string path)

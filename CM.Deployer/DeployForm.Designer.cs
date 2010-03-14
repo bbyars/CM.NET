@@ -77,6 +77,7 @@
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.uxExternalFile.Location = new System.Drawing.Point(155, 68);
             this.uxExternalFile.Name = "uxExternalFile";
+            this.uxExternalFile.ReadOnly = true;
             this.uxExternalFile.Size = new System.Drawing.Size(460, 20);
             this.uxExternalFile.TabIndex = 3;
             // 
@@ -170,7 +171,7 @@
             // uxSave
             // 
             this.uxSave.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.uxSave.Location = new System.Drawing.Point(484, 441);
+            this.uxSave.Location = new System.Drawing.Point(523, 441);
             this.uxSave.Name = "uxSave";
             this.uxSave.Size = new System.Drawing.Size(75, 23);
             this.uxSave.TabIndex = 3;
@@ -189,7 +190,7 @@
             this.Controls.Add(this.uxConfigurationGroup);
             this.MinimumSize = new System.Drawing.Size(500, 300);
             this.Name = "DeployForm";
-            this.Text = "DeployForm";
+            this.Text = "Deploy";
             this.uxConfigurationGroup.ResumeLayout(false);
             this.uxConfigurationGroup.PerformLayout();
             this.uxConfigurationPropertiesGroup.ResumeLayout(false);

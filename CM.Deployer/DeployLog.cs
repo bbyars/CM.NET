@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
 using CM.Common;
@@ -11,16 +12,56 @@ namespace CM.Deployer
 
         public DeployLog(SystemProcess process)
         {
-            InitializeComponent();
             this.process = process;
-            process.OutputUpdated += UpdateLog;
-            process.ErrorUpdated += UpdateLog;
+
+            InitializeComponent();
+
+            Load += (sender, e) => Initialize();
+            process.OutputUpdated += (sender, e) => AppendOutput(e.Data);
+            process.ErrorUpdated += (sender, e) => AppendError(e.Data);
+            uxShowWorkingDirectory.Click += (sender, e) => ShowWorkingDirectory();
+            uxKill.Click += (sender, e) => Kill();
+            uxSave.Click += (sender, e) => SelectFile(Save);
         }
 
-        private void UpdateLog()
+        public virtual string Log
+        {
+            get { return uxLog.Text; }
+        }
+
+        public virtual void Initialize()
+        {
+            AppendOutput(Header);
+        }
+
+        public virtual void AppendOutput(string text)
+        {
+            Invoke((Action)(() => uxLog.Text += text));
+        }
+
+        public virtual void AppendError(string text)
         {
             Invoke((Action)(() =>
-                uxLog.Text = Header + process.StandardOutput + Environment.NewLine + Environment.NewLine + process.StandardError));
+            {
+                uxLog.ForeColor = Color.Red;
+                uxLog.Text += "<error>" + text + "******************";
+                uxLog.ForeColor = Color.White;
+            }));
+        }
+
+        public virtual void Save(string path)
+        {
+            File.WriteAllText(path, Log);
+        }
+
+        public virtual void ShowWorkingDirectory()
+        {
+            new ProcessRunner().Start(string.Format("cmd /c explorer \"{0}\"", process.WorkingDirectory));
+        }
+
+        public virtual void Kill()
+        {
+            process.KillTree();
         }
 
         private string Header
@@ -32,26 +73,17 @@ namespace CM.Deployer
             }
         }
 
-        private void Save(object sender, EventArgs e)
+        private static void SelectFile(Action<string> continuation)
         {
-            var dialog = new OpenFileDialog
+            var dialog = new SaveFileDialog
             {
                 Title = "Save Log File",
                 CheckFileExists = false,
                 InitialDirectory = Environment.CurrentDirectory
             };
+
             if (dialog.ShowDialog() == DialogResult.OK)
-                File.WriteAllText(dialog.FileName, uxLog.Text);
-        }
-
-        private void ShowWorkingDirectory(object sender, EventArgs e)
-        {
-            new ProcessRunner().Start(string.Format("cmd /c explorer \"{0}\"", process.WorkingDirectory));
-        }
-
-        private void Kill(object sender, EventArgs e)
-        {
-            process.KillTree();
+                continuation(dialog.FileName);
         }
     }
 }

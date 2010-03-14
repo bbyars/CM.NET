@@ -1,23 +1,22 @@
 * document command line way of deloying using sfx
 * clean for web projects
-* Make the defaults smart enough to not care about the file extension (should be able to parse from built in properties)
-* TeamCity.targets is ugly - needs to know too much about other properties.  Perhaps use ProjectName throughout?
 * Allow for an environments file that exists purely for documentation - load at start.
 * Allow loading environments to be more pluggable
   * Include EnvironmentFiles.targets for the current way
   * Include EnvironmentsWebService.targets for another way...
 * Deployer
   * Show ProjectName in the title bar
-  * disable kill icon when process is dead (nead event on SystemProcess)
-  * Consider removing dependency on system.xml for boot-up speed
-  * Have option to show entire file to prevent security hole (also always save only properties to prevent any additional code from executing)
+  * disable kill icon when process is dead (need event on SystemProcess)
+  * show process tree
+  * show stderr in red
+  * test DeployLog like DeployForm
 * Fix templates!
 * Just have clients add to @PackageFiles, with metadata to store root dir
 * Remove absolute dir refs for scripts in CMDirectory
   * DotNet, Sfx
 * Add OnErrorTargets
 * Duplication on saving b/t command builder/environment loader
-* Toggling config needs to clear/change props
+  * but should be split in the way it is - document why...
 * Allow entering into external file box
 * Toolbar (show in Explorer, Save, Load)
 

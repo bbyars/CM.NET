@@ -1,3 +1,4 @@
+using System;
 using CM.Common;
 using CM.Deployer;
 using Moq;
@@ -54,6 +55,7 @@ namespace CM.UnitTests.CM.Deployer
         [Test]
         public void SwitchingToExternalFileShouldClearPropertiesIfNoExternalFileSet()
         {
+            environmentLoader.Setup(loader => loader.LoadProperties("")).Throws(new Exception("Should not call this"));
             form.UsePackagedEnvironment = false;
             form.Properties = new PropertyList().Add("key1", "value1");
 

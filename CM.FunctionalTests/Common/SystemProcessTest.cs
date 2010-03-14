@@ -15,7 +15,7 @@ namespace CM.FunctionalTests.Common
         {
             var output = "";
             var process = new ProcessRunner().Start("cmd /c echo test");
-            process.OutputUpdated += () => output = process.StandardOutput;
+            process.OutputUpdated += (sender, e) => output = process.StandardOutput;
             process.WaitForExit(TimeSpan.FromSeconds(30));
             Assert.That(output, Is.EqualTo("test"));
         }
@@ -35,7 +35,7 @@ namespace CM.FunctionalTests.Common
         {
             var error = "";
             var process = new ProcessRunner().Start("svn");
-            process.ErrorUpdated += () => error = process.StandardError;
+            process.ErrorUpdated += (sender, e) => error = process.StandardError;
             process.WaitForExit(TimeSpan.FromSeconds(30));
             Assert.That(error, Is.EqualTo("Type 'svn help' for usage."));
         }

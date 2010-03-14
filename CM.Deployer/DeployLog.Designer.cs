@@ -59,7 +59,6 @@
             this.uxSave.Name = "uxSave";
             this.uxSave.Size = new System.Drawing.Size(23, 22);
             this.uxSave.Text = "Save";
-            this.uxSave.Click += new System.EventHandler(this.Save);
             // 
             // uxShowWorkingDirectory
             // 
@@ -69,7 +68,6 @@
             this.uxShowWorkingDirectory.Name = "uxShowWorkingDirectory";
             this.uxShowWorkingDirectory.Size = new System.Drawing.Size(23, 22);
             this.uxShowWorkingDirectory.Text = "Show Working Directory";
-            this.uxShowWorkingDirectory.Click += new System.EventHandler(this.ShowWorkingDirectory);
             // 
             // uxKill
             // 
@@ -79,7 +77,6 @@
             this.uxKill.Name = "uxKill";
             this.uxKill.Size = new System.Drawing.Size(23, 22);
             this.uxKill.Text = "Kill";
-            this.uxKill.Click += new System.EventHandler(this.Kill);
             // 
             // uxPanel
             // 
