@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using CM.Common;
 using CM.Deployer;
 using Moq;

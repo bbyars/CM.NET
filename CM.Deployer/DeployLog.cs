@@ -44,7 +44,7 @@ namespace CM.Deployer
             Invoke((Action)(() =>
             {
                 uxLog.ForeColor = Color.Red;
-                uxLog.Text += "<error>" + text + "******************";
+                uxLog.Text += text;
                 uxLog.ForeColor = Color.White;
             }));
         }

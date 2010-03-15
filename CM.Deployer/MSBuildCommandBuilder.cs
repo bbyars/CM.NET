@@ -9,15 +9,26 @@ namespace CM.Deployer
         public const string ConfigFile = "DeployConfig.properties";
 
         private readonly FileSystem fileSystem;
+        private readonly string msBuildExePath;
+        private readonly string projectFilePath;
+        private readonly string target;
 
         public MSBuildCommandBuilder(FileSystem fileSystem, string msBuildExePath, string projectFilePath, string target)
         {
             this.fileSystem = fileSystem;
-            CommandLine = string.Format("\"{0}\" \"{1}\" /t:{2} /p:\"PackageDirectory=.\" /p:\"ConfigPath={3}\"",
-                msBuildExePath, projectFilePath, target, ConfigFile);
+            this.msBuildExePath = msBuildExePath;
+            this.projectFilePath = projectFilePath;
+            this.target = target;
         }
 
-        public string CommandLine { get; private set; }
+        public virtual string CommandLine
+        {
+            get
+            {
+                return string.Format("\"{0}\" \"{1}\" /t:{2} /p:\"PackageDirectory=.\" /p:\"ConfigPath={3}\"",
+                    msBuildExePath, projectFilePath, target, ConfigFile);
+            }
+        }
 
         public virtual void SetEnvironmentProperties(PropertyList properties)
         {

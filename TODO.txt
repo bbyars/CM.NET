@@ -19,6 +19,7 @@
   * but should be split in the way it is - document why...
 * Allow entering into external file box
 * Toolbar (show in Explorer, Save, Load)
+* Update dependent libraries
 
 Environment Strategy:
 * move copying environments dir

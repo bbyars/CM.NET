@@ -94,6 +94,7 @@
             this.uxLog.ForeColor = System.Drawing.Color.White;
             this.uxLog.Location = new System.Drawing.Point(0, 0);
             this.uxLog.Name = "uxLog";
+            this.uxLog.ReadOnly = true;
             this.uxLog.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.ForcedBoth;
             this.uxLog.Size = new System.Drawing.Size(706, 355);
             this.uxLog.TabIndex = 1;
