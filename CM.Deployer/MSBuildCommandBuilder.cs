@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Linq;
 using CM.Common;
 
@@ -6,7 +7,7 @@ namespace CM.Deployer
 {
     public class MSBuildCommandBuilder : IDeployCommandBuilder
     {
-        public const string ConfigFile = "DeployConfig.properties";
+        public readonly string ConfigFile = Path.Combine(Environment.CurrentDirectory, "DeployConfig.properties");
 
         private readonly FileSystem fileSystem;
         private readonly string msBuildExePath;

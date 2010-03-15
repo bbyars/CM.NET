@@ -13,7 +13,8 @@ namespace CM.UnitTests.CM.Deployer
         public void VerifyCommandLine()
         {
             var builder = new MSBuildCommandBuilder(new FileSystem(), @"C:\dir\msbuild.exe", "test.proj", "deploy");
-            Assert.That(builder.CommandLine, Is.EqualTo(@"""C:\dir\msbuild.exe"" ""test.proj"" /t:deploy /p:""PackageDirectory=."" /p:""ConfigPath=DeployConfig.properties"""));
+            Assert.That(builder.CommandLine, Is.EqualTo(string.Format(
+                @"""C:\dir\msbuild.exe"" ""test.proj"" /t:deploy /p:""PackageDirectory=."" /p:""ConfigPath={0}""", builder.ConfigFile)));
         }
 
         [Test]
@@ -24,7 +25,7 @@ namespace CM.UnitTests.CM.Deployer
 
             builder.SetEnvironmentProperties(new PropertyList().Add("key1", "value1").Add("key2", "value2"));
 
-            mockFileSystem.Verify(fs => fs.WriteAllText("DeployConfig.properties", @"<?xml version='1.0' encoding='utf-8'?>
+            mockFileSystem.Verify(fs => fs.WriteAllText(builder.ConfigFile, @"<?xml version='1.0' encoding='utf-8'?>
 <Project xmlns='http://schemas.microsoft.com/developer/msbuild/2003'>
     <PropertyGroup>
         <key1>value1</key1>

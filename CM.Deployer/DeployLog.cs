@@ -36,7 +36,7 @@ namespace CM.Deployer
 
         public virtual void AppendOutput(string text)
         {
-            Invoke((Action)(() => uxLog.Text += text));
+            Invoke((Action)(() => uxLog.Text += text + Environment.NewLine));
         }
 
         public virtual void AppendError(string text)
@@ -44,7 +44,7 @@ namespace CM.Deployer
             Invoke((Action)(() =>
             {
                 uxLog.ForeColor = Color.Red;
-                uxLog.Text += text;
+                uxLog.Text += text + Environment.NewLine;
                 uxLog.ForeColor = Color.White;
             }));
         }
@@ -69,7 +69,7 @@ namespace CM.Deployer
             get
             {
                 return "Working Directory: " + process.WorkingDirectory + Environment.NewLine
-                       + "Command: " + process.CommandLine + Environment.NewLine + Environment.NewLine;
+                       + "Command: " + process.CommandLine + Environment.NewLine;
             }
         }
 
