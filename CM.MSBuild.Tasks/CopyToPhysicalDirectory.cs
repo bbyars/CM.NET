@@ -113,6 +113,9 @@ namespace CM.MSBuild.Tasks
         private List<string> GetMatchingDirectories()
         {
             var directoryWithoutTimestamp = new NetworkDirectory(Server, DestinationDirectory);
+            if (!Directory.Exists(directoryWithoutTimestamp.ParentDirectoryName))
+                return new List<string>();
+
             return Directory.GetDirectories(
                 directoryWithoutTimestamp.ParentDirectoryName, directoryWithoutTimestamp.BaseDirectoryName + "-*")
                 .Where(dir => Regex.IsMatch(dir, directoryWithoutTimestamp.BaseDirectoryName + @"-\d+$")).ToList();
