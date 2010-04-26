@@ -1,0 +1,56 @@
+1. What is CM.NET
+
+CM.NET is a build framework for .NET.  While my plans are for it to support both
+MSBuild and NAnt, it is currently built out only for MSBuild.
+
+At its core, CM.NET is a way to attack the Monolithic Build File by allowing
+you to modularize your build scripts in a more cohesive fashion.  It uses
+an observer-like pattern (which works out of the box in MSBuild, and with the
+help of a couple custom tasks in NAnt) to allow scripts to wire themselves
+into the build process in such a way that scripts can remain (mostly) ignorant
+of each other.
+
+While CM.NET is first and foremost a build library, it does have some tasks
+that have been designed to help with deploy and dependency management.
+
+2. Build script examples
+
+3. Dependency Management
+
+While there are nice dependency management libraries available, I tend to
+prefer having my dependencies available at source control update time, not
+build time.  In my experience, using svn:externals (or equivalent) is a
+nice robust way of managing dependencies.
+
+For in-house developed libraries, I've found it convenient to "publish"
+the output of each successful build in the continuous integration environment
+to a "Dependencies" subversion repository.  CM.NET contains a PublishToSvn
+task that does the trick.  It works by checking out the "trunk" (I tend to
+call it "latest"), do an intelligent merge of the build outputs by using
+svn adds and svn deletes appropriately, commiting, and tagging the commit
+by version.  This allows downstream applications to svn:external to a
+blessed version of the library.
+
+4. Deploy tasks
+
+I prefer deploys to be completely non-destructive.  For server applications
+(web sites and windows services), this means _not_ overwriting a production
+directory during deploy.  CM.NET provides a CopyToPhysicalDirectory task
+that enables this.
+
+It copies files to a directory name, and appends a timestamp to the directory
+name, cleaning up a configurable number of old deploys.  The idea is that
+you simply re-point the virtual directory to the new physical directory.
+The previous production physical directory is untouched, enabling rollback.
+This has the added benefit of enabling hot deploys.  See the Acme Example
+solution for an example
+
+5. Building CM.NET
+
+build.bat should do the trick.  The functional tests assume you have a
+command line subversion installed.  All output gets packaged up in
+the build directory.
+
+6. Contributing
+Patches and suggestions are always welcome.  You can reach me at brandon.byars@gmail.com.
+Feel free to fork the repository at http://github.com/bbyars/CM.NET.

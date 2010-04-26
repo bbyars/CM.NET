@@ -48,6 +48,14 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Deployer", "Deployer", "{01
 		scripts\Packagers\Deployer\EnvironmentFiles.targets = scripts\Packagers\Deployer\EnvironmentFiles.targets
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{F1390734-BBA7-427E-82C8-46EC78981054}"
+	ProjectSection(SolutionItems) = preProject
+		CONTRIBUTORS = CONTRIBUTORS
+		LICENSE = LICENSE
+		README = README
+		TODO = TODO
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
