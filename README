@@ -13,10 +13,169 @@ of each other.
 While CM.NET is first and foremost a build library, it does have some tasks
 that have been designed to help with deploy and dependency management.
 
-2. Build script examples
+CM.NET consists of a set of MSBuild scripts, a set of MSBuild tasks, and a GUI deployer.
 
-3. Dependency Management
+2. MSBuild Scripts
 
+The MSBuild scipts (with a .targets extension) are designed to allow you to add
+functionality to your build simply by including additional targets files. The key
+to understanding how this works is by examining Default.targets. The Build target
+is defined in that file, as well as the core targets of the build process. However,
+the targets have an empty body; they simply depend on a set of targets defined in properties:
+
+<Target Name="Build" DependsOnTargets="
+      $(PreBuildTargets);
+      Clean;
+      Compile;
+      UnitTest;
+      Package;
+      Deploy;
+      FunctionalTest;
+      $(PostBuildTargets)" />
+
+<Target Name="Compile" DependsOnTargets="Clean;$(PreCompileTargets);$(CompileTargets);$(PostCompileTargets)" />
+<Target Name="UnitTest" DependsOnTargets="Compile;$(PreUnitTestTargets);$(UnitTestTargets);$(PostUnitTestTargets)" />
+<Target Name="Package" DependsOnTargets="$(PrePackageTargets);$(PackageTargets);$(PostPackageTargets)" />
+<Target Name="Deploy" DependsOnTargets="$(PreDeployTargets);$(DeployTargets);$(PostDeployTargets)" />
+<Target Name="FunctionalTest" DependsOnTargets="$(PreFunctionalTestTargets);$(FunctionalTestTargets);$(PostFunctionalTestTargets)" />
+
+The idea is to define a workflow that other scripts can hook into simply by appending to
+the relevant properties. This allows build scripts to be developed in isolation, without
+knowing anything about the other build scripts that will be added (it's an example of the observer pattern).
+For example, if you want your project to use clean the web bin directory during the Clean step, you can wire
+into the process as shown below:
+
+<PropertyGroup>
+  <CleanTargets>$(CleanTargets);CleanWebBin</CleanTargets>
+</PropertyGroup>
+
+== Default.Targets ==
+As described above, Defaults.targets is responsible for defining the build process that
+other scripts wire themselves into.  The only functional task it does is to recreate
+the build directory during the Clean step.
+
+The build process is defined in a way that I've found useful.  Probably the most controversial
+aspect of it is that it includes a deploy step, and runs the functional tests only after deploy.
+I prefer this, because it tests the deploy as part of every build.  It's also nice to run
+functional tests against a deployed application, and it provides an easy distinction between
+unit and functional tests (functional tests depend on the deployed application - a database,
+a web site, etc. - where as unit tests do not).  The Acme Example project included in the source
+shows an example of this usage.
+
+Probably the most useful target for debugging is Trace, defined in Default.targets.  Since
+we've largely replaced MSBuild's static dependency analysis with a dynamic dependency analysis,
+it can sometimes be easy to lose track of what's happening when.  Trace will give you all the
+targets that run each step of the build process.
+
+=== Properties ===
+BuildDirectory (defaults to build)
+
+== DotNet.Targets ==
+DotNet.targets handles the common build and test tasks associated with most .NET applications.
+To be generic, it has to make several assumptions:
+* You have a single solution
+* You have zero or one unit test projects for your solution
+* You have zero or one functional test projects for your solution
+* You're using NUnit as your testing framework.
+
+If these assumptions are invalid, feel free to use DotNet.targets as a reference and create
+your own script.
+
+DotNet.targets will clean your previous build output (except for web application projects),
+version your AssemblyInfo files, compile, restore your AssemblyInfo files, run your unit
+tests, and run your functional tests.
+
+== Properties ==
+ProjectName                 (defaults to the MSBuild project file name, without the extension)
+                            TeamCity doesn't call your MSBuild project directly, so if you're using
+                            TeamCity, it's best to explicitly define ProjectName in your project file.
+Solution                    (defaults to $(ProjectName).sln)
+UnitTestProject             (defaults to $(ProjectName).UnitTests)
+FunctionalTestProject       (defaults to $(ProjectName).FunctionalTests)
+Configuration               (defaults to Release)
+Version                     (defaults to 0.0.0.0 - it's recommended to pull this from your continuous integration application)
+NUnitDirectory              (defaults to Dependencies\nunit)
+MSBuildCommunityTasksPath   (defaults to Dependencies\CM.NET, since CM.NET ships with these tasks)
+
+== Subversion.targets ==
+Subversion.targets does not wire itself into the build process.  Instead, it has a couple
+of targets that can be used to form a standard checkin routine.  Specifically, the ci (checkin)
+target makes a convenient checkin target, as it forces an svn update before the build.  If
+the build is successful, it will not auto-commit; it just brings up a TortoiseSVN dialog box.
+
+== TeamCity.targets ==
+This file simply sets the following properties, based on environment properties TeamCity
+will pass into a running build:
+* Version
+* IsInContinuousIntegration
+
+The idea is to support other continuous integration environments by setting these properties
+in them as well, so other scripts can read these properties ignorant of what continuous build
+application is in play.
+
+TeamCity wreaks all kinds of havoc on the practice CM.NET takes of inferring many properties
+from the MSBuild file name, because TeamCity doesn't actually call your MSBuild script directly.
+Instead, it calls a wrapper script, which means that any properties based on $(MSBuildProjectName)
+or $(MSBuildProjectFile) will be broken in the TeamCity environment.  CM.NET tries to accomodate
+this by allowing the developer to set the ProjectName and ProjectFile explicitly in their build script,
+and CM.NET uses those properties throughout.
+
+== Packagers/Package.targets ==
+This build script is not intended for direct use.  It serves as a "superclass" of sorts
+for different packaging strategies.
+
+== Packagers/Sfx.targets ==
+This build script is not intended for direct use.  It serves as a "superclass" of sorts
+for packaging strategies that rely on a self-extracting executable.  It is extracted
+out intentionally to allow developers to replace the GUI deployer that ships with CM.NET
+without having to copy the code to create a self-extracting executable.
+
+== Packagers/Zip.targets ==
+This build script will create a zip file of all files in the PackageDirectory.
+This is a useful packaging strategy for libraries.
+
+== Packagers/Deployer/Deployer.targets ==
+When imported into your project, a self-extracting executable (sfx) of the
+GUI deployer that ships with CM.NET will be created.  This will archive all of the files
+into a single .exe file which, when executed, will run the deployer application.
+
+The default strategy for managing configuration that differs between environments
+is to create a separate MSBuild properties file for every logical environment you
+have, with an identical set of properties in each environments file (although the values
+will obviously differ).  The deploy process imports the environment file corresponding
+to the environment being deployed to.
+
+=== Properties ===
+ProjectFile (defaults to MSBuildProjectFile - do not default if you use TeamCity)
+Environment (defaults to dev)
+EnvironmentsDirectory (defaults to environments)
+ConfigFileExtension (defaults to properties)
+ConfigPath (defaults to $(EnvironmentsDirectory)\$(Environment).$(ConfigFileExtension)
+CMDirectory (defaults to Dependencies\CM.NET)
+SdcTasksDirectory (defaults to $(CMDirectory), since it ships with SdcTasks)
+SfxExe (defaults to deployer.exe)
+
+3. MSBuild Tasks
+
+== ChangeDirectoryPrefix ==
+Provides a way to create an ItemGroup with the directory prefix changed.  It seems
+like this should be a relatively simple thing to do, but I was unable to find a
+way of doing it in MSBuild without a custom task.
+
+== CopyToPhysicalDirectory ==
+I prefer deploys to be completely non-destructive.  For server applications
+(web sites and windows services), this means _not_ overwriting a production
+directory during deploy.  CM.NET provides a CopyToPhysicalDirectory task
+that enables this.
+
+It copies files to a directory name, and appends a timestamp to the directory
+name, cleaning up a configurable number of old deploys.  The idea is that
+you simply re-point the virtual directory to the new physical directory.
+The previous production physical directory is untouched, enabling rollback.
+This has the added benefit of enabling hot deploys.  See the Acme Example
+solution for an example
+
+== PublishToSvn ==
 While there are nice dependency management libraries available, I tend to
 prefer having my dependencies available at source control update time, not
 build time.  In my experience, using svn:externals (or equivalent) is a
@@ -31,26 +190,13 @@ svn adds and svn deletes appropriately, commiting, and tagging the commit
 by version.  This allows downstream applications to svn:external to a
 blessed version of the library.
 
-4. Deploy tasks
-
-I prefer deploys to be completely non-destructive.  For server applications
-(web sites and windows services), this means _not_ overwriting a production
-directory during deploy.  CM.NET provides a CopyToPhysicalDirectory task
-that enables this.
-
-It copies files to a directory name, and appends a timestamp to the directory
-name, cleaning up a configurable number of old deploys.  The idea is that
-you simply re-point the virtual directory to the new physical directory.
-The previous production physical directory is untouched, enabling rollback.
-This has the added benefit of enabling hot deploys.  See the Acme Example
-solution for an example
-
-5. Building CM.NET
+4. Building CM.NET
 
 build.bat should do the trick.  The functional tests assume you have a
 command line subversion installed.  All output gets packaged up in
 the build directory.
 
-6. Contributing
+5. Contributing
+
 Patches and suggestions are always welcome.  You can reach me at brandon.byars@gmail.com.
 Feel free to fork the repository at http://github.com/bbyars/CM.NET.
